@@ -1,3 +1,4 @@
+<!-- /index.html -->
 <!doctype html>
 <html lang="id">
   <head>
@@ -7,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
       @theme {
-        --font-display: "Space Grotesk", sans-serif;
+        --font-display: "Outfit", sans-serif;
         --font-mono: "JetBrains Mono", monospace;
         --color-base-950: #0a0e0d;
         --color-base-900: #111916;
@@ -30,19 +31,18 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen text-base-100 bg-grid bg-glow overflow-x-hidden">
     <div id="particles" class="fixed inset-0 pointer-events-none z-0" aria-hidden="true"></div>
 
     <div x-data="boiauto()" x-init="init()" class="relative z-10 min-h-screen flex flex-col">
-      <!-- HEADER -->
+      <div x-init="fetch('parts/stack-toggle.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+
       <div x-init="fetch('parts/header.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <!-- MAIN CONTENT -->
       <div class="flex-1" x-init="fetch('parts/upgrade-skill.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <!-- FOOTER -->
       <div x-init="fetch('parts/footer.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
     </div>
   </body>

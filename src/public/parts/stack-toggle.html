@@ -1,0 +1,12 @@
+<!-- /parts/stack-toggle.html -->
+
+<button @click="openNavbar()" type="button"
+  class="fixed top-3.5 left-4 sm:left-6 z-40 w-7 h-7 flex items-center justify-center cursor-pointer text-base-200 hover:text-s1 transition-colors"
+  aria-label="Open navigation"
+  :class="navbarOpen ? 'pointer-events-none' : 'pointer-events-auto'">
+  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+  </svg>
+</button>

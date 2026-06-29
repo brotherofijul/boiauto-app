@@ -1,0 +1,124 @@
+<!-- /parts/navbar.html -->
+<div x-show="navbarOpen" x-cloak
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-50"
+     @keydown.escape.window="closeNavbar()">
+
+  <div class="absolute inset-0 bg-base-950/60 backdrop-blur-sm" @click="closeNavbar()"></div>
+
+  <div class="absolute left-0 top-0 bottom-0 w-[50vw] min-w-[280px] max-w-[400px] bg-base-900/95 backdrop-blur-xl border-r border-base-800/60 overflow-hidden flex flex-col"
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="-translate-x-full"
+       x-transition:enter-end="translate-x-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="translate-x-0"
+       x-transition:leave-end="-translate-x-full">
+
+    <div class="h-1 flex-shrink-0 bg-gradient-to-r from-s1 via-s1-dim to-s2"></div>
+
+    <div class="px-5 pt-5 pb-4 flex-shrink-0 flex items-start justify-between gap-3">
+      <div>
+        <h2 class="text-lg font-bold tracking-tight text-shimmer leading-tight whitespace-nowrap">BOIAuto</h2>
+        <p class="text-[10px] text-base-400 font-mono tracking-wider leading-tight whitespace-nowrap">v1.0.0</p>
+      </div>
+      <button @click="closeNavbar()" type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-all active:scale-90 flex-shrink-0">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="mx-5 border-t border-base-800/60"></div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto log-scroll">
+      <p class="text-[9px] text-base-600 uppercase tracking-widest font-mono px-2 mb-2">Menu</p>
+
+      <button @click="switchView('account')" type="button" :disabled="switchingView"
+        class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
+        :class="switchingView
+          ? 'bg-s1/10 border border-s1/30 text-s1'
+          : (currentView === 'account' ? 'bg-s1/10 border border-s1/30 text-s1' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent')">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+          :class="switchingView
+            ? 'bg-s1/15 text-s1'
+            : (currentView === 'account' ? 'bg-s1/15 text-s1' : 'bg-base-800/60 text-base-400 group-hover:text-base-200')">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1 text-left">
+          <p class="text-sm font-semibold leading-tight">Account</p>
+          <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
+            :class="switchingView ? 'text-s1/70' : (currentView === 'account' ? 'text-s1/70' : 'text-base-500')">Manage game accounts</p>
+        </div>
+        
+        <template x-if="switchingView && pendingView === 'account'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0 animate-spin text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        </template>
+        <template x-if="!switchingView && currentView === 'account'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </template>
+      </button>
+
+      <button @click="switchView('bot')" type="button" :disabled="switchingView"
+        class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
+        :class="switchingView
+          ? 'bg-s1/10 border border-s1/30 text-s1'
+          : (currentView === 'bot' ? 'bg-s2/10 border border-s2/30 text-s2' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent')">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+          :class="switchingView
+            ? 'bg-s1/15 text-s1'
+            : (currentView === 'bot' ? 'bg-s2/15 text-s2' : 'bg-base-800/60 text-base-400 group-hover:text-base-200')">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1 text-left">
+          <p class="text-sm font-semibold leading-tight">Bot</p>
+          <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
+            :class="switchingView ? 'text-s1/70' : (currentView === 'bot' ? 'text-s2/70' : 'text-base-500')">Manage bot sessions</p>
+        </div>
+        
+        <template x-if="switchingView && pendingView === 'bot'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0 animate-spin text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        </template>
+        <template x-if="!switchingView && currentView === 'bot'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </template>
+      </button>
+
+      <button @click="switchView('guide')" type="button" :disabled="switchingView"
+        class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
+        :class="switchingView
+          ? 'bg-s1/10 border border-s1/30 text-s1'
+          : (currentView === 'guide' ? 'bg-warn/10 border border-warn/30 text-warn' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent')">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+          :class="switchingView
+            ? 'bg-s1/15 text-s1'
+            : (currentView === 'guide' ? 'bg-warn/15 text-warn' : 'bg-base-800/60 text-base-400 group-hover:text-base-200')">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1 text-left">
+          <p class="text-sm font-semibold leading-tight">Guide</p>
+          <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
+            :class="switchingView ? 'text-s1/70' : (currentView === 'guide' ? 'text-warn/70' : 'text-base-500')">How to use BOIAuto</p>
+        </div>
+        <template x-if="switchingView && pendingView === 'guide'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0 animate-spin text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        </template>
+        <template x-if="!switchingView && currentView === 'guide'">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </template>
+      </button>
+    </nav>
+
+    <div class="px-5 py-3 border-t border-base-800/60 flex-shrink-0">
+      <p class="text-[10px] text-base-600 font-mono tracking-wider">Copyright © BOIAuto</p>
+    </div>
+  </div>
+</div>

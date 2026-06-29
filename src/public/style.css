@@ -1,14 +1,15 @@
-// src/views/style.css
-
+/* /style.css */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 body {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Outfit", sans-serif;
   background: #0a0e0d;
   margin: 0;
+  font-weight: 400;
+  letter-spacing: -0.005em;
 }
 
 .log-scroll::-webkit-scrollbar {
@@ -20,6 +21,27 @@ body {
 .log-scroll::-webkit-scrollbar-thumb {
   background: #2e443d;
   border-radius: 10px;
+}
+
+.x-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #2e443d transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.x-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+.x-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.x-scroll::-webkit-scrollbar-thumb {
+  background: #2e443d;
+  border-radius: 10px;
+}
+.x-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3a564d;
 }
 
 @keyframes pulse-ring {
@@ -149,13 +171,17 @@ input:focus,
 select:focus {
   outline: none;
   box-shadow:
-    0 0 0 2px #00e88f,
-    0 0 10px rgba(0, 232, 143, 0.1);
+    0 0 0 2px rgba(0, 232, 143, 0.55),
+    0 0 12px rgba(0, 232, 143, 0.15);
 }
 input.s2f:focus {
   box-shadow:
-    0 0 0 2px #00c8ff,
-    0 0 10px rgba(0, 200, 255, 0.1);
+    0 0 0 2px rgba(0, 200, 255, 0.55),
+    0 0 12px rgba(0, 200, 255, 0.15);
+}
+input::placeholder,
+input::-webkit-input-placeholder {
+  color: #2e443d;
 }
 button:disabled {
   opacity: 0.32;
@@ -163,6 +189,20 @@ button:disabled {
 }
 [x-cloak] {
   display: none !important;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+section.rounded-2xl {
+  animation: card-in 0.35s ease-out both;
 }
 
 @keyframes count-pulse {

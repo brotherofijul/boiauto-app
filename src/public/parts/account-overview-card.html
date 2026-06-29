@@ -1,0 +1,45 @@
+<!-- /parts/account-overview-card.html -->
+<div x-show="accounts.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <template x-for="(acc, idx) in accounts" :key="acc.id">
+    <div class="rounded-2xl border overflow-hidden transition-all duration-300 relative backdrop-blur-sm hover:border-base-700/70"
+      :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning)
+         ? (idx % 2 === 0 ? 'border-s1/30 glow-s1 bg-base-900/80' : 'border-s2/30 glow-s2 bg-base-900/80')
+         : 'border-base-800/50 bg-base-900/45'">
+      <div class="h-1 flex-shrink-0 transition-colors"
+        :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning) ? (idx % 2 === 0 ? 'bg-s1/60' : 'bg-s2/60') : 'bg-base-700/40'"></div>
+
+      <button @click="openDetail(acc.id)" type="button" class="w-full text-left p-4 pb-3 flex items-center justify-between gap-2 hover:bg-base-800/30 transition-colors">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-mono font-bold text-xs"
+            :class="idx % 2 === 0 ? 'bg-s1/10 text-s1 border border-s1/20' : 'bg-s2/10 text-s2 border border-s2/20'"
+            x-text="(idx + 1).toString().padStart(2, '0')"></div>
+          <div class="min-w-0">
+            <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="acc.name || 'Unnamed'"></p>
+            <p class="text-[10px] text-base-500 font-mono leading-tight mt-0.5" x-text="'ACCOUNT ' + (idx + 1)"></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          <span class="flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border transition-colors"
+            :class="acc.botStatus === 'online' ? 'text-s1 bg-s1/10 border-s1/30' : 'text-danger bg-danger/10 border-danger/30'">
+            <span class="relative flex w-1.5 h-1.5">
+              <template x-if="acc.botStatus === 'online'">
+                <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
+              </template>
+              <span class="relative inline-flex w-1.5 h-1.5 rounded-full" :class="acc.botStatus === 'online' ? 'bg-s1' : 'bg-danger'"></span>
+            </span>
+            <span x-text="acc.botStatus === 'online' ? 'Online' : 'Offline'"></span>
+          </span>
+          <svg class="w-3.5 h-3.5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </button>
+
+      <div class="px-4 pb-4"
+        x-init="fetch('parts/feature-toggle.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+
+      <div x-show="acc.error" x-transition.opacity.duration.200ms class="mx-4 mb-4 rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
+        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span x-text="acc.error"></span>
+      </div>
+    </div>
+  </template>
+</div>

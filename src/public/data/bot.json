@@ -1,0 +1,7 @@
+[
+  { "id": 1, "botId": "bot_8f3a2b", "name": "PhoenixBot",  "type": "Dual",     "status": "online"  },
+  { "id": 2, "botId": "bot_2c9e1d", "name": "TitanX",      "type": "Shared",   "status": "offline" },
+  { "id": 3, "botId": "bot_5a7f4e", "name": "NexusAI",     "type": "Business", "status": "online"  },
+  { "id": 4, "botId": "bot_1b6d8c", "name": "Sentinel",    "type": "Dual",     "status": "error"   },
+  { "id": 5, "botId": "bot_9e3a7f", "name": "QuantumBot",  "type": "Shared",   "status": "offline" }
+]

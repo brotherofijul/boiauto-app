@@ -1,231 +1,24 @@
+<!-- /parts/upgrade-skill.html -->
 <main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
-  <!-- Top bar: title + add button -->
-  <div class="flex items-center justify-between mb-5">
+  <template x-if="currentView === 'account'">
     <div>
-      <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono">Accounts</h2>
-      <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5" x-text="accounts.length + ' account' + (accounts.length===1?'':'s')"></p>
+      <div x-init="fetch('parts/topbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('parts/empty-state.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('parts/account-overview-card.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
     </div>
-    <button @click="openAddModal()" type="button" class="group rounded-lg bg-s1/10 border border-s1/30 hover:bg-s1/20 hover:border-s1/50 text-s1 px-3 py-2 flex items-center gap-1.5 transition-all active:scale-[.97]">
-      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span class="text-xs font-bold font-mono">Add</span>
-    </button>
-  </div>
+  </template>
 
-  <!-- Empty state -->
-  <div x-show="accounts.length === 0" x-cloak class="flex flex-col items-center justify-center py-20 text-center">
-    <div class="w-16 h-16 rounded-2xl border-2 border-dashed border-base-700 flex items-center justify-center mb-4">
-      <svg class="w-7 h-7 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-    <p class="text-sm text-base-300 font-mono mb-1">No accounts yet</p>
-    <p class="text-[11px] text-base-500 font-mono mb-4">Click below to add your first account</p>
-    <button @click="openAddModal()" type="button" class="rounded-lg bg-s1 text-base-950 hover:bg-s1-dim font-bold text-xs px-4 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97]">
-      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Add Account
-    </button>
-  </div>
+  <template x-if="currentView === 'bot'">
+    <div x-init="fetch('parts/bot-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
 
-  <!-- Accounts grid -->
-  <div x-show="accounts.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-    <template x-for="(acc, idx) in accounts" :key="acc.id">
-      <section>
-        <div class="rounded-2xl border overflow-hidden transition-all duration-500 relative"
-          :class="acc.running
-             ? (idx % 2 === 0 ? 'border-s1/30 glow-s1 bg-base-900/80' : 'border-s2/30 glow-s2 bg-base-900/80')
-             : 'border-base-800/50 bg-base-900/45'">
-          <div class="h-1 flex-shrink-0" :class="acc.running ? (idx % 2 === 0 ? 'bg-s1/60' : 'bg-s2/60') : 'bg-base-700/40'"></div>
+  <template x-if="currentView === 'guide'">
+    <div x-init="fetch('parts/guide-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
 
-          <!-- Remove button -->
-          <button @click="removeAccount(idx)" type="button" class="absolute top-3 right-3 z-10 w-6 h-6 rounded-md flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-colors" title="Remove account">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-
-          <div class="p-4 sm:p-5 space-y-3 pr-10">
-            <!-- Account Label -->
-            <div class="flex items-center justify-between flex-shrink-0">
-              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded"
-                :class="idx % 2 === 0 ? 'text-s1 bg-s1/10' : 'text-s2 bg-s2/10'"
-                x-text="'ACCOUNT ' + (idx + 1)"></span>
-              <span class="text-[11px] font-mono" :class="acc.running ? (idx % 2 === 0 ? 'text-s1' : 'text-s2') : 'text-base-600'" x-text="acc.running?'ACTIVE':'IDLE'"></span>
-            </div>
-
-            <!-- Bearer Token -->
-            <div class="flex-shrink-0">
-              <label class="block text-[11px] text-base-400 mb-1">Bearer Token</label>
-              <div class="relative">
-                <input x-model="acc.bearer" @input="saveAccount(idx)" :type="acc.showBearer?'text':'password'" :disabled="acc.running" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 pr-9 font-mono placeholder:text-base-600 transition-colors" />
-                <button @click="acc.showBearer=!acc.showBearer" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
-                  <svg x-show="!acc.showBearer" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                  <svg x-show="acc.showBearer" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Bot Token -->
-            <div class="flex-shrink-0">
-              <label class="block text-[11px] text-base-400 mb-1">Bot Token</label>
-              <div class="relative">
-                <input x-model="acc.botToken" @input="saveAccount(idx)" :type="acc.showBot?'text':'password'" :disabled="acc.running" :class="idx % 2 === 1 ? 's2f' : ''" placeholder="Bot token..." class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 pr-9 font-mono placeholder:text-base-600 transition-colors" />
-                <button @click="acc.showBot=!acc.showBot" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
-                  <svg x-show="!acc.showBot" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                  <svg x-show="acc.showBot" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Skill + Pay -->
-            <div class="grid grid-cols-2 gap-3 flex-shrink-0">
-              <!-- Skill -->
-              <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Barrack'},{v:2,l:'War Tech'},{v:3,l:'Scientist'}] }" @click.outside="open=false">
-                <label class="block text-[11px] text-base-400 mb-1">Skill</label>
-                <button @click="open=!open" :disabled="acc.running" type="button" class="w-full rounded-lg bg-base-800 border border-base-700/80 text-sm pl-3 pr-8 py-2 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left">
-                  <span x-text="opts.find(o=>o.v===acc.skill)?.l"></span>
-                  <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-s1/20 shadow-lg shadow-black/40 overflow-hidden">
-                  <template x-for="o in opts" :key="acc.id+'sk-'+o.v">
-                    <button @click="acc.skill=o.v; open=false; saveAccount(idx)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="acc.skill===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
-                      <span x-text="o.l"></span>
-                      <span x-show="acc.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
-                    </button>
-                  </template>
-                </div>
-              </div>
-              <!-- Pay -->
-              <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Money'},{v:2,l:'Diamond'}] }" @click.outside="open=false">
-                <label class="block text-[11px] text-base-400 mb-1">Pay</label>
-                <button @click="open=!open" :disabled="acc.running" type="button" class="w-full rounded-lg bg-base-800 border border-base-700/80 text-sm pl-3 pr-8 py-2 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left">
-                  <span x-text="opts.find(o=>o.v===acc.pay)?.l"></span>
-                  <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-s1/20 shadow-lg shadow-black/40 overflow-hidden">
-                  <template x-for="o in opts" :key="acc.id+'pay-'+o.v">
-                    <button @click="acc.pay=o.v; open=false; saveAccount(idx)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="acc.pay===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
-                      <span x-text="o.l"></span>
-                      <span x-show="acc.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
-                    </button>
-                  </template>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex gap-2 flex-shrink-0">
-              <button @click="startAccount(idx)" :disabled="acc.running||!acc.bearer.trim()||!acc.botToken.trim()" type="button" class="flex-1 rounded-lg font-semibold text-xs py-2.5 flex items-center justify-center gap-1.5 transition-all" :class="acc.running||!acc.bearer.trim()||!acc.botToken.trim() ? 'bg-base-700 text-base-500' : 'bg-s1 text-base-950 hover:bg-s1-dim active:scale-[.97]'">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg>
-                Start
-              </button>
-              <button @click="stopAccount(idx)" :disabled="!acc.running" type="button" class="flex-1 rounded-lg font-semibold text-xs py-2.5 flex items-center justify-center gap-1.5 border transition-all" :class="!acc.running ? 'border-base-700 bg-base-800 text-base-600' : 'border-danger/40 bg-danger/10 text-danger hover:bg-danger/15 active:scale-[.97]'">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5" /></svg>
-                Stop
-              </button>
-            </div>
-
-            <!-- Error -->
-            <div x-show="acc.error" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex-shrink-0" x-text="acc.error"></div>
-
-            <!-- Stats -->
-            <div class="flex-shrink-0 pt-1 space-y-2">
-              <div class="grid grid-cols-2 gap-2">
-                <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
-                  <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1">Current</p>
-                  <p class="text-2xl font-bold font-mono text-base-100" x-text="acc.currentLevel??'—'">—</p>
-                </div>
-                <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
-                  <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1">Next</p>
-                  <p class="text-2xl font-bold font-mono" :class="idx % 2 === 0 ? 'text-s1' : 'text-s2'" x-text="acc.targetLevel??'—'">—</p>
-                </div>
-              </div>
-              <div class="rounded-lg bg-base-800/50 border border-base-700/30 px-3 py-2 text-center">
-                <p class="text-[9px] text-base-500 uppercase tracking-widest mb-0.5">Time</p>
-                <p class="text-lg font-bold font-mono leading-none" :class="timeClass(idx)" :style="timeLow(idx)?'animation:count-pulse 1s ease-in-out infinite':''" x-text="acc.time">—</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </template>
-  </div>
-
-  <!-- Add Account Modal -->
-  <div x-show="showAddModal" x-cloak
-       x-transition:enter="transition ease-out duration-200"
-       x-transition:enter-start="opacity-0"
-       x-transition:enter-end="opacity-100"
-       x-transition:leave="transition ease-in duration-150"
-       x-transition:leave-start="opacity-100"
-       x-transition:leave-end="opacity-0"
-       class="fixed inset-0 z-50 flex items-center justify-center p-4"
-       @keydown.escape.window="closeAddModal()">
-    <!-- Backdrop with blur -->
-    <div class="absolute inset-0 bg-base-950/70 backdrop-blur-md" @click="closeAddModal()"></div>
-
-    <!-- Modal card -->
-    <div class="relative w-full max-w-md rounded-2xl border border-s1/30 bg-base-900 shadow-2xl shadow-black/50 overflow-hidden"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 scale-95 translate-y-2"
-         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-         x-transition:leave-end="opacity-0 scale-95 translate-y-2">
-      <!-- Accent bar -->
-      <div class="h-1 bg-s1/60"></div>
-
-      <!-- Header -->
-      <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
-            <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-base-100">Add Account</h3>
-            <p class="text-[10px] text-base-500 font-mono tracking-wider uppercase">New BOI account</p>
-          </div>
-        </div>
-        <button @click="closeAddModal()" type="button" class="w-7 h-7 rounded-md flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-colors">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <!-- Body -->
-      <div class="px-5 py-4 space-y-3">
-        <!-- Bearer Token -->
-        <div>
-          <label class="block text-[11px] text-base-400 mb-1">Bearer Token</label>
-          <div class="relative">
-            <input x-model="newBearer" :type="showNewBearer?'text':'password'" @keydown.enter="confirmAddAccount()" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2.5 pr-9 font-mono placeholder:text-base-600 transition-colors" />
-            <button @click="showNewBearer=!showNewBearer" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
-              <svg x-show="!showNewBearer" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-              <svg x-show="showNewBearer" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Bot Token -->
-        <div>
-          <label class="block text-[11px] text-base-400 mb-1">Bot Token</label>
-          <div class="relative">
-            <input x-model="newBotToken" :type="showNewBot?'text':'password'" @keydown.enter="confirmAddAccount()" placeholder="Bot token..." class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2.5 pr-9 font-mono placeholder:text-base-600 transition-colors s2f" />
-            <button @click="showNewBot=!showNewBot" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
-              <svg x-show="!showNewBot" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-              <svg x-show="showNewBot" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Error -->
-        <div x-show="addError" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug" x-text="addError"></div>
-      </div>
-
-      <!-- Footer -->
-      <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 justify-end">
-        <button @click="closeAddModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-base-700 bg-base-800 text-base-200 hover:bg-base-700/60 transition-all active:scale-[.97]">
-          Cancel
-        </button>
-        <button @click="confirmAddAccount()" :disabled="!newBearer.trim()||!newBotToken.trim()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 flex items-center gap-1.5 transition-all" :class="!newBearer.trim()||!newBotToken.trim() ? 'bg-base-700 text-base-500' : 'bg-s1 text-base-950 hover:bg-s1-dim active:scale-[.97]'">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          OK
-        </button>
-      </div>
-    </div>
-  </div>
+  <div x-init="fetch('parts/account-detail-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/add-account-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/add-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/edit-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/navbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 </main>

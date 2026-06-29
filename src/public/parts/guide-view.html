@@ -1,0 +1,114 @@
+<!-- /parts/guide-view.html -->
+<div>
+  <div class="flex items-center gap-3 mb-6">
+    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-warn to-s1"></div>
+    <div>
+      <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Guide</h2>
+      <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5">How to use BOIAuto</p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-s2 to-s2-dim"></div>
+      <div class="p-4 sm:p-5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-s2/10 border border-s2/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s2">1</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add a Bot</h3>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-s2">Bots</span> page from the sidebar and click <span class="text-s2">+ Add</span>. Enter the bot token, optionally give it a name (alias), and select a Type:</p>
+            <div class="space-y-1.5 mt-2">
+              <div class="flex items-start gap-2 text-xs font-mono text-base-300">
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s1 bg-s1/10 border-s1/30 flex-shrink-0 mt-0.5">Dual</span>
+                <span>Standard bot. Max <span class="text-warn font-bold">2 accounts</span> per bot.</span>
+              </div>
+              <div class="flex items-start gap-2 text-xs font-mono text-base-300">
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s2 bg-s2/10 border-s2/30 flex-shrink-0 mt-0.5">Shared</span>
+                <span>Shared bot. No account limit.</span>
+              </div>
+              <div class="flex items-start gap-2 text-xs font-mono text-base-300">
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-warn bg-warn/10 border-warn/30 flex-shrink-0 mt-0.5">Business</span>
+                <span>Max <span class="text-warn font-bold">2 accounts</span> + requires a <span class="text-s1">$ per day</span> rate.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1-dim"></div>
+      <div class="p-4 sm:p-5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">2</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add an Account</h3>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-s1">Account</span> page, click <span class="text-s1">+ Add</span>. Enter your Bearer token, then select one of your registered bots from the dropdown. The <span class="text-warn">Type</span> is automatically inherited from the selected bot — it can only be changed on the Bot page. Account info (name, balance, diamond) is fetched automatically.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-warn to-s1"></div>
+      <div class="p-4 sm:p-5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-warn">3</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Toggle Automation Features</h3>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Each account card has 3 toggles:</p>
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 text-xs font-mono text-base-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-s1 flex-shrink-0"></span>
+                <span><span class="text-s1 font-bold">Skill</span> — auto-upgrade skill levels</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-mono text-base-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-warn flex-shrink-0"></span>
+                <span><span class="text-warn font-bold">Training</span> — auto-train units</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-mono text-base-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-s2 flex-shrink-0"></span>
+                <span><span class="text-s2 font-bold">Work</span> — auto-perform work tasks</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-base-500 font-mono mt-2">When any feature is ON, the card border glows green or blue.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-s2 to-s1"></div>
+      <div class="p-4 sm:p-5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s2/15 to-s1/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">4</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Manage Bots</h3>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">On the Bot list, each row shows: <span class="text-s1">Name</span>, <span class="text-s1">Bot ID</span>, <span class="text-s1">Status</span> (green dot blinking = online, red dot = offline), <span class="text-s1">Token</span> (masked, click eye to reveal), and <span class="text-s1">Actions</span> (Edit + Delete). Click the pencil icon to edit the bot's Name and Type (and Rate per Day for Business).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 bg-gradient-to-r from-s1 to-s2"></div>
+      <div class="p-4 sm:p-5">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s2/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">5</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">View Account Details</h3>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">Click any account card to open its detail modal. There you can edit the Bearer token, change the linked Bot, configure Skill/Pay, and view real-time stats (Balance, Diamond, Bot ID, Bot Status). If the bot is offline, the status dot will turn red.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-xl bg-warn/5 border border-warn/20 px-4 py-3 flex items-start gap-2.5">
+      <svg class="w-4 h-4 text-warn flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+      <div>
+        <p class="text-[11px] text-warn font-mono font-bold mb-0.5">Tip</p>
+        <p class="text-[11px] text-base-300 font-mono leading-relaxed">All tokens are stored locally in your browser only. Nothing is sent to any third-party server.</p>
+      </div>
+    </div>
+  </div>
+</div>
