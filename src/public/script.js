@@ -1,12 +1,15 @@
 // src/public/script.js — UI only, no WebSocket, no Console
-const LS_TOKENS = "boiauto_tokens";
+const LS_ACCOUNTS = "boiauto_accounts";
 
-function createSlot() {
+function createAccount() {
   return {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    bearer: "",
+    botToken: "",
+    showBearer: false,
+    showBot: false,
     running: false,
-    showTk: false,
     error: "",
-    token: "",
     skill: 3,
     pay: 1,
     currentLevel: null,
@@ -43,61 +46,126 @@ function spawnParticles() {
 
 function boiauto() {
   return {
-    slots: { 1: createSlot(), 2: createSlot() },
+    accounts: [],
+    showAddModal: false,
+    newBearer: "",
+    newBotToken: "",
+    showNewBearer: false,
+    showNewBot: false,
+    addError: "",
 
     init() {
-      this.loadTokens();
+      this.loadAccounts();
       spawnParticles();
+      // Auto-open Add Account modal on first visit (no accounts yet)
+      if (this.accounts.length === 0) {
+        this.$nextTick(() => this.openAddModal());
+      }
     },
 
-    loadTokens() {
+    loadAccounts() {
       try {
-        const d = JSON.parse(localStorage.getItem(LS_TOKENS)) || {};
-        if (d[1]) this.slots[1].token = d[1];
-        if (d[2]) this.slots[2].token = d[2];
+        const arr = JSON.parse(localStorage.getItem(LS_ACCOUNTS)) || [];
+        this.accounts = arr.map((a) => ({ ...createAccount(), ...a }));
       } catch {}
     },
 
-    saveToken(n) {
+    saveAccounts() {
       try {
-        const d = JSON.parse(localStorage.getItem(LS_TOKENS)) || {};
-        d[n] = this.slots[n].token;
-        localStorage.setItem(LS_TOKENS, JSON.stringify(d));
+        const data = this.accounts.map((a) => {
+          const { _timer, ...rest } = a;
+          return rest;
+        });
+        localStorage.setItem(LS_ACCOUNTS, JSON.stringify(data));
       } catch {}
     },
 
-    startSlot(n) {
-      const s = this.slots[n];
-      if (!s.token.trim()) {
-        s.error = "Token is required.";
-        setTimeout(() => { if (s.error === "Token is required.") s.error = ""; }, 3000);
+    openAddModal() {
+      this.newBearer = "";
+      this.newBotToken = "";
+      this.addError = "";
+      this.showNewBearer = false;
+      this.showNewBot = false;
+      this.showAddModal = true;
+    },
+
+    closeAddModal() {
+      this.showAddModal = false;
+    },
+
+    confirmAddAccount() {
+      if (!this.newBearer.trim()) {
+        this.addError = "Bearer token is required.";
         return;
       }
-      s.running = true;
-      s.error = "";
+      if (!this.newBotToken.trim()) {
+        this.addError = "Bot token is required.";
+        return;
+      }
+      const acc = createAccount();
+      acc.bearer = this.newBearer.trim();
+      acc.botToken = this.newBotToken.trim();
+      this.accounts.push(acc);
+      this.saveAccounts();
+      this.closeAddModal();
     },
 
-    stopSlot(n) {
-      const s = this.slots[n];
-      s.running = false;
-      s.time = "\u2014";
-      s.pendingAt = null;
+    removeAccount(idx) {
+      const a = this.accounts[idx];
+      if (a && a.running) a.running = false;
+      this.accounts.splice(idx, 1);
+      this.saveAccounts();
     },
 
-    timeClass(n) {
-      const s = this.slots[n];
-      if (!s.pendingAt) return "text-base-500";
-      const rem = new Date(s.pendingAt).getTime() - Date.now();
+    saveAccount(idx) {
+      this.saveAccounts();
+    },
+
+    startAccount(idx) {
+      const a = this.accounts[idx];
+      if (!a.bearer.trim()) {
+        a.error = "Bearer token is required.";
+        setTimeout(() => {
+          if (a.error === "Bearer token is required.") a.error = "";
+        }, 3000);
+        return;
+      }
+      if (!a.botToken.trim()) {
+        a.error = "Bot token is required.";
+        setTimeout(() => {
+          if (a.error === "Bot token is required.") a.error = "";
+        }, 3000);
+        return;
+      }
+      a.running = true;
+      a.error = "";
+    },
+
+    stopAccount(idx) {
+      const a = this.accounts[idx];
+      a.running = false;
+      a.time = "\u2014";
+      a.pendingAt = null;
+    },
+
+    timeClass(idx) {
+      const a = this.accounts[idx];
+      if (!a.pendingAt) return "text-base-500";
+      const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-warn";
-      return n === 1 ? "text-s1" : "text-s2";
+      return idx % 2 === 0 ? "text-s1" : "text-s2";
     },
 
-    timeLow(n) {
-      const pa = this.slots[n].pendingAt;
+    timeLow(idx) {
+      const pa = this.accounts[idx].pendingAt;
       if (!pa) return false;
       const rem = new Date(pa).getTime() - Date.now();
       return rem > 0 && rem < 10000;
+    },
+
+    accentClass(idx) {
+      return idx % 2 === 0 ? "s1" : "s2";
     },
   };
 }
