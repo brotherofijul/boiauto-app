@@ -49,22 +49,8 @@
             </div>
             <div>
               <h1 class="text-base font-bold tracking-tight text-shimmer leading-tight">BOIAuto</h1>
-              <p class="text-[10px] text-base-400 font-mono tracking-wider uppercase leading-tight">Dual Slot</p>
+              <p class="text-[10px] text-base-400 font-mono tracking-wider uppercase leading-tight">v1.0.0</p>
             </div>
-          </div>
-          <div class="flex items-center gap-2 sm:gap-3">
-            <template x-for="n in [1,2]" :key="'hb-'+n">
-              <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-mono"
-                :class="slots[n].running
-                   ? (n===1?'border-s1/30 bg-s1/10 text-s1':'border-s2/30 bg-s2/10 text-s2')
-                   : 'border-base-700/40 bg-base-800/40 text-base-500'">
-                <span class="relative flex items-center justify-center">
-                  <span x-show="slots[n].running" class="absolute w-2 h-2 rounded-full" :class="n===1?'bg-s1':'bg-s2'" style="animation: pulse-ring 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;"></span>
-                  <span class="w-1.5 h-1.5 rounded-full" :class="slots[n].running?(n===1?'bg-s1':'bg-s2'):'bg-base-600'"></span>
-                </span>
-                <span x-text="'S'+n"></span>
-              </div>
-            </template>
           </div>
         </div>
       </header>
@@ -77,22 +63,22 @@
             <section>
               <div class="rounded-2xl border overflow-hidden transition-all duration-500"
                 :class="slots[n].running
-                   ? (n===1?'border-s1/30 glow-s1 bg-base-900/80':'border-s2/30 glow-s2 bg-base-900/80')
+                   ? 'border-s1/30 glow-s1 bg-base-900/80'
                    : 'border-base-800/50 bg-base-900/45'">
-                <div class="h-1 flex-shrink-0" :class="slots[n].running?(n===1?'bg-s1/60':'bg-s2/60'):'bg-base-700/40'"></div>
+                <div class="h-1 flex-shrink-0" :class="slots[n].running?'bg-s1/60':'bg-base-700/40'"></div>
 
                 <div class="p-4 sm:p-5 space-y-3">
                   <!-- Header -->
                   <div class="flex items-center justify-between flex-shrink-0">
-                    <span class="text-xs font-mono font-bold px-2 py-0.5 rounded" :class="n===1?'text-s1 bg-s1/10':'text-s2 bg-s2/10'" x-text="'SLOT '+n"></span>
-                    <span class="text-[11px] font-mono" :class="slots[n].running?(n===1?'text-s1':'text-s2'):'text-base-600'" x-text="slots[n].running?'ACTIVE':'IDLE'"></span>
+                    <span class="text-xs font-mono font-bold px-2 py-0.5 rounded text-s1 bg-s1/10" x-text="'SLOT '+n"></span>
+                    <span class="text-[11px] font-mono" :class="slots[n].running?'text-s1':'text-base-600'" x-text="slots[n].running?'ACTIVE':'IDLE'"></span>
                   </div>
 
                   <!-- Token -->
                   <div class="flex-shrink-0">
                     <label class="block text-[11px] text-base-400 mb-1">Authorization Token</label>
                     <div class="relative">
-                      <input x-model="slots[n].token" @input="saveToken(n)" :type="slots[n].showTk?'text':'password'" :disabled="slots[n].running" placeholder="Bearer token..." :class="n===2?'s2f':''" class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 pr-9 font-mono placeholder:text-base-600 transition-colors" />
+                      <input x-model="slots[n].token" @input="saveToken(n)" :type="slots[n].showTk?'text':'password'" :disabled="slots[n].running" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 pr-9 font-mono placeholder:text-base-600 transition-colors" />
                       <button @click="slots[n].showTk=!slots[n].showTk" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
                         <svg x-show="!slots[n].showTk" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
                         <svg x-show="slots[n].showTk" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
@@ -100,28 +86,36 @@
                     </div>
                   </div>
 
-                  <!-- Skill -->
-                  <div class="flex-shrink-0">
-                    <label class="block text-[11px] text-base-400 mb-1">Skill</label>
-                    <select x-model.number="slots[n].skill" :disabled="slots[n].running" :class="n===2?'s2f':''" class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 font-mono text-base-100 transition-colors appearance-none cursor-pointer">
-                      <option value="1">Barrack</option>
-                      <option value="2">War Tech</option>
-                      <option value="3">Scientist</option>
-                    </select>
-                  </div>
-
-                  <!-- Pay -->
-                  <div class="flex-shrink-0">
-                    <label class="block text-[11px] text-base-400 mb-1">Pay</label>
-                    <select x-model.number="slots[n].pay" :disabled="slots[n].running" :class="n===2?'s2f':''" class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 font-mono text-base-100 transition-colors appearance-none cursor-pointer">
-                      <option value="1">Money</option>
-                      <option value="2">Diamond</option>
-                    </select>
+                  <!-- Skill + Pay side by side -->
+                  <div class="grid grid-cols-2 gap-3 flex-shrink-0">
+                    <!-- Skill -->
+                    <div>
+                      <label class="block text-[11px] text-base-400 mb-1">Skill</label>
+                      <div class="relative">
+                        <select x-model.number="slots[n].skill" :disabled="slots[n].running" class="slot-select w-full rounded-lg bg-base-800 border border-base-700/80 text-sm pl-3 pr-8 py-2 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 focus:border-s1/50 focus:ring-1 focus:ring-s1/20">
+                          <option value="1">Barrack</option>
+                          <option value="2">War Tech</option>
+                          <option value="3">Scientist</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                      </div>
+                    </div>
+                    <!-- Pay -->
+                    <div>
+                      <label class="block text-[11px] text-base-400 mb-1">Pay</label>
+                      <div class="relative">
+                        <select x-model.number="slots[n].pay" :disabled="slots[n].running" class="slot-select w-full rounded-lg bg-base-800 border border-base-700/80 text-sm pl-3 pr-8 py-2 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 focus:border-s1/50 focus:ring-1 focus:ring-s1/20">
+                          <option value="1">Money</option>
+                          <option value="2">Diamond</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Action Buttons -->
                   <div class="flex gap-2 flex-shrink-0">
-                    <button @click="startSlot(n)" :disabled="slots[n].running||!slots[n].token.trim()" type="button" class="flex-1 rounded-lg font-semibold text-xs py-2.5 flex items-center justify-center gap-1.5 transition-all" :class="slots[n].running||!slots[n].token.trim() ? 'bg-base-700 text-base-500' : (n===1?'bg-s1 text-base-950 hover:bg-s1-dim':'bg-s2 text-base-950 hover:bg-s2-dim')+' active:scale-[.97]'">
+                    <button @click="startSlot(n)" :disabled="slots[n].running||!slots[n].token.trim()" type="button" class="flex-1 rounded-lg font-semibold text-xs py-2.5 flex items-center justify-center gap-1.5 transition-all" :class="slots[n].running||!slots[n].token.trim() ? 'bg-base-700 text-base-500' : 'bg-s1 text-base-950 hover:bg-s1-dim active:scale-[.97]'">
                       <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg>
                       Start
                     </button>
@@ -143,7 +137,7 @@
                       </div>
                       <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
                         <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1">Next</p>
-                        <p class="text-2xl font-bold font-mono" :class="n===1?'text-s1':'text-s2'" x-text="slots[n].targetLevel??'—'">—</p>
+                        <p class="text-2xl font-bold font-mono text-s1" x-text="slots[n].targetLevel??'—'">—</p>
                       </div>
                     </div>
                     <div class="rounded-lg bg-base-800/50 border border-base-700/30 px-3 py-2 text-center">
@@ -161,8 +155,8 @@
       <!-- FOOTER -->
       <footer class="border-t border-base-800/30 py-3 mt-auto">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-between text-[10px] text-base-600 font-mono">
-          <span>BOIAuto v2.3.0</span>
-          <span>2 Slot · UI Only</span>
+          <span>BOIAuto v1.0.0</span>
+          <span>Realtime</span>
         </div>
       </footer>
     </div>
