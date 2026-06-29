@@ -30,10 +30,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen text-base-100 bg-grid bg-glow overflow-x-hidden">
     <div id="particles" class="fixed inset-0 pointer-events-none z-0" aria-hidden="true"></div>
@@ -41,7 +38,7 @@
     <div x-data="boiauto()" x-init="init()" class="relative z-10 min-h-screen flex flex-col">
       <!-- HEADER -->
       <header class="border-b border-base-800/50 backdrop-blur-sm bg-base-950/70 sticky top-0 z-30">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div class="flex items-center gap-2.5 flex-shrink-0">
             <div class="w-9 h-9 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
               <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -72,44 +69,19 @@
         </div>
       </header>
 
-      <!-- MODE BAR -->
-      <div class="border-b border-base-800/35 bg-base-900/35 backdrop-blur-sm">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-center gap-3">
-          <span class="text-[11px] text-base-500 uppercase tracking-widest font-semibold flex-shrink-0">Mode</span>
-          <div class="flex rounded-lg border border-base-700/40 overflow-hidden">
-            <button @click="mode='diplomacia'" type="button" class="px-3.5 py-1.5 text-xs font-semibold transition-colors flex items-center gap-1.5" :class="mode==='diplomacia'?'bg-s1/10 text-s1':'text-base-500 hover:text-base-300'">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              Diplomacia
-            </button>
-            <button disabled type="button" class="px-3.5 py-1.5 text-xs font-medium text-base-600 border-l border-base-700/40 cursor-not-allowed flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-              Rival Regions
-              <span class="text-[9px] bg-base-700/80 text-base-400 px-1.5 py-px rounded-full font-mono leading-none">Soon</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- MAIN -->
-      <main class="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-12 gap-5">
+      <main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <!-- SLOT CARD (template per slot) -->
           <template x-for="n in [1,2]" :key="'slot-'+n">
-            <section class="xl:col-span-3 xl:flex xl:flex-col">
-              <div class="rounded-2xl border overflow-hidden transition-all duration-500 xl:flex-1 xl:flex xl:flex-col"
+            <section>
+              <div class="rounded-2xl border overflow-hidden transition-all duration-500"
                 :class="slots[n].running
                    ? (n===1?'border-s1/30 glow-s1 bg-base-900/80':'border-s2/30 glow-s2 bg-base-900/80')
                    : 'border-base-800/50 bg-base-900/45'">
                 <div class="h-1 flex-shrink-0" :class="slots[n].running?(n===1?'bg-s1/60':'bg-s2/60'):'bg-base-700/40'"></div>
 
-                <div class="p-4 sm:p-5 space-y-3 xl:flex-1 xl:flex xl:flex-col">
+                <div class="p-4 sm:p-5 space-y-3">
                   <!-- Header -->
                   <div class="flex items-center justify-between flex-shrink-0">
                     <span class="text-xs font-mono font-bold px-2 py-0.5 rounded" :class="n===1?'text-s1 bg-s1/10':'text-s2 bg-s2/10'" x-text="'SLOT '+n"></span>
@@ -131,28 +103,20 @@
                   <!-- Skill -->
                   <div class="flex-shrink-0">
                     <label class="block text-[11px] text-base-400 mb-1">Skill</label>
-                    <div class="grid grid-cols-3 gap-1.5">
-                      <template x-for="s in skills" :key="n+'sk-'+s.value">
-                        <button @click="slots[n].skill=s.value" :disabled="slots[n].running" type="button" class="rounded-lg text-[11px] font-medium py-2 border transition-all text-center leading-tight" :class="slots[n].skill===s.value ? (n===1?'border-s1/50 bg-s1/10 text-s1':'border-s2/50 bg-s2/10 text-s2') : 'border-base-700 bg-base-800 text-base-500 hover:text-base-300'">
-                          <span x-text="s.label"></span>
-                        </button>
-                      </template>
-                    </div>
+                    <select x-model.number="slots[n].skill" :disabled="slots[n].running" :class="n===2?'s2f':''" class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 font-mono text-base-100 transition-colors appearance-none cursor-pointer">
+                      <option value="1">Barrack</option>
+                      <option value="2">War Tech</option>
+                      <option value="3">Scientist</option>
+                    </select>
                   </div>
 
                   <!-- Pay -->
                   <div class="flex-shrink-0">
                     <label class="block text-[11px] text-base-400 mb-1">Pay</label>
-                    <div class="grid grid-cols-2 gap-1.5">
-                      <button @click="slots[n].pay='1'" :disabled="slots[n].running" type="button" class="rounded-lg text-[11px] font-medium py-2 border transition-all flex items-center justify-center gap-1.5" :class="slots[n].pay==='1' ? (n===1?'border-s1/50 bg-s1/10 text-s1':'border-s2/50 bg-s2/10 text-s2') : 'border-base-700 bg-base-800 text-base-500 hover:text-base-300'">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M15 9.5a3 3 0 0 0-3-2.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2a3 3 0 0 1-3-2.5" /></svg>
-                        Money
-                      </button>
-                      <button @click="slots[n].pay='2'" :disabled="slots[n].running" type="button" class="rounded-lg text-[11px] font-medium py-2 border transition-all flex items-center justify-center gap-1.5" :class="slots[n].pay==='2' ? (n===1?'border-s1/50 bg-s1/10 text-s1':'border-s2/50 bg-s2/10 text-s2') : 'border-base-700 bg-base-800 text-base-500 hover:text-base-300'">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z" /><path d="M2 9h20" /><path d="M10 3l-4 6 6 13" /><path d="M14 3l4 6-6 13" /></svg>
-                        Diamond
-                      </button>
-                    </div>
+                    <select x-model.number="slots[n].pay" :disabled="slots[n].running" :class="n===2?'s2f':''" class="w-full rounded-lg bg-base-800 border border-base-700 text-sm px-3 py-2 font-mono text-base-100 transition-colors appearance-none cursor-pointer">
+                      <option value="1">Money</option>
+                      <option value="2">Diamond</option>
+                    </select>
                   </div>
 
                   <!-- Action Buttons -->
@@ -171,7 +135,7 @@
                   <div x-show="slots[n].error" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex-shrink-0" x-text="slots[n].error"></div>
 
                   <!-- Stats -->
-                  <div class="xl:mt-auto flex-shrink-0 pt-1 space-y-2">
+                  <div class="flex-shrink-0 pt-1 space-y-2">
                     <div class="grid grid-cols-2 gap-2">
                       <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
                         <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1">Current</p>
@@ -191,72 +155,14 @@
               </div>
             </section>
           </template>
-
-          <!-- LOG VIEWER -->
-          <section class="lg:col-span-2 xl:col-span-6">
-            <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden flex flex-col h-[420px] lg:h-[380px] xl:h-[calc(100vh-9.5rem)]">
-              <!-- Log Header -->
-              <div class="px-4 py-2.5 border-b border-base-800/50 flex items-center justify-between bg-base-900/70 backdrop-blur-sm flex-shrink-0 gap-2">
-                <div class="flex items-center gap-2 flex-shrink-0">
-                  <div class="flex gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-danger/60"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-warn/60"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-s1/60"></span>
-                  </div>
-                  <span class="text-xs font-semibold text-base-200 uppercase tracking-widest hidden sm:inline">Log</span>
-                </div>
-                <div class="flex items-center gap-1.5 flex-wrap justify-end">
-                  <div class="flex rounded-md border border-base-700/40 overflow-hidden text-[10px] font-mono">
-                    <template x-for="opt in [{v:'all',l:'All'},{v:'1',l:'S1'},{v:'2',l:'S2'}]" :key="'fs-'+opt.v">
-                      <button @click="fSlot=opt.v" type="button" :class="opt.v!=='all'?'border-l border-base-700/40':''" class="px-2 py-0.5 transition-colors" :class="fSlot===opt.v ? (opt.v==='1'?'bg-s1/15 text-s1':opt.v==='2'?'bg-s2/15 text-s2':'bg-base-700/60 text-base-100') : 'text-base-500 hover:text-base-300'" x-text="opt.l"></button>
-                    </template>
-                  </div>
-                  <div class="flex rounded-md border border-base-700/40 overflow-hidden text-[10px] font-mono">
-                    <template x-for="opt in [{v:'all',l:'All'},{v:'success',l:'OK'},{v:'error',l:'Err'}]" :key="'ft-'+opt.v">
-                      <button @click="fType=opt.v" type="button" :class="opt.v!=='all'?'border-l border-base-700/40':''" class="px-2 py-0.5 transition-colors" :class="fType===opt.v ? (opt.v==='error'?'bg-danger/15 text-danger':'bg-s1/15 text-s1') : 'text-base-500 hover:text-base-300'" x-text="opt.l"></button>
-                    </template>
-                  </div>
-                  <button @click="clearLogs()" type="button" title="Clear logs" class="text-base-500 hover:text-base-200 transition-colors p-0.5 rounded">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Log Body -->
-              <div class="flex-1 overflow-y-auto log-scroll px-3 py-2 space-y-0.5 font-mono text-[12px] leading-relaxed" x-ref="logBox">
-                <template x-for="log in filteredLogs" :key="log._id">
-                  <div class="flex items-start gap-2 py-0.5 px-1.5 rounded hover:bg-base-800/30 transition-colors" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-0.5" x-transition:enter-end="opacity-100 translate-y-0">
-                    <span class="text-base-600 flex-shrink-0 text-[10px] pt-px select-none w-[58px]" x-text="log.time"></span>
-                    <span class="flex-shrink-0 text-[9px] font-bold px-1 py-px rounded mt-px" :class="log.slot===1?'bg-s1/15 text-s1':'bg-s2/15 text-s2'" x-text="'S'+log.slot"></span>
-                    <span class="flex-shrink-0 mt-px" x-html="logIcon(log.logType)"></span>
-                    <span class="break-all" :class="logColor(log)" x-text="log.text"></span>
-                  </div>
-                </template>
-                <div x-show="logs.length===0" class="flex flex-col items-center justify-center h-full text-base-600 select-none">
-                  <svg class="w-10 h-10 mb-2.5 opacity-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
-                  <p class="text-xs">No activity yet</p>
-                </div>
-              </div>
-
-              <!-- Log Footer -->
-              <div class="px-4 py-1.5 border-t border-base-800/50 bg-base-900/70 flex items-center justify-between text-[10px] font-mono text-base-600 flex-shrink-0">
-                <span x-text="filteredLogs.length+' entries'"></span>
-                <span x-show="slots[1].running||slots[2].running" class="flex items-center gap-1.5 text-base-400/50">
-                  <span class="w-1 h-1 rounded-full bg-s1 animate-pulse" x-show="slots[1].running"></span>
-                  <span class="w-1 h-1 rounded-full bg-s2 animate-pulse" x-show="slots[2].running"></span>
-                  live
-                </span>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
       <!-- FOOTER -->
       <footer class="border-t border-base-800/30 py-3 mt-auto">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between text-[10px] text-base-600 font-mono">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 flex items-center justify-between text-[10px] text-base-600 font-mono">
           <span>BOIAuto v2.3.0</span>
-          <span>Diplomacia · 2 Slot · UI Only</span>
+          <span>2 Slot · UI Only</span>
         </div>
       </footer>
     </div>
