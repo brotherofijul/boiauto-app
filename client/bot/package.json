@@ -5,9 +5,5 @@
   "scripts": {
     "dev": "NODE_ENV=development bun run --watch bot-client.js",
     "start": "NODE_ENV=production bun run bot-client.js"
-  },
-  "dependencies": {
-    "pino": "^10.3.1",
-    "pino-pretty": "^13.1.3"
   }
 }

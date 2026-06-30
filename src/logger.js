@@ -1,9 +1,8 @@
 // /src/logger.js
 import pino from "pino";
+import { config } from "./config.js";
 
-const isProd = process.env.NODE_ENV === "production";
-
-const transport = isProd
+const transport = config.isProd
   ? undefined
   : {
       target: "pino-pretty",
@@ -18,7 +17,7 @@ const transport = isProd
     };
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || (isProd ? "info" : "debug"),
+  level: config.logLevel,
   base: null,
   transport,
 });

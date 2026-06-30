@@ -1,0 +1,28 @@
+// /src/db/queries/accounts.js
+import db from "../index.js";
+
+const SELECT_WITH_JOINS = `
+  SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
+         ac.name as access_name, ac.type as access_type, ac.price_per_day as access_price
+  FROM accounts a
+  LEFT JOIN bots b ON a.bot_id = b.bot_id
+  LEFT JOIN access_tokens ac ON a.access_id = ac.access_id
+`;
+
+export const accountsQueries = {
+  list: () => db.query(`${SELECT_WITH_JOINS} ORDER BY a.created_at DESC`).all(),
+  getById: (id) => db.query(`${SELECT_WITH_JOINS} WHERE a.id = ?`).get(id),
+  insert: ({ name, bearer, bot_id, access_id, type }) =>
+    db.prepare(`INSERT INTO accounts (name, bearer, bot_id, access_id, type, status)
+                VALUES (?, ?, ?, ?, ?, 'offline')`)
+      .run(name, bearer, bot_id, access_id, type || "Private"),
+  update: (id, fields) => {
+    const keys = Object.keys(fields);
+    if (keys.length === 0) return;
+    const sets = keys.map((k) => `${k} = ?`).join(", ");
+    const vals = keys.map((k) => fields[k]);
+    vals.push(id);
+    db.prepare(`UPDATE accounts SET ${sets} WHERE id = ?`).run(...vals);
+  },
+  remove: (id) => db.prepare("DELETE FROM accounts WHERE id = ?").run(id),
+};

@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "NODE_ENV=development bun run --watch src/server.js",
     "start": "NODE_ENV=production bun run src/server.js",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "bot:dev": "bun run --watch client/bot/bot-client.js",
     "bot:start": "bun run client/bot/bot-client.js"
   },

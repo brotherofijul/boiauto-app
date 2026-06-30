@@ -1,62 +1,18 @@
 # Bot Client
 
-Sample bot client yang connect ke BOIAuto WS server. Mengirim state update periodik dan menerima command dari web client.
+Sample bot client yang connect ke BOIAuto WS server.
 
 ## Setup
 
-### 1. Pastikan server jalan
+1. Start server: `bun run dev` (root project)
+2. Bot akan otomatis di-seed dari `bot.config.json`
+3. Run bot client: `bun run bot:start` (root project)
 
-```bash
-cd /home/z/my-project/boiauto-app
-bun run dev
-```
+## Token priority
 
-### 2. Buat bot via UI (recommended)
-
-- Buka `http://localhost:3000/` di browser
-- Klik sidebar → **Bot** → **+ Add**
-- Isi Name (optional) + pilih Type (Dual/Shared/Business/Custom)
-- Klik **Generate Token** → secret token muncul dengan instruksi connect
-- Klik copy icon → simpan token
-- Klik **Add Bot** (tombol berubah jadi "Waiting Later" dengan spinner)
-- Status bot di list: **Connecting** (spinner kuning)
-
-### 3. Set token di bot.config.json
-
-Edit file `bot.config.json` di root project:
-
-```json
-{
-  "name": "MyBot",
-  "token": "bot_xxxxxxxxxxxxxxxx",
-  "type": "Dual",
-  "rate_per_day": 0
-}
-```
-
-### 4. Jalankan bot client
-
-```bash
-cd /home/z/my-project/boiauto-app
-bun run bot:start
-```
-
-Atau dari folder client/bot langsung:
-
-```bash
-cd client/bot
-bun run bot-client.js
-```
-
-Token prioritas (urutan):
-1. Flag `--token` (paling tinggi)
-2. Env `BOT_TOKEN`
+1. `--token` flag
+2. `BOT_TOKEN` env var
 3. `bot.config.json` (default)
-
-Setelah bot client connect:
-- Status di UI berubah dari **Connecting** → **Connected** (hijau berkedip)
-- Tombol "Waiting Later" di modal berubah jadi **Finished**
-- Bot client kirim state_update periodik
 
 ## Options
 
@@ -69,49 +25,15 @@ Setelah bot client connect:
 
 ## WS Protocol
 
-### Bot → Server
-```js
-{ type: "auth", role: "bot", token: "..." }
-{ type: "state_update", account_id: 1, payload: { balance, diamond, status, ... } }
-{ type: "heartbeat" }
-{ type: "pong" }
-```
+Bot → Server:
+- `{type:"auth", role:"bot", token}`
+- `{type:"state_update", account_id, payload:{balance, diamond, status, ...}}`
+- `{type:"heartbeat"}`
 
-### Server → Bot
-```js
-{ type: "hello", message: "..." }
-{ type: "auth_ok", role: "bot", bot_id: "bot_xxx", name: "MyBot" }
-{ type: "auth_failed", message: "..." }
-{ type: "command", command: "start_skill_up", account_id: 1, payload: {...} }
-{ type: "heartbeat_ack", t: 1700000000000 }
-{ type: "ping" }
-```
-
-## Multiple bots
-
-Buat beberapa bot via UI/API dengan token berbeda, lalu jalankan bot client di terminal berbeda:
-
-```bash
-# Buat bot 1 via UI, copy token1 ke bot.config.json
-bun run bot:start
-
-# Buat bot 2 via UI, copy token2
-BOT_TOKEN=token2 bun run client/bot/bot-client.js --interval 7000
-```
-
-## Troubleshooting
-
-### "Bot token required"
-Tidak ada token di flag/env/config. Buat bot via UI atau POST `/api/bots`.
-
-### "Invalid bot token"
-Token tidak ditemukan di database. Buat bot baru via UI atau cek token di `bot.config.json`.
-
-### "ECONNREFUSED"
-Server belum jalan. Jalankan `bun run dev` dulu.
-
-### Bot status tetap "Connecting"
-Bot client belum connect. Pastikan:
-1. `bot.config.json` ada di root project
-2. Token di config sama dengan token di UI
-3. Bot client sudah dijalankan (`bun run bot:start`)
+Server → Bot:
+- `{type:"hello", message}`
+- `{type:"auth_ok", role, bot_id, name}`
+- `{type:"auth_failed", message}`
+- `{type:"command", command, account_id, payload}`
+- `{type:"heartbeat_ack", t}`
+- `{type:"ping"}`
