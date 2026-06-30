@@ -83,15 +83,18 @@
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Bot Status</p>
               <p class="leading-none flex items-center gap-2">
                 <span class="relative flex w-3 h-3">
-                  <template x-if="selectedAccount.botStatus === 'online'">
+                  <template x-if="selectedAccount.botStatus === 'connected'">
                     <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
                   </template>
+                  <template x-if="selectedAccount.botStatus === 'connecting'">
+                    <svg class="w-3 h-3 animate-spin text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  </template>
                   <span class="relative inline-flex w-3 h-3 rounded-full"
-                    :class="selectedAccount.botStatus === 'online' ? 'bg-s1' : selectedAccount.botStatus === 'error' ? 'bg-danger' : 'bg-base-500'"></span>
+                    :class="selectedAccount.botStatus === 'connected' ? 'bg-s1' : (selectedAccount.botStatus === 'connecting' ? 'bg-warn' : 'bg-danger')"></span>
                 </span>
                 <span class="text-sm font-mono font-bold"
-                  :class="selectedAccount.botStatus === 'online' ? 'text-s1' : selectedAccount.botStatus === 'error' ? 'text-danger' : 'text-base-400'"
-                  x-text="botStatusText(selectedAccount.botStatus)"></span>
+                  :class="selectedAccount.botStatus === 'connected' ? 'text-s1' : (selectedAccount.botStatus === 'connecting' ? 'text-warn' : 'text-danger')"
+                  x-text="selectedAccount.botStatus === 'connected' ? 'Connected' : (selectedAccount.botStatus === 'connecting' ? 'Connecting' : 'Disconnected')"></span>
               </p>
             </div>
           </div>

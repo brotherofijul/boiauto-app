@@ -546,6 +546,16 @@ function boiauto() {
       }
     },
 
+    async copyToClipboard(text, toastMsg = "Copied to clipboard") {
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        this.showToast("success", toastMsg);
+      } catch (e) {
+        this.showToast("error", "Failed to copy");
+      }
+    },
+
     get addBotButtonLabel() {
       if (this.botConnectedWhileOpen) return "Finished";
       if (this.newlyAddedBotId) return "Waiting Later";

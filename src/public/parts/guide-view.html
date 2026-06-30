@@ -16,7 +16,7 @@
           <div class="w-9 h-9 rounded-xl bg-s2/10 border border-s2/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s2">1</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add a Bot</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-s2">Bot</span> page from the sidebar and click <span class="text-s2">+ Add</span>. Enter an optional name (defaults to bot id), pick a Type, then click <span class="text-s2">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-s2">Bot</span> page from the sidebar and click <span class="text-s2">+ Add</span>. Enter an optional name, pick a Type, then click <span class="text-s2">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s1 bg-s1/10 border-s1/30 flex-shrink-0 mt-0.5">Dual</span>
@@ -24,7 +24,7 @@
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s2 bg-s2/10 border-s2/30 flex-shrink-0 mt-0.5">Shared</span>
-                <span>Unlimited access tokens.</span>
+                <span>Unlimited access tokens. Best for multi-user setups.</span>
               </div>
             </div>
             <p class="text-[10px] text-base-500 font-mono mt-2">After creating the bot, the button changes to <span class="text-warn">Waiting Later</span> with a spinner. When your bot client connects, it becomes <span class="text-s1">Finished</span>.</p>
@@ -40,7 +40,7 @@
           <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">2</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Connect a Bot Client</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">Copy the bot token from the Add Bot modal (or edit it later in the Bot page). Set <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-warn">Connecting</span> to <span class="text-s1">Connected</span> once the client is online.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">Copy the bot token from the Add Bot modal. Set <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-warn">Connecting</span> to <span class="text-s1">Connected</span> once the client is online.</p>
           </div>
         </div>
       </div>
@@ -53,19 +53,19 @@
           <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-warn">3</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Generate Access Tokens</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">On the <span class="text-warn">Access</span> page, click <span class="text-warn">+ Generate</span> to create an access token tied to a specific bot. Pick a Type:</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">On the <span class="text-warn">Access</span> page, click <span class="text-warn">+ Add</span> to create an access token tied to a specific bot. Pick a Type:</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s1 bg-s1/10 border-s1/30 flex-shrink-0 mt-0.5">Private</span>
-                <span>Single-use access. Max <span class="text-warn font-bold">1 automate</span> per token. Shown as <span class="text-s1">0/1</span> or <span class="text-danger">1/1</span>.</span>
+                <span>Single-use access. Max <span class="text-warn font-bold">1 automate</span> per token.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s2 bg-s2/10 border-s2/30 flex-shrink-0 mt-0.5">Shared</span>
-                <span>Unlimited automates. Usage shown as a single number (e.g. <span class="text-s2">3</span>).</span>
+                <span>Unlimited automates.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-warn bg-warn/10 border-warn/30 flex-shrink-0 mt-0.5">Business</span>
-                <span>Single-use access + <span class="text-s1">price/day</span> (game currency). Max <span class="text-warn font-bold">1 automate</span>.</span>
+                <span>Single-use access + <span class="text-s1">price/day</span> (game currency).</span>
               </div>
             </div>
             <p class="text-[10px] text-base-500 font-mono mt-2">Share the access token with the recipient. They can use it to run automates linked to that bot.</p>
@@ -81,7 +81,7 @@
           <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s2/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">4</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add an Automate</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-s1">Automate</span> page, click <span class="text-s1">+ Add</span>. Enter your Bearer token, then <span class="text-warn">select an access token</span> from the dropdown (not a bot directly). Each access item shows its usage (<span class="text-s1">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-s1">Automate</span> page, click <span class="text-s1">+ Add</span>. Enter your Bearer token, then <span class="text-warn">select an access token</span> from the dropdown. Each access item shows its usage (<span class="text-s1">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
                 <span><span class="text-s2 font-bold">Work</span> — auto-perform work tasks</span>
               </div>
             </div>
-            <p class="text-[10px] text-base-500 font-mono mt-2">When any feature is ON, the card border glows green or blue.</p>
+            <p class="text-[10px] text-base-500 font-mono mt-2">When any feature is ON, the card border glows and 3 small dots light up next to the automate label.</p>
           </div>
         </div>
       </div>
@@ -122,7 +122,7 @@
           <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s2/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">6</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Dashboard Overview</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">The <span class="text-s1">Dashboard</span> page (first item in the sidebar) shows real-time stats: total automates, total bots, total access tokens, connected bots, automation status (Skill/Training/Work counts), and total balance + diamond across all automates. Below the stats are quick-action cards that link to each section, and a list of the latest 5 bots with their connection status.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">The <span class="text-s1">Dashboard</span> page shows real-time stats: total automates, total bots, total access tokens, connected bots, automation status (Skill/Training/Work counts), and total balance + diamond. Below the stats are quick-action cards and a list of the latest 5 bots with their connection status.</p>
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@
       <svg class="w-4 h-4 text-warn flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
       <div>
         <p class="text-[11px] text-warn font-mono font-bold mb-0.5">Tip</p>
-        <p class="text-[11px] text-base-300 font-mono leading-relaxed">All tokens are stored in SQLite. In dev mode the DB is in-memory and reset on restart; in production it persists to <code class="text-warn">data.db</code>.</p>
+        <p class="text-[11px] text-base-300 font-mono leading-relaxed">Bot status: <span class="text-warn">Connecting</span> (spinner, just added) → <span class="text-s1">Connected</span> (green pulse, client online) → <span class="text-danger">Disconnected</span> (red, client offline).</p>
       </div>
     </div>
   </div>

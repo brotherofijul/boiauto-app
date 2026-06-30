@@ -29,6 +29,8 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #2e443d transparent;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  margin-bottom: -2px;
 }
 .x-scroll::-webkit-scrollbar {
   height: 3px;
