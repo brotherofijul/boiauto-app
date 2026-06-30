@@ -1,5 +1,5 @@
 <!-- /parts/bot-list.html -->
-<div x-show="bots.length === 0" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
+<div x-show="!loadingBots && bots.length === 0 && !searchBots.trim()" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
   <div class="relative mb-6">
     <div class="absolute inset-0 rounded-3xl bg-s2/10 blur-2xl"></div>
     <div class="relative w-20 h-20 rounded-3xl border-2 border-dashed border-base-700 flex items-center justify-center bg-base-900/50">
@@ -20,7 +20,33 @@
   </button>
 </div>
 
-<div x-show="bots.length > 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+<div x-show="loadingBots && bots.length === 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+  <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
+    <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
+    <div class="h-3 bg-base-800 rounded w-2/3 animate-pulse"></div>
+    <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
+    <div class="h-3 bg-base-800 rounded w-3/4 animate-pulse"></div>
+    <div></div>
+  </div>
+  <template x-for="i in 3" :key="'skel-bot-'+i">
+    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-3 px-4 py-3.5 border-b border-base-800/40 last:border-b-0">
+      <div class="h-4 bg-base-800 rounded animate-pulse w-3/4"></div>
+      <div class="h-4 bg-base-800/70 rounded animate-pulse w-2/3 hidden md:block"></div>
+      <div class="h-4 bg-base-800/70 rounded animate-pulse w-1/2"></div>
+      <div class="h-4 bg-base-800/70 rounded animate-pulse w-3/4"></div>
+      <div class="h-4 bg-base-800/70 rounded animate-pulse w-6"></div>
+    </div>
+  </template>
+</div>
+
+<div x-show="!loadingBots && filteredBots.length === 0 && searchBots.trim()" x-cloak class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-12 h-12 rounded-xl border border-base-700/40 flex items-center justify-center mb-3">
+    <svg class="w-5 h-5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </div>
+  <p class="text-xs text-base-400 font-mono">No bots match "<span x-text="searchBots"></span>"</p>
+</div>
+
+<div x-show="!loadingBots && filteredBots.length > 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
   <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
     <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Name</p>
     <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot ID</p>
@@ -29,7 +55,7 @@
     <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold text-right">Actions</p>
   </div>
 
-    <template x-for="(b, idx) in bots" :key="b.id">
+    <template x-for="(b, idx) in filteredBots" :key="b.id">
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
         <div class="flex items-center gap-2 min-w-0">
           <div class="w-8 h-8 rounded-lg bg-s2/10 border border-s2/20 flex items-center justify-center flex-shrink-0">

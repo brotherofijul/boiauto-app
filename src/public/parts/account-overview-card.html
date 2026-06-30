@@ -1,6 +1,35 @@
 <!-- /parts/account-overview-card.html -->
-<div x-show="accounts.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <template x-for="(acc, idx) in accounts" :key="acc.id">
+<div x-show="loadingAccounts && accounts.length === 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <template x-for="i in 4" :key="'skel-'+i">
+    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <div class="h-1 flex-shrink-0 bg-base-700/40"></div>
+      <div class="p-4 space-y-3 animate-pulse">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-base-800"></div>
+          <div class="flex-1 space-y-1.5">
+            <div class="h-3.5 bg-base-800 rounded w-2/3"></div>
+            <div class="h-2.5 bg-base-800/70 rounded w-1/3"></div>
+          </div>
+        </div>
+        <div class="space-y-1.5">
+          <div class="h-7 bg-base-800/70 rounded-lg"></div>
+          <div class="h-7 bg-base-800/70 rounded-lg"></div>
+          <div class="h-7 bg-base-800/70 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+
+<div x-show="!loadingAccounts && filteredAutomates.length === 0 && searchAutomates.trim()" x-cloak class="flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-12 h-12 rounded-xl border border-base-700/40 flex items-center justify-center mb-3">
+    <svg class="w-5 h-5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </div>
+  <p class="text-xs text-base-400 font-mono">No automates match "<span x-text="searchAutomates"></span>"</p>
+</div>
+
+<div x-show="!loadingAccounts && filteredAutomates.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <template x-for="(acc, idx) in filteredAutomates" :key="acc.id">
     <div class="rounded-2xl border overflow-hidden transition-all duration-300 relative backdrop-blur-sm hover:border-base-700/70"
       :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning)
          ? (idx % 2 === 0 ? 'border-s1/30 glow-s1 bg-base-900/80' : 'border-s2/30 glow-s2 bg-base-900/80')
@@ -15,7 +44,14 @@
             x-text="(idx + 1).toString().padStart(2, '0')"></div>
           <div class="min-w-0">
             <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="acc.name || 'Unnamed'"></p>
-            <p class="text-[10px] text-base-500 font-mono leading-tight mt-0.5" x-text="'AUTOMATE ' + (idx + 1)"></p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <p class="text-[10px] text-base-500 font-mono leading-tight" x-text="'AUTOMATE ' + (idx + 1)"></p>
+              <div class="flex items-center gap-1 ml-1">
+                <span class="w-1.5 h-1.5 rounded-full transition-all" :class="acc.skillUpRunning ? 'bg-s1 shadow-[0_0_4px_rgba(0,232,143,0.6)]' : 'bg-base-700/50'" title="Skill"></span>
+                <span class="w-1.5 h-1.5 rounded-full transition-all" :class="acc.autoWarRunning ? 'bg-warn shadow-[0_0_4px_rgba(245,166,35,0.6)]' : 'bg-base-700/50'" title="Training"></span>
+                <span class="w-1.5 h-1.5 rounded-full transition-all" :class="acc.autoWorkRunning ? 'bg-s2 shadow-[0_0_4px_rgba(0,200,255,0.6)]' : 'bg-base-700/50'" title="Work"></span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="flex items-center gap-1.5 flex-shrink-0">

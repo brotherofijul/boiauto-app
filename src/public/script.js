@@ -82,6 +82,15 @@ function boiauto() {
     bots: [],
     accessList: [],
     dashboard: null,
+    loadingBots: true,
+    loadingAccess: true,
+    loadingAccounts: true,
+    loadingDashboard: true,
+    searchBots: "",
+    searchAccess: "",
+    searchAutomates: "",
+    toasts: [],
+    confirmModal: { open: false, title: "", message: "", resolve: null },
     showAddModal: false,
     showAddBotModal: false,
     showEditBotModal: false,
@@ -115,7 +124,6 @@ function boiauto() {
     newAccessType: "Private",
     newAccessPrice: 0,
     generatedAccessToken: "",
-    generatingAccess: false,
     accessCopied: false,
     addAccessError: "",
     addingAccess: false,
@@ -168,16 +176,21 @@ function boiauto() {
     },
 
     async loadDashboard() {
+      this.loadingDashboard = true;
       try {
         const res = await fetch(`${API}/dashboard`);
         if (!res.ok) throw new Error("Failed to load dashboard");
         this.dashboard = await res.json();
       } catch (e) {
         console.error("[loadDashboard]", e);
+        this.showToast("error", "Failed to load dashboard");
+      } finally {
+        this.loadingDashboard = false;
       }
     },
 
     async loadAccounts() {
+      this.loadingAccounts = true;
       try {
         const res = await fetch(`${API}/accounts`);
         if (!res.ok) throw new Error("Failed to load accounts");
@@ -185,10 +198,14 @@ function boiauto() {
         this.accounts = data.map(mapAccount);
       } catch (e) {
         console.error("[loadAccounts]", e);
+        this.showToast("error", "Failed to load automates");
+      } finally {
+        this.loadingAccounts = false;
       }
     },
 
     async loadBots() {
+      this.loadingBots = true;
       try {
         const res = await fetch(`${API}/bots`);
         if (!res.ok) throw new Error("Failed to load bots");
@@ -196,10 +213,14 @@ function boiauto() {
         this.bots = data.map(mapBot);
       } catch (e) {
         console.error("[loadBots]", e);
+        this.showToast("error", "Failed to load bots");
+      } finally {
+        this.loadingBots = false;
       }
     },
 
     async loadAccess() {
+      this.loadingAccess = true;
       try {
         const res = await fetch(`${API}/access`);
         if (!res.ok) throw new Error("Failed to load access tokens");
@@ -207,7 +228,69 @@ function boiauto() {
         this.accessList = data.map(mapAccess);
       } catch (e) {
         console.error("[loadAccess]", e);
+        this.showToast("error", "Failed to load access tokens");
+      } finally {
+        this.loadingAccess = false;
       }
+    },
+
+    get filteredBots() {
+      if (!this.searchBots.trim()) return this.bots;
+      const q = this.searchBots.toLowerCase();
+      return this.bots.filter((b) =>
+        b.name.toLowerCase().includes(q) ||
+        b.botId.toLowerCase().includes(q) ||
+        b.type.toLowerCase().includes(q)
+      );
+    },
+
+    get filteredAccess() {
+      if (!this.searchAccess.trim()) return this.accessList;
+      const q = this.searchAccess.toLowerCase();
+      return this.accessList.filter((a) =>
+        (a.name || "").toLowerCase().includes(q) ||
+        a.accessId.toLowerCase().includes(q) ||
+        a.botName.toLowerCase().includes(q) ||
+        a.type.toLowerCase().includes(q)
+      );
+    },
+
+    get filteredAutomates() {
+      if (!this.searchAutomates.trim()) return this.accounts;
+      const q = this.searchAutomates.toLowerCase();
+      return this.accounts.filter((a) =>
+        a.name.toLowerCase().includes(q) ||
+        (a.botName || "").toLowerCase().includes(q) ||
+        (a.accessName || "").toLowerCase().includes(q)
+      );
+    },
+
+    showToast(type, message, duration = 4000) {
+      const id = Date.now() + Math.random();
+      this.toasts.push({ id, type, message });
+      setTimeout(() => {
+        this.toasts = this.toasts.filter((t) => t.id !== id);
+      }, duration);
+    },
+
+    dismissToast(id) {
+      this.toasts = this.toasts.filter((t) => t.id !== id);
+    },
+
+    confirmAction(title, message) {
+      return new Promise((resolve) => {
+        this.confirmModal = { open: true, title, message, resolve };
+      });
+    },
+
+    confirmYes() {
+      this.confirmModal.resolve?.(true);
+      this.confirmModal = { open: false, title: "", message: "", resolve: null };
+    },
+
+    confirmNo() {
+      this.confirmModal.resolve?.(false);
+      this.confirmModal = { open: false, title: "", message: "", resolve: null };
     },
 
     openAddModal() {
@@ -268,6 +351,7 @@ function boiauto() {
         }
         await this.loadAccounts();
         this.closeAddModal();
+        this.showToast("success", "Automate created");
       } catch (e) {
         this.addError = e.message || "Failed to create automate. Please try again.";
       } finally {
@@ -278,14 +362,21 @@ function boiauto() {
     async removeAccount(idx) {
       const a = this.accounts[idx];
       if (!a) return;
+      const ok = await this.confirmAction(
+        "Delete Automate?",
+        `This will permanently delete "${a.name}". This cannot be undone.`
+      );
+      if (!ok) return;
       try {
         const res = await fetch(`${API}/accounts/${a.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete automate");
         if (this.selectedAccountId === a.id) this.selectedAccountId = null;
         this.accounts.splice(idx, 1);
         this.loadAccess();
+        this.showToast("success", "Automate deleted");
       } catch (e) {
         console.error("[removeAccount]", e);
+        this.showToast("error", "Failed to delete automate");
       }
     },
 
@@ -493,6 +584,7 @@ function boiauto() {
         const bot = await res.json();
         this.newlyAddedBotId = bot.bot_id;
         await this.loadBots();
+        this.showToast("success", "Bot created. Waiting for client to connect.");
       } catch (e) {
         this.addBotError = e.message || "Failed to create bot. Please try again.";
       } finally {
@@ -547,6 +639,7 @@ function boiauto() {
         await this.loadAccounts();
         this.savingBot = false;
         this.closeEditBotModal();
+        this.showToast("success", "Bot updated");
       } catch (e) {
         this.editBotError = e.message || "Failed to update bot.";
         this.savingBot = false;
@@ -556,13 +649,20 @@ function boiauto() {
     async removeBot(idx) {
       const b = this.bots[idx];
       if (!b) return;
+      const ok = await this.confirmAction(
+        "Delete Bot?",
+        `This will permanently delete "${b.name}" and all access tokens linked to it. This cannot be undone.`
+      );
+      if (!ok) return;
       try {
         const res = await fetch(`${API}/bots/${b.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete bot");
         this.bots.splice(idx, 1);
         await this.loadAccess();
+        this.showToast("success", "Bot deleted");
       } catch (e) {
         console.error("[removeBot]", e);
+        this.showToast("error", "Failed to delete bot");
       }
     },
 
@@ -571,9 +671,6 @@ function boiauto() {
       this.newAccessName = "";
       this.newAccessType = "Private";
       this.newAccessPrice = 0;
-      this.generatedAccessToken = "";
-      this.generatingAccess = false;
-      this.accessCopied = false;
       this.addAccessError = "";
       this.addingAccess = false;
       this.showAddAccessModal = true;
@@ -581,8 +678,6 @@ function boiauto() {
 
     closeAddAccessModal() {
       this.showAddAccessModal = false;
-      this.generatedAccessToken = "";
-      this.accessCopied = false;
     },
 
     async confirmAddAccess() {
@@ -614,10 +709,9 @@ function boiauto() {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.error || "Failed to create access token");
         }
-        const access = await res.json();
-        this.generatedAccessToken = access.token;
-        this.accessCopied = false;
         await this.loadAccess();
+        this.closeAddAccessModal();
+        this.showToast("success", "Access token created");
       } catch (e) {
         this.addAccessError = e.message || "Failed to create access token.";
       } finally {
@@ -625,26 +719,22 @@ function boiauto() {
       }
     },
 
-    async copyAccessToken() {
-      if (!this.generatedAccessToken) return;
-      try {
-        await navigator.clipboard.writeText(this.generatedAccessToken);
-        this.accessCopied = true;
-        setTimeout(() => { this.accessCopied = false; }, 2000);
-      } catch (e) {
-        this.addAccessError = "Failed to copy token.";
-      }
-    },
-
     async removeAccess(idx) {
       const a = this.accessList[idx];
       if (!a) return;
+      const ok = await this.confirmAction(
+        "Revoke Access?",
+        `This will permanently revoke access token "${a.name || a.accessId}". The recipient will no longer be able to use it.`
+      );
+      if (!ok) return;
       try {
         const res = await fetch(`${API}/access/${a.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete access token");
         this.accessList.splice(idx, 1);
+        this.showToast("success", "Access token revoked");
       } catch (e) {
         console.error("[removeAccess]", e);
+        this.showToast("error", "Failed to revoke access token");
       }
     },
 
