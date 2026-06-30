@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/server.js"
+    "dev": "NODE_ENV=development bun run --watch src/server.js",
+    "start": "NODE_ENV=production bun run src/server.js",
+    "bot:dev": "bun run --watch client/bot/bot-client.js",
+    "bot:start": "bun run client/bot/bot-client.js"
+  },
+  "dependencies": {
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3"
   }
 }

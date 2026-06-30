@@ -2,6 +2,20 @@
 const LS_ACCOUNTS = "boiauto_accounts";
 const LS_BOTS = "boiauto_bots";
 
+const MOCK_USERS = [
+  { name: "ProGamerXYZ",    balance: 152340.50, diamond: 1240 },
+  { name: "ShadowKnight",   balance: 89750.25,  diamond: 580 },
+  { name: "DragonSlayer99", balance: 245100.00, diamond: 3100 },
+  { name: "NightHunter",    balance: 67890.75,  diamond: 850 },
+  { name: "ThunderBoltZ",   balance: 178420.30, diamond: 1990 },
+];
+
+function genBotId() {
+  return "bot_" + Array.from({ length: 6 }, () =>
+    Math.random().toString(36).slice(2, 3)
+  ).join("");
+}
+
 function createAccount() {
   return {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
@@ -182,10 +196,7 @@ function boiauto() {
       this.addError = "";
       try {
         await new Promise((r) => setTimeout(r, 700));
-        const userRes = await fetch("data/user.json");
-        if (!userRes.ok) throw new Error("Failed to load user data");
-        const users = await userRes.json();
-        const user = users[Math.floor(Math.random() * users.length)];
+        const user = MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)];
 
         const acc = createAccount();
         acc.bearer = this.newBearer.trim();
@@ -307,18 +318,14 @@ function boiauto() {
       this.addBotError = "";
       try {
         await new Promise((r) => setTimeout(r, 700));
-        const botRes = await fetch("data/bot.json");
-        if (!botRes.ok) throw new Error("Failed to load bot data");
-        const botData = await botRes.json();
-        const seed = botData[Math.floor(Math.random() * botData.length)];
 
         const bot = createBot();
         bot.token = this.newBotToken.trim();
-        bot.name = this.newBotName.trim() || seed.name;
-        bot.botId = seed.botId;
+        bot.name = this.newBotName.trim() || ("Bot-" + this.newBotToken.slice(-4));
+        bot.botId = genBotId();
         bot.type = this.newBotType;
         bot.ratePerDay = this.newBotType === "Business" ? Number(this.newBotRate) || 0 : 0;
-        bot.status = seed.status;
+        bot.status = "offline";
         this.bots.push(bot);
         this.saveBots();
         this.closeAddBotModal();
