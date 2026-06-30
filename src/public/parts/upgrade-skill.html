@@ -1,5 +1,9 @@
 <!-- /parts/upgrade-skill.html -->
 <main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
+  <template x-if="currentView === 'dashboard'">
+    <div x-init="fetch('parts/dashboard-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
   <template x-if="currentView === 'access'">
     <div x-init="fetch('parts/access-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   </template>

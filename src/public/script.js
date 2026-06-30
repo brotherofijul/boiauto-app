@@ -1,16 +1,19 @@
 // /script.js
 const API = "/api";
 
-function mapAccount(a, bots) {
-  const bot = bots.find((b) => b.bot_id === a.bot_id);
+function mapAccount(a) {
   return {
     id: a.id,
     name: a.name || "",
     bearer: a.bearer || "",
     botId: a.bot_id || "",
-    botName: bot?.name || a.bot_id || "",
-    botStatus: a.status || (bot?.status || "offline"),
-    type: a.type || "Dual",
+    botName: a.bot_name || "",
+    botStatus: a.bot_status_raw || "disconnected",
+    accessId: a.access_id || "",
+    accessName: a.access_name || "",
+    accessType: a.access_type || "Private",
+    accessPrice: a.access_price || 0,
+    type: a.type || "Private",
     balance: a.balance || 0,
     diamond: a.diamond || 0,
     showBearer: false,
@@ -35,7 +38,6 @@ function mapBot(b) {
     name: b.name,
     token: b.token,
     type: b.type,
-    ratePerDay: b.rate_per_day || 0,
     status: b.status,
     showToken: false,
   };
@@ -49,8 +51,10 @@ function mapAccess(a) {
     botId: a.bot_id,
     botName: a.bot_name || "",
     botType: a.bot_type || "",
-    label: a.label || "",
-    used: !!a.used,
+    name: a.name || "",
+    type: a.type || "Private",
+    pricePerDay: a.price_per_day || 0,
+    usageCount: a.usage_count || 0,
     showToken: false,
     createdAt: a.created_at,
   };
@@ -77,20 +81,20 @@ function boiauto() {
     accounts: [],
     bots: [],
     accessList: [],
+    dashboard: null,
     showAddModal: false,
     showAddBotModal: false,
     showEditBotModal: false,
     showAddAccessModal: false,
 
     newBearer: "",
-    newSelectedBotId: "",
+    newSelectedAccessId: "",
     showNewBearer: false,
     addError: "",
     addingAccount: false,
 
     newBotName: "",
     newBotType: "Dual",
-    newBotRate: 0,
     generatedBotToken: "",
     generatingToken: false,
     tokenCopied: false,
@@ -103,12 +107,13 @@ function boiauto() {
     editBotName: "",
     editBotToken: "",
     editBotType: "Dual",
-    editBotRate: 0,
     editBotError: "",
     savingBot: false,
 
     newAccessBotId: "",
-    newAccessLabel: "",
+    newAccessName: "",
+    newAccessType: "Private",
+    newAccessPrice: 0,
     generatedAccessToken: "",
     generatingAccess: false,
     accessCopied: false,
@@ -117,15 +122,13 @@ function boiauto() {
 
     selectedAccountId: null,
     navbarOpen: false,
-    currentView: "automate",
-    switchingView: false,
-    pendingView: null,
+    currentView: "dashboard",
 
     init() {
-      this.loadBots().then(() => {
-        this.loadAccounts();
-        this.loadAccess();
-      });
+      this.loadBots();
+      this.loadAccounts();
+      this.loadAccess();
+      this.loadDashboard();
       spawnParticles();
       this.$watch('selectedAccountId', () => this.updateScrollLock());
       this.$watch('showAddModal', () => this.updateScrollLock());
@@ -152,16 +155,26 @@ function boiauto() {
     closeNavbar() { this.navbarOpen = false; },
 
     switchView(view) {
-      if (this.currentView === view) { this.closeNavbar(); return; }
-      if (this.switchingView) return;
-      this.switchingView = true;
-      this.pendingView = view;
-      setTimeout(() => {
-        this.currentView = this.pendingView;
-        this.switchingView = false;
-        this.pendingView = null;
+      if (this.currentView === view) {
         this.closeNavbar();
-      }, 700);
+        return;
+      }
+      this.currentView = view;
+      this.closeNavbar();
+      if (view === 'dashboard') this.loadDashboard();
+      if (view === 'automate') this.loadAccounts();
+      if (view === 'bot') this.loadBots();
+      if (view === 'access') this.loadAccess();
+    },
+
+    async loadDashboard() {
+      try {
+        const res = await fetch(`${API}/dashboard`);
+        if (!res.ok) throw new Error("Failed to load dashboard");
+        this.dashboard = await res.json();
+      } catch (e) {
+        console.error("[loadDashboard]", e);
+      }
     },
 
     async loadAccounts() {
@@ -169,7 +182,7 @@ function boiauto() {
         const res = await fetch(`${API}/accounts`);
         if (!res.ok) throw new Error("Failed to load accounts");
         const data = await res.json();
-        this.accounts = data.map((a) => mapAccount(a, this.bots));
+        this.accounts = data.map(mapAccount);
       } catch (e) {
         console.error("[loadAccounts]", e);
       }
@@ -199,7 +212,7 @@ function boiauto() {
 
     openAddModal() {
       this.newBearer = "";
-      this.newSelectedBotId = this.bots.length > 0 ? this.bots[0].id : "";
+      this.newSelectedAccessId = this.accessList.length > 0 ? this.accessList[0].accessId : "";
       this.addError = "";
       this.showNewBearer = false;
       this.addingAccount = false;
@@ -208,16 +221,16 @@ function boiauto() {
 
     closeAddModal() { this.showAddModal = false; },
 
-    botAccountCount(botId) {
-      return this.accounts.filter((a) => a.botId === botId).length;
+    accessUsageText(a) {
+      if (!a) return "";
+      if (a.type === "Shared") return `${a.usageCount}`;
+      return `${a.usageCount}/1`;
     },
 
-    isBotFull(bot) {
-      if (!bot) return true;
-      if (bot.type === "Dual" || bot.type === "Business") {
-        return this.botAccountCount(bot.botId) >= 2;
-      }
-      return false;
+    isAccessFull(a) {
+      if (!a) return true;
+      if (a.type === "Shared") return false;
+      return a.usageCount >= 1;
     },
 
     async confirmAddAccount() {
@@ -225,17 +238,17 @@ function boiauto() {
         this.addError = "Bearer token is required.";
         return;
       }
-      if (!this.newSelectedBotId) {
-        this.addError = "Please select a bot.";
+      if (!this.newSelectedAccessId) {
+        this.addError = "Please select an access.";
         return;
       }
-      const selectedBot = this.bots.find((b) => b.id === Number(this.newSelectedBotId));
-      if (!selectedBot) {
-        this.addError = "Selected bot not found.";
+      const selectedAccess = this.accessList.find((a) => a.accessId === this.newSelectedAccessId);
+      if (!selectedAccess) {
+        this.addError = "Selected access not found.";
         return;
       }
-      if (this.isBotFull(selectedBot)) {
-        this.addError = `Bot ${selectedBot.name} has reached its account limit (max 2 for ${selectedBot.type}).`;
+      if (this.isAccessFull(selectedAccess)) {
+        this.addError = `Access ${selectedAccess.name || selectedAccess.accessId} has reached its limit (max 1 automate for ${selectedAccess.type}).`;
         return;
       }
       this.addingAccount = true;
@@ -246,17 +259,17 @@ function boiauto() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             bearer: this.newBearer.trim(),
-            bot_id: selectedBot.botId,
+            access_id: selectedAccess.accessId,
           }),
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || "Failed to create account");
+          throw new Error(err.error || "Failed to create automate");
         }
         await this.loadAccounts();
         this.closeAddModal();
       } catch (e) {
-        this.addError = e.message || "Failed to create account. Please try again.";
+        this.addError = e.message || "Failed to create automate. Please try again.";
       } finally {
         this.addingAccount = false;
       }
@@ -267,9 +280,10 @@ function boiauto() {
       if (!a) return;
       try {
         const res = await fetch(`${API}/accounts/${a.id}`, { method: "DELETE" });
-        if (!res.ok) throw new Error("Failed to delete account");
+        if (!res.ok) throw new Error("Failed to delete automate");
         if (this.selectedAccountId === a.id) this.selectedAccountId = null;
         this.accounts.splice(idx, 1);
+        this.loadAccess();
       } catch (e) {
         console.error("[removeAccount]", e);
       }
@@ -284,10 +298,10 @@ function boiauto() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             bearer: a.bearer,
-            bot_id: a.botId,
+            access_id: a.accessId,
           }),
         });
-        if (!res.ok) throw new Error("Failed to update account");
+        if (!res.ok) throw new Error("Failed to update automate");
         await this.loadAccounts();
       } catch (e) {
         console.error("[saveAccount]", e);
@@ -298,9 +312,9 @@ function boiauto() {
       const a = this.accounts[idx];
       if (!a) return;
       const key = feature + "Running";
-      if (!a.bearer.trim() || !a.botId) {
-        a.error = "Configure Bearer & Bot first.";
-        setTimeout(() => { if (a.error === "Configure Bearer & Bot first.") a.error = ""; }, 3000);
+      if (!a.bearer.trim() || !a.accessId) {
+        a.error = "Configure Bearer & Access first.";
+        setTimeout(() => { if (a.error === "Configure Bearer & Access first.") a.error = ""; }, 3000);
         return;
       }
       const newValue = !a[key];
@@ -317,7 +331,7 @@ function boiauto() {
         if (!res.ok) throw new Error("Failed to toggle feature");
         a[key] = newValue;
         a.running = a.skillUpRunning;
-        if (newValue) a.botStatus = "online";
+        if (newValue) a.botStatus = "connected";
       } catch (e) {
         a.error = "Failed to toggle feature. Please try again.";
         setTimeout(() => { if (a.error === "Failed to toggle feature. Please try again.") a.error = ""; }, 3000);
@@ -345,9 +359,9 @@ function boiauto() {
         setTimeout(() => { if (a.error === "Bearer token is required.") a.error = ""; }, 3000);
         return;
       }
-      if (!a.botId) {
-        a.error = "Bot is required.";
-        setTimeout(() => { if (a.error === "Bot is required.") a.error = ""; }, 3000);
+      if (!a.accessId) {
+        a.error = "Access is required.";
+        setTimeout(() => { if (a.error === "Access is required.") a.error = ""; }, 3000);
         return;
       }
       try {
@@ -356,10 +370,10 @@ function boiauto() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ skill_up_running: 1 }),
         });
-        if (!res.ok) throw new Error("Failed to start account");
+        if (!res.ok) throw new Error("Failed to start automate");
         a.running = true;
         a.skillUpRunning = true;
-        a.botStatus = "online";
+        a.botStatus = "connected";
         a.error = "";
       } catch (e) {
         a.error = "Failed to start. Please try again.";
@@ -380,12 +394,12 @@ function boiauto() {
             auto_work_running: 0,
           }),
         });
-        if (!res.ok) throw new Error("Failed to stop account");
+        if (!res.ok) throw new Error("Failed to stop automate");
         a.running = false;
         a.skillUpRunning = false;
         a.autoWarRunning = false;
         a.autoWorkRunning = false;
-        a.botStatus = "offline";
+        a.botStatus = "disconnected";
         a.time = "\u2014";
         a.pendingAt = null;
       } catch (e) {
@@ -397,7 +411,6 @@ function boiauto() {
     openAddBotModal() {
       this.newBotName = "";
       this.newBotType = "Dual";
-      this.newBotRate = 0;
       this.generatedBotToken = "";
       this.generatingToken = false;
       this.tokenCopied = false;
@@ -461,10 +474,6 @@ function boiauto() {
         this.addBotError = "Generate a token first.";
         return;
       }
-      if (this.newBotType === "Business" && (!this.newBotRate || this.newBotRate <= 0)) {
-        this.addBotError = "Rate per day is required for Business type.";
-        return;
-      }
       this.addingBot = true;
       this.addBotError = "";
       try {
@@ -475,7 +484,6 @@ function boiauto() {
             token: this.generatedBotToken,
             name: this.newBotName.trim() || undefined,
             type: this.newBotType,
-            rate_per_day: this.newBotType === "Business" ? Number(this.newBotRate) || 0 : 0,
           }),
         });
         if (!res.ok) {
@@ -499,7 +507,6 @@ function boiauto() {
       this.editBotName = b.name;
       this.editBotToken = b.token;
       this.editBotType = b.type;
-      this.editBotRate = b.ratePerDay || 0;
       this.editBotError = "";
       this.savingBot = false;
       this.showEditBotModal = true;
@@ -520,10 +527,6 @@ function boiauto() {
         this.editBotError = "Token is required.";
         return;
       }
-      if (this.editBotType === "Business" && (!this.editBotRate || this.editBotRate <= 0)) {
-        this.editBotError = "Rate per day is required for Business type.";
-        return;
-      }
       this.savingBot = true;
       this.editBotError = "";
       try {
@@ -534,7 +537,6 @@ function boiauto() {
             name: this.editBotName.trim(),
             token: this.editBotToken.trim(),
             type: this.editBotType,
-            rate_per_day: this.editBotType === "Business" ? Number(this.editBotRate) || 0 : 0,
           }),
         });
         if (!res.ok) {
@@ -566,7 +568,9 @@ function boiauto() {
 
     openAddAccessModal() {
       this.newAccessBotId = this.bots.length > 0 ? this.bots[0].id : "";
-      this.newAccessLabel = "";
+      this.newAccessName = "";
+      this.newAccessType = "Private";
+      this.newAccessPrice = 0;
       this.generatedAccessToken = "";
       this.generatingAccess = false;
       this.accessCopied = false;
@@ -586,6 +590,10 @@ function boiauto() {
         this.addAccessError = "Please select a bot.";
         return;
       }
+      if (this.newAccessType === "Business" && (!this.newAccessPrice || this.newAccessPrice <= 0)) {
+        this.addAccessError = "Business type requires price per day.";
+        return;
+      }
       this.addingAccess = true;
       this.addAccessError = "";
       try {
@@ -597,7 +605,9 @@ function boiauto() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             bot_id: selectedBot.botId,
-            label: this.newAccessLabel.trim() || undefined,
+            name: this.newAccessName.trim() || undefined,
+            type: this.newAccessType,
+            price_per_day: this.newAccessType === "Business" ? Number(this.newAccessPrice) || 0 : 0,
           }),
         });
         if (!res.ok) {
@@ -648,6 +658,7 @@ function boiauto() {
       if (type === "Dual") return "text-s1 bg-s1/10 border-s1/30";
       if (type === "Shared") return "text-s2 bg-s2/10 border-s2/30";
       if (type === "Business") return "text-warn bg-warn/10 border-warn/30";
+      if (type === "Private") return "text-s1 bg-s1/10 border-s1/30";
       return "text-base-200 bg-base-700/40 border-base-600/40";
     },
 

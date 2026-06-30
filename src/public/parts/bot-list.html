@@ -20,15 +20,14 @@
   </button>
 </div>
 
-<div x-show="bots.length > 0" class="space-y-4">
-  <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-    <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
-      <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Name</p>
-      <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot ID</p>
-      <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Status</p>
-      <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Token</p>
-      <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold text-right">Actions</p>
-    </div>
+<div x-show="bots.length > 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+  <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Name</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot ID</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Status</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Token</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold text-right">Actions</p>
+  </div>
 
     <template x-for="(b, idx) in bots" :key="b.id">
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
@@ -40,8 +39,7 @@
             <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="b.name"></p>
             <div class="flex items-center gap-1.5 mt-0.5">
               <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border" :class="typeClass(b.type)" x-text="b.type"></span>
-              <span x-show="b.type === 'Business' && b.ratePerDay" x-cloak class="text-[9px] font-mono text-warn" x-text="formatRate(b.ratePerDay)"></span>
-              <span x-show="b.type === 'Dual' || b.type === 'Business'" x-cloak class="text-[9px] font-mono text-base-500" x-text="'(' + botAccountCount(b.botId) + '/2)'"></span>
+              <span x-show="b.type === 'Dual'" x-cloak class="text-[9px] font-mono text-base-500" x-text="'max 2 access'"></span>
             </div>
           </div>
         </div>
@@ -87,13 +85,4 @@
       </div>
     </template>
   </div>
-
-  <button @click="openAddAccessModal()" type="button"
-    class="w-full rounded-2xl border border-dashed border-base-700 hover:border-s2/40 hover:bg-s2/5 transition-all px-4 py-4 flex items-center justify-center gap-2.5 text-base-400 hover:text-s2 group">
-    <svg class="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-    <div class="text-left">
-      <p class="text-xs font-bold font-mono uppercase tracking-wider">Custom Connect</p>
-      <p class="text-[10px] text-base-500 font-mono">Generate access tokens for other users to use 1 bot per automate</p>
-    </div>
-  </button>
 </div>

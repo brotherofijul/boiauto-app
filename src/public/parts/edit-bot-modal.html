@@ -51,7 +51,7 @@
         <input x-model="editBotToken" @keydown.enter="saveEditBot()" placeholder="Bot token..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-3 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-s2/30" />
       </div>
 
-      <div class="relative" x-data="{ open: false, opts: ['Dual','Shared','Business','Custom'] }" @click.outside="open=false">
+      <div class="relative" x-data="{ open: false, opts: ['Dual','Shared'] }" @click.outside="open=false">
         <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
           <svg class="w-3 h-3 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3H4l2 13h12l2-13z"/><path d="M10 7V4h4v3"/></svg>
           Type
@@ -70,19 +70,6 @@
         </div>
       </div>
 
-      <div x-show="editBotType === 'Business'" x-cloak x-transition.opacity.duration.200ms>
-        <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          Rate per Day ($)
-        </label>
-        <input x-model.number="editBotRate" @keydown.enter="saveEditBot()" type="number" min="0" step="0.01" placeholder="e.g. 5.00" class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-s1/30" />
-      </div>
-
-      <div x-show="editBotType === 'Dual' || editBotType === 'Business'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
-        <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
-        <span>This type allows a maximum of <span class="text-warn font-bold">2 automates</span> per bot.</span>
-      </div>
-
       <div x-show="editBotError" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
         <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span x-text="editBotError"></span>
@@ -93,9 +80,9 @@
       <button @click="closeEditBotModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-base-700/70 bg-base-800/50 text-base-200 hover:bg-base-700/40 transition-all active:scale-[.97]">
         Cancel
       </button>
-      <button @click="saveEditBot()" :disabled="savingBot || !editBotName.trim() || !editBotToken.trim() || (editBotType === 'Business' && !editBotRate)" type="button"
+      <button @click="saveEditBot()" :disabled="savingBot || !editBotName.trim() || !editBotToken.trim()" type="button"
         class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[120px] justify-center"
-        :class="savingBot || !editBotName.trim() || !editBotToken.trim() || (editBotType === 'Business' && !editBotRate) ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-gradient-to-br from-s2 to-s2-dim text-base-950 hover:shadow-md hover:shadow-s2/30'">
+        :class="savingBot || !editBotName.trim() || !editBotToken.trim() ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-gradient-to-br from-s2 to-s2-dim text-base-950 hover:shadow-md hover:shadow-s2/30'">
         <template x-if="!savingBot">
           <div class="flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>

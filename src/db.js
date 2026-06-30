@@ -24,7 +24,7 @@ db.exec(`
     bot_id TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     token TEXT NOT NULL,
-    type TEXT DEFAULT 'Dual' CHECK (type IN ('Dual','Shared','Business','Custom')),
+    type TEXT DEFAULT 'Dual' CHECK (type IN ('Dual','Shared')),
     rate_per_day REAL DEFAULT 0,
     status TEXT DEFAULT 'connecting' CHECK (status IN ('connecting','connected','disconnected','error')),
     created_at INTEGER DEFAULT (unixepoch())
@@ -35,10 +35,11 @@ db.exec(`
     name TEXT NOT NULL,
     bearer TEXT NOT NULL,
     bot_id TEXT,
+    access_id TEXT,
     balance REAL DEFAULT 0,
     diamond INTEGER DEFAULT 0,
     status TEXT DEFAULT 'offline' CHECK (status IN ('online','offline','error')),
-    type TEXT DEFAULT 'Dual',
+    type TEXT DEFAULT 'Private',
     skill_up_running INTEGER DEFAULT 0,
     auto_war_running INTEGER DEFAULT 0,
     auto_work_running INTEGER DEFAULT 0,
@@ -46,7 +47,8 @@ db.exec(`
     target_level INTEGER,
     pending_at INTEGER,
     created_at INTEGER DEFAULT (unixepoch()),
-    FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE SET NULL
+    FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE SET NULL,
+    FOREIGN KEY (access_id) REFERENCES access_tokens(access_id) ON DELETE SET NULL
   );
 
   CREATE TABLE IF NOT EXISTS access_tokens (
@@ -54,13 +56,15 @@ db.exec(`
     access_id TEXT UNIQUE NOT NULL,
     token TEXT NOT NULL,
     bot_id TEXT NOT NULL,
-    label TEXT,
-    used INTEGER DEFAULT 0,
+    name TEXT,
+    type TEXT DEFAULT 'Private' CHECK (type IN ('Private','Shared','Business')),
+    price_per_day REAL DEFAULT 0,
     created_at INTEGER DEFAULT (unixepoch()),
     FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE CASCADE
   );
 
   CREATE INDEX IF NOT EXISTS idx_accounts_bot_id ON accounts(bot_id);
+  CREATE INDEX IF NOT EXISTS idx_accounts_access_id ON accounts(access_id);
   CREATE INDEX IF NOT EXISTS idx_bots_status ON bots(status);
   CREATE INDEX IF NOT EXISTS idx_access_bot_id ON access_tokens(bot_id);
 `);
@@ -77,6 +81,12 @@ export function genToken() {
   const data = `${Array.from(randomBytes).join("")}${timestamp}`;
   const hash = Bun.hash(data).toString(16).padStart(16, "0");
   return `bot_${hash}`;
+}
+
+export function genAccessId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(7));
+  const hex = Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return "acc_" + hex;
 }
 
 export async function seedFromConfig() {
@@ -102,11 +112,10 @@ export async function seedFromConfig() {
 
   const botId = config.bot_id || genBotId();
   const name = config.name || botId;
-  const type = config.type || "Dual";
-  const rate = type === "Business" ? (config.rate_per_day || 0) : 0;
+  const type = config.type === "Shared" ? "Shared" : "Dual";
 
-  db.prepare("INSERT INTO bots (bot_id, name, token, type, rate_per_day, status) VALUES (?, ?, ?, ?, ?, ?)")
-    .run(botId, name, config.token, type, rate, "connecting");
+  db.prepare("INSERT INTO bots (bot_id, name, token, type, rate_per_day, status) VALUES (?, ?, ?, ?, 0, ?)")
+    .run(botId, name, config.token, type, "connecting");
 
   logger.info({ botId, name, type }, "bot seeded from bot.config.json");
 }
@@ -116,11 +125,11 @@ export const queries = {
   getBotByBotId: (botId) => db.query("SELECT * FROM bots WHERE bot_id = ?").get(botId),
   getBotByToken: (token) => db.query("SELECT * FROM bots WHERE token = ?").get(token),
   getBotById: (id) => db.query("SELECT * FROM bots WHERE id = ?").get(id),
-  insertBot: (botId, name, token, type, ratePerDay) =>
-    db.prepare("INSERT INTO bots (bot_id, name, token, type, rate_per_day, status) VALUES (?, ?, ?, ?, ?, 'connecting')")
-      .run(botId, name, token, type, ratePerDay || 0),
+  insertBot: (botId, name, token, type) =>
+    db.prepare("INSERT INTO bots (bot_id, name, token, type, status) VALUES (?, ?, ?, ?, 'connecting')")
+      .run(botId, name, token, type),
   updateBot: (id, fields) => {
-    const allowed = ["name", "token", "type", "rate_per_day"];
+    const allowed = ["name", "token", "type"];
     const keys = Object.keys(fields).filter((k) => allowed.includes(k));
     if (keys.length === 0) return;
     const sets = keys.map((k) => `${k} = ?`).join(", ");
@@ -132,12 +141,26 @@ export const queries = {
   setBotStatus: (botId, status) =>
     db.prepare("UPDATE bots SET status = ? WHERE bot_id = ?").run(status, botId),
 
-  listAccounts: () => db.query("SELECT * FROM accounts ORDER BY created_at DESC").all(),
-  getAccountById: (id) => db.query("SELECT * FROM accounts WHERE id = ?").get(id),
-  insertAccount: ({ name, bearer, bot_id, balance, diamond, status, type }) =>
-    db.prepare(`INSERT INTO accounts (name, bearer, bot_id, balance, diamond, status, type)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`)
-      .run(name, bearer, bot_id, balance || 0, diamond || 0, status || "offline", type || "Dual"),
+  listAccounts: () => db.query(`
+    SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
+           ac.name as access_name, ac.type as access_type, ac.price_per_day as access_price
+    FROM accounts a
+    LEFT JOIN bots b ON a.bot_id = b.bot_id
+    LEFT JOIN access_tokens ac ON a.access_id = ac.access_id
+    ORDER BY a.created_at DESC
+  `).all(),
+  getAccountById: (id) => db.query(`
+    SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
+           ac.name as access_name, ac.type as access_type, ac.price_per_day as access_price
+    FROM accounts a
+    LEFT JOIN bots b ON a.bot_id = b.bot_id
+    LEFT JOIN access_tokens ac ON a.access_id = ac.access_id
+    WHERE a.id = ?
+  `).get(id),
+  insertAccount: ({ name, bearer, bot_id, access_id, type }) =>
+    db.prepare(`INSERT INTO accounts (name, bearer, bot_id, access_id, type, status)
+                VALUES (?, ?, ?, ?, ?, 'offline')`)
+      .run(name, bearer, bot_id, access_id, type || "Private"),
   updateAccount: (id, fields) => {
     const keys = Object.keys(fields);
     if (keys.length === 0) return;
@@ -147,23 +170,24 @@ export const queries = {
     db.prepare(`UPDATE accounts SET ${sets} WHERE id = ?`).run(...vals);
   },
   deleteAccount: (id) => db.prepare("DELETE FROM accounts WHERE id = ?").run(id),
-  accountCountByBot: (botId) =>
-    db.query("SELECT COUNT(*) as c FROM accounts WHERE bot_id = ?").get(botId).c,
 
   listAccess: () => db.query(`
-    SELECT a.*, b.name as bot_name, b.type as bot_type
+    SELECT a.*, b.name as bot_name, b.type as bot_type,
+           (SELECT COUNT(*) FROM accounts acc WHERE acc.access_id = a.access_id) as usage_count
     FROM access_tokens a
     LEFT JOIN bots b ON a.bot_id = b.bot_id
     ORDER BY a.created_at DESC
   `).all(),
+  getAccessByAccessId: (accessId) => db.query("SELECT * FROM access_tokens WHERE access_id = ?").get(accessId),
   getAccessByToken: (token) => db.query("SELECT * FROM access_tokens WHERE token = ?").get(token),
-  getAccessByBotId: (botId) => db.query("SELECT * FROM access_tokens WHERE bot_id = ? ORDER BY created_at DESC").all(),
-  insertAccess: (accessId, token, botId, label) =>
-    db.prepare("INSERT INTO access_tokens (access_id, token, bot_id, label) VALUES (?, ?, ?, ?)")
-      .run(accessId, token, botId, label || null),
+  insertAccess: (accessId, token, botId, name, type, pricePerDay) =>
+    db.prepare("INSERT INTO access_tokens (access_id, token, bot_id, name, type, price_per_day) VALUES (?, ?, ?, ?, ?, ?)")
+      .run(accessId, token, botId, name || null, type || "Private", pricePerDay || 0),
   deleteAccess: (id) => db.prepare("DELETE FROM access_tokens WHERE id = ?").run(id),
   accessCountByBot: (botId) =>
     db.query("SELECT COUNT(*) as c FROM access_tokens WHERE bot_id = ?").get(botId).c,
+  accountCountByAccess: (accessId) =>
+    db.query("SELECT COUNT(*) as c FROM accounts WHERE access_id = ?").get(accessId).c,
 };
 
 export default db;
