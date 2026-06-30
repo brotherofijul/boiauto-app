@@ -41,6 +41,21 @@ function mapBot(b) {
   };
 }
 
+function mapAccess(a) {
+  return {
+    id: a.id,
+    accessId: a.access_id,
+    token: a.token,
+    botId: a.bot_id,
+    botName: a.bot_name || "",
+    botType: a.bot_type || "",
+    label: a.label || "",
+    used: !!a.used,
+    showToken: false,
+    createdAt: a.created_at,
+  };
+}
+
 function spawnParticles() {
   const c = document.getElementById("particles");
   if (!c) return;
@@ -61,44 +76,75 @@ function boiauto() {
   return {
     accounts: [],
     bots: [],
+    accessList: [],
     showAddModal: false,
     showAddBotModal: false,
     showEditBotModal: false,
+    showAddAccessModal: false,
+
     newBearer: "",
     newSelectedBotId: "",
     showNewBearer: false,
     addError: "",
     addingAccount: false,
-    newBotToken: "",
+
     newBotName: "",
     newBotType: "Dual",
     newBotRate: 0,
-    showNewBotToken: false,
+    generatedBotToken: "",
+    generatingToken: false,
+    tokenCopied: false,
     addBotError: "",
     addingBot: false,
+    botConnectedWhileOpen: false,
+    newlyAddedBotId: null,
+
     editingBotId: null,
     editBotName: "",
+    editBotToken: "",
     editBotType: "Dual",
     editBotRate: 0,
     editBotError: "",
     savingBot: false,
+
+    newAccessBotId: "",
+    newAccessLabel: "",
+    generatedAccessToken: "",
+    generatingAccess: false,
+    accessCopied: false,
+    addAccessError: "",
+    addingAccess: false,
+
     selectedAccountId: null,
     navbarOpen: false,
-    currentView: "account",
+    currentView: "automate",
     switchingView: false,
     pendingView: null,
 
     init() {
-      this.loadBots().then(() => this.loadAccounts());
+      this.loadBots().then(() => {
+        this.loadAccounts();
+        this.loadAccess();
+      });
       spawnParticles();
       this.$watch('selectedAccountId', () => this.updateScrollLock());
       this.$watch('showAddModal', () => this.updateScrollLock());
       this.$watch('showAddBotModal', () => this.updateScrollLock());
       this.$watch('showEditBotModal', () => this.updateScrollLock());
+      this.$watch('showAddAccessModal', () => this.updateScrollLock());
+
+      this.$watch('bots', (bots) => {
+        if (this.newlyAddedBotId && this.showAddBotModal) {
+          const bot = bots.find((b) => b.botId === this.newlyAddedBotId);
+          if (bot && bot.status === 'connected') {
+            this.botConnectedWhileOpen = true;
+          }
+        }
+      });
     },
 
     updateScrollLock() {
-      const locked = !!this.selectedAccountId || this.showAddModal || this.showAddBotModal || this.showEditBotModal;
+      const locked = !!this.selectedAccountId || this.showAddModal || this.showAddBotModal || this.showEditBotModal || this.showAddAccessModal;
       document.body.style.overflow = locked ? 'hidden' : '';
     },
 
@@ -137,6 +183,17 @@ function boiauto() {
         this.bots = data.map(mapBot);
       } catch (e) {
         console.error("[loadBots]", e);
+      }
+    },
+
+    async loadAccess() {
+      try {
+        const res = await fetch(`${API}/access`);
+        if (!res.ok) throw new Error("Failed to load access tokens");
+        const data = await res.json();
+        this.accessList = data.map(mapAccess);
+      } catch (e) {
+        console.error("[loadAccess]", e);
       }
     },
 
@@ -338,21 +395,70 @@ function boiauto() {
     },
 
     openAddBotModal() {
-      this.newBotToken = "";
       this.newBotName = "";
       this.newBotType = "Dual";
       this.newBotRate = 0;
+      this.generatedBotToken = "";
+      this.generatingToken = false;
+      this.tokenCopied = false;
       this.addBotError = "";
-      this.showNewBotToken = false;
       this.addingBot = false;
+      this.botConnectedWhileOpen = false;
+      this.newlyAddedBotId = null;
       this.showAddBotModal = true;
     },
 
-    closeAddBotModal() { this.showAddBotModal = false; },
+    closeAddBotModal() {
+      this.showAddBotModal = false;
+      this.newlyAddedBotId = null;
+      this.generatedBotToken = "";
+      this.botConnectedWhileOpen = false;
+    },
+
+    async generateBotToken() {
+      this.generatingToken = true;
+      this.addBotError = "";
+      try {
+        const res = await fetch(`${API}/bots/generate-token`, { method: "POST" });
+        if (!res.ok) throw new Error("Failed to generate token");
+        const data = await res.json();
+        this.generatedBotToken = data.token;
+        this.tokenCopied = false;
+      } catch (e) {
+        this.addBotError = "Failed to generate token. Please try again.";
+      } finally {
+        this.generatingToken = false;
+      }
+    },
+
+    async copyBotToken() {
+      if (!this.generatedBotToken) return;
+      try {
+        await navigator.clipboard.writeText(this.generatedBotToken);
+        this.tokenCopied = true;
+        setTimeout(() => { this.tokenCopied = false; }, 2000);
+      } catch (e) {
+        this.addBotError = "Failed to copy token.";
+      }
+    },
+
+    get addBotButtonLabel() {
+      if (this.botConnectedWhileOpen) return "Finished";
+      if (this.newlyAddedBotId) return "Waiting Later";
+      return "Add Bot";
+    },
 
     async confirmAddBot() {
-      if (!this.newBotToken.trim()) {
-        this.addBotError = "Bot token is required.";
+      if (this.botConnectedWhileOpen) {
+        this.closeAddBotModal();
+        return;
+      }
+      if (this.newlyAddedBotId) {
+        this.closeAddBotModal();
+        return;
+      }
+      if (!this.generatedBotToken) {
+        this.addBotError = "Generate a token first.";
         return;
       }
       if (this.newBotType === "Business" && (!this.newBotRate || this.newBotRate <= 0)) {
@@ -366,7 +472,7 @@ function boiauto() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            token: this.newBotToken.trim(),
+            token: this.generatedBotToken,
             name: this.newBotName.trim() || undefined,
             type: this.newBotType,
             rate_per_day: this.newBotType === "Business" ? Number(this.newBotRate) || 0 : 0,
@@ -376,8 +482,9 @@ function boiauto() {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.error || "Failed to create bot");
         }
+        const bot = await res.json();
+        this.newlyAddedBotId = bot.bot_id;
         await this.loadBots();
-        this.closeAddBotModal();
       } catch (e) {
         this.addBotError = e.message || "Failed to create bot. Please try again.";
       } finally {
@@ -390,6 +497,7 @@ function boiauto() {
       if (!b) return;
       this.editingBotId = b.id;
       this.editBotName = b.name;
+      this.editBotToken = b.token;
       this.editBotType = b.type;
       this.editBotRate = b.ratePerDay || 0;
       this.editBotError = "";
@@ -404,6 +512,14 @@ function boiauto() {
 
     async saveEditBot() {
       if (!this.editingBotId) return;
+      if (!this.editBotName.trim()) {
+        this.editBotError = "Name is required.";
+        return;
+      }
+      if (!this.editBotToken.trim()) {
+        this.editBotError = "Token is required.";
+        return;
+      }
       if (this.editBotType === "Business" && (!this.editBotRate || this.editBotRate <= 0)) {
         this.editBotError = "Rate per day is required for Business type.";
         return;
@@ -416,6 +532,7 @@ function boiauto() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: this.editBotName.trim(),
+            token: this.editBotToken.trim(),
             type: this.editBotType,
             rate_per_day: this.editBotType === "Business" ? Number(this.editBotRate) || 0 : 0,
           }),
@@ -441,8 +558,83 @@ function boiauto() {
         const res = await fetch(`${API}/bots/${b.id}`, { method: "DELETE" });
         if (!res.ok) throw new Error("Failed to delete bot");
         this.bots.splice(idx, 1);
+        await this.loadAccess();
       } catch (e) {
         console.error("[removeBot]", e);
+      }
+    },
+
+    openAddAccessModal() {
+      this.newAccessBotId = this.bots.length > 0 ? this.bots[0].id : "";
+      this.newAccessLabel = "";
+      this.generatedAccessToken = "";
+      this.generatingAccess = false;
+      this.accessCopied = false;
+      this.addAccessError = "";
+      this.addingAccess = false;
+      this.showAddAccessModal = true;
+    },
+
+    closeAddAccessModal() {
+      this.showAddAccessModal = false;
+      this.generatedAccessToken = "";
+      this.accessCopied = false;
+    },
+
+    async confirmAddAccess() {
+      if (!this.newAccessBotId) {
+        this.addAccessError = "Please select a bot.";
+        return;
+      }
+      this.addingAccess = true;
+      this.addAccessError = "";
+      try {
+        const selectedBot = this.bots.find((b) => b.id === Number(this.newAccessBotId));
+        if (!selectedBot) throw new Error("Bot not found");
+
+        const res = await fetch(`${API}/access`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bot_id: selectedBot.botId,
+            label: this.newAccessLabel.trim() || undefined,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to create access token");
+        }
+        const access = await res.json();
+        this.generatedAccessToken = access.token;
+        this.accessCopied = false;
+        await this.loadAccess();
+      } catch (e) {
+        this.addAccessError = e.message || "Failed to create access token.";
+      } finally {
+        this.addingAccess = false;
+      }
+    },
+
+    async copyAccessToken() {
+      if (!this.generatedAccessToken) return;
+      try {
+        await navigator.clipboard.writeText(this.generatedAccessToken);
+        this.accessCopied = true;
+        setTimeout(() => { this.accessCopied = false; }, 2000);
+      } catch (e) {
+        this.addAccessError = "Failed to copy token.";
+      }
+    },
+
+    async removeAccess(idx) {
+      const a = this.accessList[idx];
+      if (!a) return;
+      try {
+        const res = await fetch(`${API}/access/${a.id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete access token");
+        this.accessList.splice(idx, 1);
+      } catch (e) {
+        console.error("[removeAccess]", e);
       }
     },
 
@@ -455,8 +647,31 @@ function boiauto() {
     typeClass(type) {
       if (type === "Dual") return "text-s1 bg-s1/10 border-s1/30";
       if (type === "Shared") return "text-s2 bg-s2/10 border-s2/30";
-      return "text-warn bg-warn/10 border-warn/30";
+      if (type === "Business") return "text-warn bg-warn/10 border-warn/30";
+      return "text-base-200 bg-base-700/40 border-base-600/40";
     },
+
+    botStatusText(s) {
+      if (s === "connecting") return "Connecting";
+      if (s === "connected") return "Connected";
+      if (s === "disconnected") return "Disconnected";
+      return s === "online" ? "Online" : "Offline";
+    },
+
+    botStatusClass(s) {
+      if (s === "connecting") return "text-warn bg-warn/10 border-warn/30";
+      if (s === "connected") return "text-s1 bg-s1/10 border-s1/30";
+      return "text-danger bg-danger/10 border-danger/30";
+    },
+
+    botStatusDotClass(s) {
+      if (s === "connecting") return "bg-warn";
+      if (s === "connected") return "bg-s1";
+      return "bg-danger";
+    },
+
+    isConnecting(s) { return s === "connecting"; },
+    isConnected(s) { return s === "connected"; },
 
     timeClass(idx) {
       const a = this.accounts[idx];
@@ -482,20 +697,6 @@ function boiauto() {
     formatNumber(n) {
       const num = Number(n) || 0;
       return num.toLocaleString("en-US");
-    },
-
-    botStatusText(s) {
-      return s === "online" ? "Online" : s === "error" ? "Error" : "Offline";
-    },
-
-    botStatusClass(s) {
-      return s === "online"
-        ? "text-s1 bg-s1/10 border-s1/30"
-        : "text-danger bg-danger/10 border-danger/30";
-    },
-
-    botStatusDotClass(s) {
-      return s === "online" ? "bg-s1" : "bg-danger";
     },
 
     formatRate(n) {

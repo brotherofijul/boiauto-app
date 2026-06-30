@@ -1,0 +1,15 @@
+<!-- /parts/access-topbar.html -->
+<div class="flex items-center justify-between mb-6">
+  <div class="flex items-center gap-3">
+    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-warn to-s1"></div>
+    <div>
+      <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Access</h2>
+      <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5" x-text="accessList.length + ' token' + (accessList.length===1?'':'s')"></p>
+    </div>
+  </div>
+  <button @click="openAddAccessModal()" type="button" class="group relative rounded-xl bg-gradient-to-br from-warn to-warn-dim text-base-950 px-4 py-2.5 flex items-center gap-2 transition-all active:scale-[.96] hover:shadow-lg hover:shadow-warn/30 overflow-hidden">
+    <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+    <svg class="w-4 h-4 relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span class="text-xs font-bold font-mono relative z-10 tracking-wider uppercase">Generate</span>
+  </button>
+</div>

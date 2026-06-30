@@ -1,7 +1,11 @@
 // /client/bot/bot-client.js
 import { parseArgs } from "node:util";
+import { readFile } from "fs/promises";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import pino from "pino";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const isProd = process.env.NODE_ENV === "production";
 const logger = pino({
   level: process.env.LOG_LEVEL || (isProd ? "info" : "debug"),
@@ -24,20 +28,40 @@ const log = logger.child({ module: "bot-client" });
 const {
   values: {
     server = process.env.WS_URL || "ws://localhost:3000/ws",
-    token = process.env.BOT_TOKEN,
+    token: tokenFlag,
     interval = process.env.UPDATE_INTERVAL || "5000",
+    config: configFlag,
   },
 } = parseArgs({
   options: {
     server: { type: "string", short: "s" },
     token: { type: "string", short: "t" },
     interval: { type: "string", short: "i" },
+    config: { type: "string", short: "c" },
   },
 });
 
+let token = tokenFlag || process.env.BOT_TOKEN;
+
 if (!token) {
-  log.error("Bot token required. Set BOT_TOKEN env var or pass --token");
-  log.error("Usage: BOT_TOKEN=tok_xxx bun run client/bot/bot-client.js");
+  const configPath = resolve(configFlag || __dirname, "../../bot.config.json");
+  try {
+    const config = JSON.parse(await readFile(configPath, "utf-8"));
+    if (config.token) {
+      token = config.token;
+      log.info({ configPath, name: config.name }, "loaded token from bot.config.json");
+    }
+  } catch (e) {
+    log.warn({ configPath, err: e.message }, "could not read bot.config.json");
+  }
+}
+
+if (!token) {
+  log.error("Bot token required.");
+  log.error("Options:");
+  log.error("  1. Set BOT_TOKEN env var");
+  log.error("  2. Pass --token <TOKEN>");
+  log.error("  3. Put it in bot.config.json at project root");
   log.error("Get a bot token from: curl http://localhost:3000/api/bots | jq '.[] | {name,token}'");
   process.exit(1);
 }

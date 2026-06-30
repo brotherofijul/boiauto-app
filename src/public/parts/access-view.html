@@ -1,0 +1,6 @@
+<!-- /parts/access-view.html -->
+<div>
+  <div x-init="fetch('parts/access-topbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/access-list.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/add-access-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+</div>

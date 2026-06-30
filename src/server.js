@@ -1,7 +1,7 @@
 // /src/server.js
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import db, { queries } from "./db.js";
+import db, { queries, genBotId, genToken, seedFromConfig } from "./db.js";
 import { wsHandler, broadcastAccountUpdate, broadcastBotUpdate } from "./ws.js";
 import logger from "./logger.js";
 
@@ -11,6 +11,8 @@ const PORT = Number(process.env.PORT) || 3000;
 const isProd = process.env.NODE_ENV === "production";
 
 const log = logger.child({ module: "server" });
+
+await seedFromConfig().catch((e) => log.error({ err: e }, "seedFromConfig failed"));
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -32,21 +34,19 @@ async function readJson(req) {
   try { return await req.json(); } catch { return null; }
 }
 
-function genBotId() {
-  return "bot_" + Math.random().toString(36).slice(2, 8);
-}
-
-function genToken() {
-  return "tok_" + Array.from({ length: 24 }, () => Math.random().toString(36).slice(2, 3)).join("");
-}
-
 async function handleApi(req, url) {
   const path = url.pathname.replace("/api/", "");
-  const [resource, idStr] = path.split("/");
+  const [resource, idStr, sub] = path.split("/");
   const id = idStr ? Number(idStr) : null;
-  const apiLog = log.child({ resource, method: req.method, id });
+  const apiLog = log.child({ resource, method: req.method, id, sub });
 
   if (resource === "bots") {
+    if (idStr === "generate-token" && req.method === "POST") {
+      const token = genToken();
+      apiLog.info({ token: token.slice(0, 12) + "..." }, "generated token");
+      return json({ token });
+    }
+
     if (req.method === "GET") {
       const bots = queries.listBots();
       apiLog.debug({ count: bots.length }, "list bots");
@@ -55,13 +55,9 @@ async function handleApi(req, url) {
 
     if (req.method === "POST") {
       const body = await readJson(req);
-      if (!body?.token) {
-        apiLog.warn("create bot: missing token");
-        return json({ error: "Token is required" }, 400);
-      }
+      if (!body?.token) return json({ error: "Token is required" }, 400);
       const type = body.type || "Dual";
       if (type === "Business" && (!body.rate_per_day || body.rate_per_day <= 0)) {
-        apiLog.warn({ type }, "create bot: Business requires rate_per_day");
         return json({ error: "Business type requires rate_per_day" }, 400);
       }
       const botId = genBotId();
@@ -75,19 +71,23 @@ async function handleApi(req, url) {
 
     if (req.method === "PATCH" && id) {
       const body = await readJson(req);
-      const bot = db.query("SELECT * FROM bots WHERE id = ?").get(id);
+      const bot = queries.getBotById(id);
       if (!bot) return json({ error: "Bot not found" }, 404);
-      const name = body.name ?? bot.name;
-      const type = body.type ?? bot.type;
-      const rate = type === "Business" ? (body.rate_per_day ?? bot.rate_per_day) : 0;
-      if (type === "Business" && (!rate || rate <= 0)) {
-        apiLog.warn({ type }, "update bot: Business requires rate_per_day");
+      const fields = {};
+      if (body.name != null) fields.name = body.name;
+      if (body.token != null) fields.token = body.token;
+      if (body.type != null) fields.type = body.type;
+      if (body.rate_per_day != null) {
+        const t = body.type ?? bot.type;
+        fields.rate_per_day = t === "Business" ? body.rate_per_day : 0;
+      }
+      if (body.type === "Business" && (!fields.rate_per_day && !bot.rate_per_day)) {
         return json({ error: "Business type requires rate_per_day" }, 400);
       }
-      queries.updateBot(id, name, type, rate);
-      const updated = db.query("SELECT * FROM bots WHERE id = ?").get(id);
+      queries.updateBot(id, fields);
+      const updated = queries.getBotById(id);
       broadcastBotUpdate(updated.bot_id, updated);
-      apiLog.info({ botId: updated.bot_id, name, type }, "bot updated");
+      apiLog.info({ botId: updated.bot_id, fields: Object.keys(fields) }, "bot updated");
       return json(updated);
     }
 
@@ -99,32 +99,18 @@ async function handleApi(req, url) {
   }
 
   if (resource === "accounts") {
-    if (req.method === "GET") {
-      const accounts = queries.listAccounts();
-      apiLog.debug({ count: accounts.length }, "list accounts");
-      return json(accounts);
-    }
+    if (req.method === "GET") return json(queries.listAccounts());
 
     if (req.method === "POST") {
       const body = await readJson(req);
-      if (!body?.bearer) {
-        apiLog.warn("create account: missing bearer");
-        return json({ error: "Bearer is required" }, 400);
-      }
-      if (!body?.bot_id) {
-        apiLog.warn("create account: missing bot_id");
-        return json({ error: "bot_id is required" }, 400);
-      }
+      if (!body?.bearer) return json({ error: "Bearer is required" }, 400);
+      if (!body?.bot_id) return json({ error: "bot_id is required" }, 400);
 
       const bot = queries.getBotByBotId(body.bot_id);
-      if (!bot) {
-        apiLog.warn({ botId: body.bot_id }, "create account: bot not found");
-        return json({ error: "Bot not found" }, 404);
-      }
+      if (!bot) return json({ error: "Bot not found" }, 404);
 
       const count = queries.accountCountByBot(body.bot_id);
       if ((bot.type === "Dual" || bot.type === "Business") && count >= 2) {
-        apiLog.warn({ botId: bot.bot_id, type: bot.type, count }, "create account: bot full");
         return json({ error: `Bot ${bot.name} reached max 2 accounts limit (${bot.type})` }, 400);
       }
 
@@ -134,7 +120,7 @@ async function handleApi(req, url) {
         bot_id: body.bot_id,
         balance: 0,
         diamond: 0,
-        status: bot.status,
+        status: bot.status === "connected" ? "online" : "offline",
         type: bot.type,
       });
       const list = queries.listAccounts();
@@ -148,14 +134,14 @@ async function handleApi(req, url) {
       const body = await readJson(req);
       const acc = queries.getAccountById(id);
       if (!acc) return json({ error: "Account not found" }, 404);
-      const allowed = ["name", "bearer", "bot_id", "skill_up_running", "auto_war_running", "auto_work_running", "current_level", "target_level", "pending_at"];
+      const allowed = ["name", "bearer", "bot_id", "skill_up_running", "auto_war_running", "auto_work_running", "current_level", "target_level", "pending_at", "balance", "diamond", "status"];
       const fields = {};
       for (const k of allowed) if (k in body) fields[k] = body[k];
       if (body.bot_id) {
         const bot = queries.getBotByBotId(body.bot_id);
         if (!bot) return json({ error: "Bot not found" }, 404);
         fields.type = bot.type;
-        fields.status = bot.status;
+        fields.status = bot.status === "connected" ? "online" : "offline";
       }
       queries.updateAccount(id, fields);
       const updated = queries.getAccountById(id);
@@ -167,6 +153,39 @@ async function handleApi(req, url) {
     if (req.method === "DELETE" && id) {
       queries.deleteAccount(id);
       apiLog.info({ accountId: id }, "account deleted");
+      return json({ ok: true });
+    }
+  }
+
+  if (resource === "access") {
+    if (req.method === "GET") return json(queries.listAccess());
+
+    if (req.method === "POST") {
+      const body = await readJson(req);
+      if (!body?.bot_id) return json({ error: "bot_id is required" }, 400);
+      const bot = queries.getBotByBotId(body.bot_id);
+      if (!bot) return json({ error: "Bot not found" }, 404);
+
+      if (bot.type === "Dual" || bot.type === "Business") {
+        const count = queries.accessCountByBot(body.bot_id);
+        if (count >= 2) {
+          return json({ error: `Bot ${bot.name} (${bot.type}) allows max 2 access tokens` }, 400);
+        }
+      }
+
+      const token = genToken();
+      const bytes = crypto.getRandomValues(new Uint8Array(7));
+      const hex = Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+      const accessId = "acc_" + hex;
+      queries.insertAccess(accessId, token, body.bot_id, body.label);
+      const access = db.query("SELECT a.*, b.name as bot_name, b.type as bot_type FROM access_tokens a LEFT JOIN bots b ON a.bot_id = b.bot_id WHERE a.token = ?").get(token);
+      apiLog.info({ accessId, botId: body.bot_id }, "access token created");
+      return json(access, 201);
+    }
+
+    if (req.method === "DELETE" && id) {
+      queries.deleteAccess(id);
+      apiLog.info({ id }, "access token deleted");
       return json({ ok: true });
     }
   }
@@ -209,5 +228,5 @@ log.info({
   port: PORT,
   mode: isProd ? "production" : "development",
   ws: `ws://localhost:${PORT}/ws`,
-  api: `http://localhost:${PORT}/api/{bots,accounts}`,
+  api: `http://localhost:${PORT}/api/{bots,accounts,access}`,
 }, `BOIAuto server running`);

@@ -55,8 +55,8 @@ export const wsHandler = {
         }
         ctx.role = "bot";
         ctx.botId = bot.bot_id;
-        queries.setBotStatus(bot.bot_id, "online");
-        broadcastToSubscribers({ type: "bot_status", bot_id: bot.bot_id, status: "online" });
+        queries.setBotStatus(bot.bot_id, "connected");
+        broadcastToSubscribers({ type: "bot_status", bot_id: bot.bot_id, status: "connected" });
         send(ws, { type: "auth_ok", role: "bot", bot_id: bot.bot_id, name: bot.name });
         log.info({ bot: bot.name, botId: bot.bot_id }, "bot connected");
         return;
@@ -123,8 +123,8 @@ export const wsHandler = {
   close(ws) {
     const ctx = sockets.get(ws);
     if (ctx?.role === "bot" && ctx.botId) {
-      queries.setBotStatus(ctx.botId, "offline");
-      broadcastToSubscribers({ type: "bot_status", bot_id: ctx.botId, status: "offline" });
+      queries.setBotStatus(ctx.botId, "disconnected");
+      broadcastToSubscribers({ type: "bot_status", bot_id: ctx.botId, status: "disconnected" });
       log.info({ botId: ctx.botId }, "bot disconnected");
     }
     if (ctx?.role === "web") {

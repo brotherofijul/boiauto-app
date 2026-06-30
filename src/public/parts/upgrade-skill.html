@@ -1,6 +1,10 @@
 <!-- /parts/upgrade-skill.html -->
 <main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
-  <template x-if="currentView === 'account'">
+  <template x-if="currentView === 'access'">
+    <div x-init="fetch('parts/access-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
+  <template x-if="currentView === 'automate'">
     <div>
       <div x-init="fetch('parts/topbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
       <div x-init="fetch('parts/empty-state.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
@@ -20,5 +24,6 @@
   <div x-init="fetch('parts/add-account-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/add-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/edit-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/add-access-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/navbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 </main>

@@ -8,27 +8,39 @@
 - `LOG_LEVEL` — `debug` | `info` | `warn` | `error` (default: `debug` in dev, `info` in prod)
 
 ## Bot Client (client/bot/bot-client.js)
-- `BOT_TOKEN` — **required**. Token of the bot to authenticate as.
 - `WS_URL` — WebSocket server URL (default: `ws://localhost:3000/ws`)
 - `UPDATE_INTERVAL` — State update interval in ms (default: 5000)
+- `BOT_TOKEN` — Optional override. If not set, token is read from `bot.config.json`.
 
-## Creating a Bot (no seed data)
+## bot.config.json
 
-The database starts empty. You must create a bot first before the bot client can connect.
+The primary way to configure the bot client. Place at project root:
 
-### 1. Start the server
-
-```bash
-bun run dev
+```json
+{
+  "bot_id": "bot_root_primary",
+  "name": "PrimaryBot",
+  "token": "bot_xxxxxxxxxxxxxxxx",
+  "type": "Dual",
+  "rate_per_day": 0
+}
 ```
 
-### 2. Create a bot via API
+On server startup, this config is read and the bot is seeded into the database (only if no bot with that token exists yet). This is how you register a "root" bot without going through the UI.
+
+## Creating Additional Bots
+
+After the server is running, you can add more bots via the UI (Bot page → + Add) or via the API:
 
 ```bash
+# Generate a fresh token
+curl -X POST http://localhost:3000/api/bots/generate-token
+
+# Create a bot with that token
 curl -X POST http://localhost:3000/api/bots \
   -H "Content-Type: application/json" \
   -d '{
-    "token": "my-secret-bot-token",
+    "token": "bot_xxxxxxxxxxxxxxxx",
     "name": "MyBot",
     "type": "Dual"
   }'
@@ -40,52 +52,39 @@ For Business type (requires rate_per_day):
 curl -X POST http://localhost:3000/api/bots \
   -H "Content-Type: application/json" \
   -d '{
-    "token": "my-business-token",
+    "token": "bot_xxxxxxxxxxxxxxxx",
     "name": "BusinessBot",
     "type": "Business",
     "rate_per_day": 5.00
   }'
 ```
 
-### 3. Set BOT_TOKEN in .env
+## Generating Access Tokens
+
+Access tokens allow other users to use one bot for one automate. Generate them on the **Access** page (or via API):
 
 ```bash
-echo 'BOT_TOKEN=my-secret-bot-token' >> .env
+curl -X POST http://localhost:3000/api/access \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bot_id": "bot_xxxxxxxxxxxxxxxx",
+    "label": "John"
+  }'
 ```
 
-### 4. Run the bot client
+Returns the access token. Share it with the recipient — they can use it to run 1 automate linked to that bot.
 
-```bash
-bun run bot:start
-# or
-bun run client/bot/bot-client.js
-```
-
-The bot client will:
-1. Connect to `ws://localhost:3000/ws`
-2. Authenticate with `BOT_TOKEN`
-3. Bot status in DB updates to `online`
-4. Send mock state updates every 5s
-5. Listen for commands from web clients
-
-## Listing existing bots
-
-```bash
-curl -s http://localhost:3000/api/bots | jq '.[] | {name, bot_id, type, status}'
-```
+Dual & Business bots allow max 2 access tokens each. Shared & Custom have no limit.
 
 ## Usage Summary
 
 ```bash
-# Server (dev)
+# Server (dev) — :memory: DB, pino-pretty logs
 bun run dev
 
-# Server (prod)
+# Server (prod) — file DB, JSON logs
 NODE_ENV=production bun run start
 
-# Bot client (reads .env automatically)
+# Bot client (reads bot.config.json automatically)
 bun run bot:start
-
-# Or with explicit env
-BOT_TOKEN=my-secret-token bun run client/bot/bot-client.js
 ```
