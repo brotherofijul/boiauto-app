@@ -18,14 +18,6 @@ db.exec("PRAGMA journal_mode = WAL;");
 db.exec("PRAGMA foreign_keys = ON;");
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    balance REAL DEFAULT 0,
-    diamond INTEGER DEFAULT 0,
-    created_at INTEGER DEFAULT (unixepoch())
-  );
-
   CREATE TABLE IF NOT EXISTS bots (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     bot_id TEXT UNIQUE NOT NULL,
@@ -91,12 +83,6 @@ export const queries = {
   deleteAccount: (id) => db.prepare("DELETE FROM accounts WHERE id = ?").run(id),
   accountCountByBot: (botId) =>
     db.query("SELECT COUNT(*) as c FROM accounts WHERE bot_id = ?").get(botId).c,
-
-  listUsers: () => db.query("SELECT * FROM users ORDER BY name").all(),
-  getUserByName: (name) => db.query("SELECT * FROM users WHERE name = ?").get(name),
-  insertUser: (name, balance, diamond) =>
-    db.prepare("INSERT OR IGNORE INTO users (name, balance, diamond) VALUES (?, ?, ?)").run(name, balance || 0, diamond || 0),
-  randomUser: () => db.query("SELECT * FROM users ORDER BY RANDOM() LIMIT 1").get(),
 };
 
 export default db;

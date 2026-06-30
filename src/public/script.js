@@ -1,57 +1,42 @@
 // /script.js
-const LS_ACCOUNTS = "boiauto_accounts";
-const LS_BOTS = "boiauto_bots";
+const API = "/api";
 
-const MOCK_USERS = [
-  { name: "ProGamerXYZ",    balance: 152340.50, diamond: 1240 },
-  { name: "ShadowKnight",   balance: 89750.25,  diamond: 580 },
-  { name: "DragonSlayer99", balance: 245100.00, diamond: 3100 },
-  { name: "NightHunter",    balance: 67890.75,  diamond: 850 },
-  { name: "ThunderBoltZ",   balance: 178420.30, diamond: 1990 },
-];
-
-function genBotId() {
-  return "bot_" + Array.from({ length: 6 }, () =>
-    Math.random().toString(36).slice(2, 3)
-  ).join("");
-}
-
-function createAccount() {
+function mapAccount(a, bots) {
+  const bot = bots.find((b) => b.bot_id === a.bot_id);
   return {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-    name: "",
-    bearer: "",
-    botId: "",
-    botName: "",
-    botStatus: "offline",
-    type: "Dual",
-    balance: 0,
-    diamond: 0,
+    id: a.id,
+    name: a.name || "",
+    bearer: a.bearer || "",
+    botId: a.bot_id || "",
+    botName: bot?.name || a.bot_id || "",
+    botStatus: a.status || (bot?.status || "offline"),
+    type: a.type || "Dual",
+    balance: a.balance || 0,
+    diamond: a.diamond || 0,
     showBearer: false,
-    running: false,
+    running: !!a.skill_up_running,
     error: "",
     skill: 3,
     pay: 1,
-    currentLevel: null,
-    targetLevel: null,
-    pendingAt: null,
+    currentLevel: a.current_level ?? null,
+    targetLevel: a.target_level ?? null,
+    pendingAt: a.pending_at ?? null,
     time: "\u2014",
-    _timer: null,
-    skillUpRunning: false,
-    autoWarRunning: false,
-    autoWorkRunning: false,
+    skillUpRunning: !!a.skill_up_running,
+    autoWarRunning: !!a.auto_war_running,
+    autoWorkRunning: !!a.auto_work_running,
   };
 }
 
-function createBot() {
+function mapBot(b) {
   return {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-    botId: "",
-    name: "",
-    token: "",
-    type: "Dual",
-    ratePerDay: 0,
-    status: "offline",
+    id: b.id,
+    botId: b.bot_id,
+    name: b.name,
+    token: b.token,
+    type: b.type,
+    ratePerDay: b.rate_per_day || 0,
+    status: b.status,
     showToken: false,
   };
 }
@@ -104,8 +89,7 @@ function boiauto() {
     pendingView: null,
 
     init() {
-      this.loadAccounts();
-      this.loadBots();
+      this.loadBots().then(() => this.loadAccounts());
       spawnParticles();
       this.$watch('selectedAccountId', () => this.updateScrollLock());
       this.$watch('showAddModal', () => this.updateScrollLock());
@@ -134,21 +118,26 @@ function boiauto() {
       }, 700);
     },
 
-    loadAccounts() {
+    async loadAccounts() {
       try {
-        const arr = JSON.parse(localStorage.getItem(LS_ACCOUNTS)) || [];
-        this.accounts = arr.map((a) => ({ ...createAccount(), ...a }));
-      } catch {}
+        const res = await fetch(`${API}/accounts`);
+        if (!res.ok) throw new Error("Failed to load accounts");
+        const data = await res.json();
+        this.accounts = data.map((a) => mapAccount(a, this.bots));
+      } catch (e) {
+        console.error("[loadAccounts]", e);
+      }
     },
 
-    saveAccounts() {
+    async loadBots() {
       try {
-        const data = this.accounts.map((a) => {
-          const { _timer, ...rest } = a;
-          return rest;
-        });
-        localStorage.setItem(LS_ACCOUNTS, JSON.stringify(data));
-      } catch {}
+        const res = await fetch(`${API}/bots`);
+        if (!res.ok) throw new Error("Failed to load bots");
+        const data = await res.json();
+        this.bots = data.map(mapBot);
+      } catch (e) {
+        console.error("[loadBots]", e);
+      }
     },
 
     openAddModal() {
@@ -183,7 +172,7 @@ function boiauto() {
         this.addError = "Please select a bot.";
         return;
       }
-      const selectedBot = this.bots.find((b) => b.id === this.newSelectedBotId);
+      const selectedBot = this.bots.find((b) => b.id === Number(this.newSelectedBotId));
       if (!selectedBot) {
         this.addError = "Selected bot not found.";
         return;
@@ -195,50 +184,87 @@ function boiauto() {
       this.addingAccount = true;
       this.addError = "";
       try {
-        await new Promise((r) => setTimeout(r, 700));
-        const user = MOCK_USERS[Math.floor(Math.random() * MOCK_USERS.length)];
-
-        const acc = createAccount();
-        acc.bearer = this.newBearer.trim();
-        acc.name = user.name;
-        acc.balance = user.balance;
-        acc.diamond = user.diamond;
-        acc.botId = selectedBot.botId;
-        acc.botName = selectedBot.name || selectedBot.botId;
-        acc.botStatus = selectedBot.status;
-        acc.type = selectedBot.type;
-        this.accounts.push(acc);
-        this.saveAccounts();
+        const res = await fetch(`${API}/accounts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bearer: this.newBearer.trim(),
+            bot_id: selectedBot.botId,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to create account");
+        }
+        await this.loadAccounts();
         this.closeAddModal();
       } catch (e) {
-        this.addError = "Failed to fetch account info. Please try again.";
+        this.addError = e.message || "Failed to create account. Please try again.";
       } finally {
         this.addingAccount = false;
       }
     },
 
-    removeAccount(idx) {
+    async removeAccount(idx) {
       const a = this.accounts[idx];
-      if (a && a.running) a.running = false;
-      if (this.selectedAccountId === a.id) this.selectedAccountId = null;
-      this.accounts.splice(idx, 1);
-      this.saveAccounts();
+      if (!a) return;
+      try {
+        const res = await fetch(`${API}/accounts/${a.id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete account");
+        if (this.selectedAccountId === a.id) this.selectedAccountId = null;
+        this.accounts.splice(idx, 1);
+      } catch (e) {
+        console.error("[removeAccount]", e);
+      }
     },
 
-    saveAccount(idx) { this.saveAccounts(); },
-
-    toggleFeature(idx, feature) {
+    async saveAccount(idx) {
       const a = this.accounts[idx];
+      if (!a) return;
+      try {
+        const res = await fetch(`${API}/accounts/${a.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bearer: a.bearer,
+            bot_id: a.botId,
+          }),
+        });
+        if (!res.ok) throw new Error("Failed to update account");
+        await this.loadAccounts();
+      } catch (e) {
+        console.error("[saveAccount]", e);
+      }
+    },
+
+    async toggleFeature(idx, feature) {
+      const a = this.accounts[idx];
+      if (!a) return;
       const key = feature + "Running";
       if (!a.bearer.trim() || !a.botId) {
         a.error = "Configure Bearer & Bot first.";
         setTimeout(() => { if (a.error === "Configure Bearer & Bot first.") a.error = ""; }, 3000);
         return;
       }
-      a[key] = !a[key];
-      a.running = a.skillUpRunning;
-      if (a[key]) a.botStatus = "online";
-      this.saveAccounts();
+      const newValue = !a[key];
+      try {
+        const res = await fetch(`${API}/accounts/${a.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            [feature === "skillUp" ? "skill_up_running" :
+              feature === "autoWar" ? "auto_war_running" :
+              "auto_work_running"]: newValue ? 1 : 0,
+          }),
+        });
+        if (!res.ok) throw new Error("Failed to toggle feature");
+        a[key] = newValue;
+        a.running = a.skillUpRunning;
+        if (newValue) a.botStatus = "online";
+      } catch (e) {
+        a.error = "Failed to toggle feature. Please try again.";
+        setTimeout(() => { if (a.error === "Failed to toggle feature. Please try again.") a.error = ""; }, 3000);
+      }
     },
 
     openDetail(id) { this.selectedAccountId = id; },
@@ -254,8 +280,9 @@ function boiauto() {
       return this.accounts.findIndex((a) => a.id === this.selectedAccountId);
     },
 
-    startAccount(idx) {
+    async startAccount(idx) {
       const a = this.accounts[idx];
+      if (!a) return;
       if (!a.bearer.trim()) {
         a.error = "Bearer token is required.";
         setTimeout(() => { if (a.error === "Bearer token is required.") a.error = ""; }, 3000);
@@ -266,30 +293,48 @@ function boiauto() {
         setTimeout(() => { if (a.error === "Bot is required.") a.error = ""; }, 3000);
         return;
       }
-      a.running = true;
-      a.botStatus = "online";
-      a.error = "";
+      try {
+        const res = await fetch(`${API}/accounts/${a.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ skill_up_running: 1 }),
+        });
+        if (!res.ok) throw new Error("Failed to start account");
+        a.running = true;
+        a.skillUpRunning = true;
+        a.botStatus = "online";
+        a.error = "";
+      } catch (e) {
+        a.error = "Failed to start. Please try again.";
+        setTimeout(() => { if (a.error === "Failed to start. Please try again.") a.error = ""; }, 3000);
+      }
     },
 
-    stopAccount(idx) {
+    async stopAccount(idx) {
       const a = this.accounts[idx];
-      a.running = false;
-      a.botStatus = "offline";
-      a.time = "\u2014";
-      a.pendingAt = null;
-    },
-
-    loadBots() {
+      if (!a) return;
       try {
-        const arr = JSON.parse(localStorage.getItem(LS_BOTS)) || [];
-        this.bots = arr.map((b) => ({ ...createBot(), ...b }));
-      } catch {}
-    },
-
-    saveBots() {
-      try {
-        localStorage.setItem(LS_BOTS, JSON.stringify(this.bots));
-      } catch {}
+        const res = await fetch(`${API}/accounts/${a.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            skill_up_running: 0,
+            auto_war_running: 0,
+            auto_work_running: 0,
+          }),
+        });
+        if (!res.ok) throw new Error("Failed to stop account");
+        a.running = false;
+        a.skillUpRunning = false;
+        a.autoWarRunning = false;
+        a.autoWorkRunning = false;
+        a.botStatus = "offline";
+        a.time = "\u2014";
+        a.pendingAt = null;
+      } catch (e) {
+        a.error = "Failed to stop. Please try again.";
+        setTimeout(() => { if (a.error === "Failed to stop. Please try again.") a.error = ""; }, 3000);
+      }
     },
 
     openAddBotModal() {
@@ -317,20 +362,24 @@ function boiauto() {
       this.addingBot = true;
       this.addBotError = "";
       try {
-        await new Promise((r) => setTimeout(r, 700));
-
-        const bot = createBot();
-        bot.token = this.newBotToken.trim();
-        bot.name = this.newBotName.trim() || ("Bot-" + this.newBotToken.slice(-4));
-        bot.botId = genBotId();
-        bot.type = this.newBotType;
-        bot.ratePerDay = this.newBotType === "Business" ? Number(this.newBotRate) || 0 : 0;
-        bot.status = "offline";
-        this.bots.push(bot);
-        this.saveBots();
+        const res = await fetch(`${API}/bots`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: this.newBotToken.trim(),
+            name: this.newBotName.trim() || undefined,
+            type: this.newBotType,
+            rate_per_day: this.newBotType === "Business" ? Number(this.newBotRate) || 0 : 0,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to create bot");
+        }
+        await this.loadBots();
         this.closeAddBotModal();
       } catch (e) {
-        this.addBotError = "Failed to add bot. Please try again.";
+        this.addBotError = e.message || "Failed to create bot. Please try again.";
       } finally {
         this.addingBot = false;
       }
@@ -353,7 +402,7 @@ function boiauto() {
       this.editingBotId = null;
     },
 
-    saveEditBot() {
+    async saveEditBot() {
       if (!this.editingBotId) return;
       if (this.editBotType === "Business" && (!this.editBotRate || this.editBotRate <= 0)) {
         this.editBotError = "Rate per day is required for Business type.";
@@ -361,34 +410,40 @@ function boiauto() {
       }
       this.savingBot = true;
       this.editBotError = "";
-      const b = this.bots.find((x) => x.id === this.editingBotId);
-      if (!b) {
-        this.editBotError = "Bot not found.";
-        this.savingBot = false;
-        return;
-      }
-      b.name = this.editBotName.trim() || b.name;
-      b.type = this.editBotType;
-      b.ratePerDay = this.editBotType === "Business" ? Number(this.editBotRate) || 0 : 0;
-      this.accounts.forEach((a) => {
-        if (a.botId === b.botId) {
-          a.botName = b.name;
-          a.type = b.type;
+      try {
+        const res = await fetch(`${API}/bots/${this.editingBotId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: this.editBotName.trim(),
+            type: this.editBotType,
+            rate_per_day: this.editBotType === "Business" ? Number(this.editBotRate) || 0 : 0,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Failed to update bot");
         }
-      });
-      this.saveBots();
-      this.saveAccounts();
-      setTimeout(() => {
+        await this.loadBots();
+        await this.loadAccounts();
         this.savingBot = false;
         this.closeEditBotModal();
-      }, 400);
+      } catch (e) {
+        this.editBotError = e.message || "Failed to update bot.";
+        this.savingBot = false;
+      }
     },
 
-    removeBot(idx) {
+    async removeBot(idx) {
       const b = this.bots[idx];
       if (!b) return;
-      this.bots.splice(idx, 1);
-      this.saveBots();
+      try {
+        const res = await fetch(`${API}/bots/${b.id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete bot");
+        this.bots.splice(idx, 1);
+      } catch (e) {
+        console.error("[removeBot]", e);
+      }
     },
 
     maskToken(token) {
@@ -405,7 +460,7 @@ function boiauto() {
 
     timeClass(idx) {
       const a = this.accounts[idx];
-      if (!a.pendingAt) return "text-base-500";
+      if (!a || !a.pendingAt) return "text-base-500";
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-warn";
@@ -413,7 +468,7 @@ function boiauto() {
     },
 
     timeLow(idx) {
-      const pa = this.accounts[idx].pendingAt;
+      const pa = this.accounts[idx]?.pendingAt;
       if (!pa) return false;
       const rem = new Date(pa).getTime() - Date.now();
       return rem > 0 && rem < 10000;
@@ -436,8 +491,6 @@ function boiauto() {
     botStatusClass(s) {
       return s === "online"
         ? "text-s1 bg-s1/10 border-s1/30"
-        : s === "error"
-        ? "text-danger bg-danger/10 border-danger/30"
         : "text-danger bg-danger/10 border-danger/30";
     },
 

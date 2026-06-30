@@ -128,13 +128,12 @@ async function handleApi(req, url) {
         return json({ error: `Bot ${bot.name} reached max 2 accounts limit (${bot.type})` }, 400);
       }
 
-      const user = queries.randomUser();
       queries.insertAccount({
-        name: user.name,
+        name: body.name || `Account-${Date.now().toString(36).slice(-4)}`,
         bearer: body.bearer,
         bot_id: body.bot_id,
-        balance: user.balance,
-        diamond: user.diamond,
+        balance: 0,
+        diamond: 0,
         status: bot.status,
         type: bot.type,
       });
@@ -170,10 +169,6 @@ async function handleApi(req, url) {
       apiLog.info({ accountId: id }, "account deleted");
       return json({ ok: true });
     }
-  }
-
-  if (resource === "users" && req.method === "GET") {
-    return json(db.query("SELECT * FROM users ORDER BY name").all());
   }
 
   return json({ error: "Not found" }, 404);
@@ -214,5 +209,5 @@ log.info({
   port: PORT,
   mode: isProd ? "production" : "development",
   ws: `ws://localhost:${PORT}/ws`,
-  api: `http://localhost:${PORT}/api/{bots,accounts,users}`,
+  api: `http://localhost:${PORT}/api/{bots,accounts}`,
 }, `BOIAuto server running`);
