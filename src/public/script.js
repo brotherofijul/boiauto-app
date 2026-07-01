@@ -1,4 +1,4 @@
-// src/public/script.js
+// /script.js
 const API = "/api";
 
 const FEATURE_FIELD_MAP = {
@@ -6,6 +6,15 @@ const FEATURE_FIELD_MAP = {
   autoWar: "auto_war_running",
   autoWork: "auto_work_running",
 };
+
+const VIEW_LOADERS = {
+  dashboard: "loadDashboard",
+  automate: "loadAutomates",
+  bot: "loadBots",
+  access: "loadAccess",
+};
+
+const DEFAULT_CONFIRM_MODAL = { open: false, title: "", message: "", resolve: null };
 
 function mapAutomate(a) {
   return {
@@ -80,7 +89,7 @@ function boiauto() {
     searchAccess: "",
     searchAutomates: "",
     toasts: [],
-    confirmModal: { open: false, title: "", message: "", resolve: null },
+    confirmModal: { ...DEFAULT_CONFIRM_MODAL },
     showAddAutomateModal: false,
     showAddBotModal: false,
     showEditBotModal: false,
@@ -113,19 +122,17 @@ function boiauto() {
     newAccessName: "",
     newAccessType: "Private",
     newAccessPrice: 0,
-    generatedAccessToken: "",
-    accessCopied: false,
     addAccessError: "",
     addingAccess: false,
 
     selectedAutomateId: null,
     navbarOpen: false,
     currentView: "dashboard",
-    modalStates: ['selectedAutomateId', 'showAddAutomateModal', 'showAddBotModal', 'showEditBotModal', 'showAddAccessModal', 'confirmModal.open'],
+    modalStates: ["selectedAutomateId", "showAddAutomateModal", "showAddBotModal", "showEditBotModal", "showAddAccessModal", "confirmModal.open", "navbarOpen"],
     featureToggles: [
-      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill' },
-      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training' },
-      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work' },
+      { key: "skillUpRunning", feature: "skillUp", label: "Skill" },
+      { key: "autoWarRunning", feature: "autoWar", label: "Training" },
+      { key: "autoWorkRunning", feature: "autoWork", label: "Work" },
     ],
 
     init() {
@@ -134,14 +141,14 @@ function boiauto() {
       this.loadAccess();
       this.loadDashboard();
 
-      this.modalStates.forEach(state => {
+      this.modalStates.forEach((state) => {
         this.$watch(state, () => this.updateScrollLock());
       });
 
-      this.$watch('bots', (bots) => {
+      this.$watch("bots", (bots) => {
         if (this.newlyAddedBotId && this.showAddBotModal) {
           const bot = bots.find((b) => b.botId === this.newlyAddedBotId);
-          if (bot && bot.status === 'connected') {
+          if (bot && bot.status === "connected") {
             this.botConnectedWhileOpen = true;
           }
         }
@@ -149,16 +156,17 @@ function boiauto() {
     },
 
     updateScrollLock() {
-      document.body.style.overflow = this.modalStates.some(s => {
-        if (s.includes('.')) {
-          return s.split('.').reduce((obj, key) => obj?.[key], this);
+      const locked = this.modalStates.some((s) => {
+        if (s.includes(".")) {
+          return s.split(".").reduce((obj, key) => obj?.[key], this);
         }
         return !!this[s];
-      }) ? 'hidden' : '';
+      });
+      document.body.style.overflow = locked ? "hidden" : "";
     },
 
-    openNavbar() { this.navbarOpen = true; document.body.style.overflow = 'hidden'; },
-    closeNavbar() { this.navbarOpen = false; document.body.style.overflow = ''; },
+    openNavbar() { this.navbarOpen = true; },
+    closeNavbar() { this.navbarOpen = false; },
 
     switchView(view) {
       if (this.currentView === view) {
@@ -166,12 +174,9 @@ function boiauto() {
         return;
       }
       this.currentView = view;
-      document.body.style.overflow = '';
-      this.navbarOpen = false;
-      if (view === 'dashboard') this.loadDashboard();
-      if (view === 'automate') this.loadAutomates();
-      if (view === 'bot') this.loadBots();
-      if (view === 'access') this.loadAccess();
+      this.closeNavbar();
+      const loader = VIEW_LOADERS[view];
+      if (loader) this[loader]();
     },
 
     // --- Shared API helpers ---
@@ -183,12 +188,24 @@ function boiauto() {
         if (!res.ok) throw new Error();
         const data = await res.json();
         this[stateKey] = Array.isArray(data) ? data.map(mapFn) : data;
-      } catch (e) {
-        console.error(`[${stateKey}]`, e);
+      } catch {
         this.showToast("error", errorMsg);
       } finally {
         this[loadingKey] = false;
       }
+    },
+
+    async apiPost(endpoint, body) {
+      const res = await fetch(`${API}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Request failed");
+      }
+      return res.json();
     },
 
     async apiPatch(endpoint, body) {
@@ -210,12 +227,27 @@ function boiauto() {
       return res;
     },
 
+    async confirmAndDelete({ array, idx, endpoint, label, confirmTitle, confirmMsg, successMsg, afterDelete }) {
+      const item = array[idx];
+      if (!item) return;
+      const ok = await this.confirmAction(confirmTitle, confirmMsg);
+      if (!ok) return;
+      try {
+        await this.apiDelete(`${endpoint}/${item.id}`);
+        if (afterDelete) afterDelete(item);
+        array.splice(idx, 1);
+        this.showToast("success", successMsg);
+      } catch {
+        this.showToast("error", `Failed to delete ${label}`);
+      }
+    },
+
     // --- Data loaders ---
 
-    loadDashboard() { return this.loadResource('/dashboard', 'dashboard', null, 'Failed to load dashboard', 'loadingDashboard'); },
-    loadAutomates() { return this.loadResource('/automates', 'automates', mapAutomate, 'Failed to load automates', 'loadingAutomates'); },
-    loadBots() { return this.loadResource('/bots', 'bots', mapBot, 'Failed to load bots', 'loadingBots'); },
-    loadAccess() { return this.loadResource('/access', 'accessList', mapAccess, 'Failed to load access tokens', 'loadingAccess'); },
+    loadDashboard() { return this.loadResource("/dashboard", "dashboard", null, "Failed to load dashboard", "loadingDashboard"); },
+    loadAutomates() { return this.loadResource("/automates", "automates", mapAutomate, "Failed to load automates", "loadingAutomates"); },
+    loadBots() { return this.loadResource("/bots", "bots", mapBot, "Failed to load bots", "loadingBots"); },
+    loadAccess() { return this.loadResource("/access", "accessList", mapAccess, "Failed to load access tokens", "loadingAccess"); },
 
     // --- Computed ---
 
@@ -224,18 +256,18 @@ function boiauto() {
       const b = this.dashboard?.total_access ?? 0;
       const c = this.dashboard?.total_bots ?? 0;
       const total = a + b + c;
-      if (total === 0) return { svg: '', total: 0, legend: [] };
+      if (total === 0) return { svg: "", total: 0, legend: [] };
       const r = 32;
       const circ = 2 * Math.PI * r;
-      const data = [
-        { label: 'Automate', value: a, color: '#34d399' },
-        { label: 'Access', value: b, color: '#f5a623' },
-        { label: 'Bot', value: c, color: '#60a5fa' },
+      const segments = [
+        { label: "Automate", value: a, color: "#34d399" },
+        { label: "Access", value: b, color: "#f5a623" },
+        { label: "Bot", value: c, color: "#60a5fa" },
       ];
       let accumulated = 0;
-      let svgCircles = '';
+      let svgCircles = "";
       const legend = [];
-      for (const seg of data) {
+      for (const seg of segments) {
         const frac = seg.value / total;
         const dash = frac * circ;
         const offset = -accumulated * circ;
@@ -249,24 +281,19 @@ function boiauto() {
     filterBySearch(items, query, fields) {
       if (!query.trim()) return items;
       const q = query.toLowerCase();
-      return items.filter(item => fields.some(f => (item[f] || "").toLowerCase().includes(q)));
-    },
-
-    setError(item, msg, duration = 3000) {
-      item.error = msg;
-      if (duration > 0) setTimeout(() => { if (item.error === msg) item.error = ""; }, duration);
+      return items.filter((item) => fields.some((f) => (item[f] || "").toLowerCase().includes(q)));
     },
 
     get filteredBots() {
-      return this.filterBySearch(this.bots, this.searchBots, ['name', 'botId', 'type']);
+      return this.filterBySearch(this.bots, this.searchBots, ["name", "botId", "type"]);
     },
 
     get filteredAccess() {
-      return this.filterBySearch(this.accessList, this.searchAccess, ['name', 'accessId', 'botName', 'type']);
+      return this.filterBySearch(this.accessList, this.searchAccess, ["name", "accessId", "botName", "type"]);
     },
 
     get filteredAutomates() {
-      return this.filterBySearch(this.automates, this.searchAutomates, ['name', 'botName', 'accessName']);
+      return this.filterBySearch(this.automates, this.searchAutomates, ["name", "botName", "accessName"]);
     },
 
     // --- Toast & Confirm ---
@@ -289,15 +316,13 @@ function boiauto() {
       });
     },
 
-    confirmYes() {
-      this.confirmModal.resolve?.(true);
-      this.confirmModal = { open: false, title: "", message: "", resolve: null };
+    closeConfirm(result) {
+      this.confirmModal.resolve?.(result);
+      this.confirmModal = { ...DEFAULT_CONFIRM_MODAL };
     },
 
-    confirmNo() {
-      this.confirmModal.resolve?.(false);
-      this.confirmModal = { open: false, title: "", message: "", resolve: null };
-    },
+    confirmYes() { this.closeConfirm(true); },
+    confirmNo() { this.closeConfirm(false); },
 
     // --- Automate CRUD ---
 
@@ -314,14 +339,12 @@ function boiauto() {
 
     accessUsageText(a) {
       if (!a) return "";
-      if (a.type === "Shared") return `${a.usageCount}`;
-      return `${a.usageCount}/1`;
+      return a.type === "Shared" ? `${a.usageCount}` : `${a.usageCount}/1`;
     },
 
     isAccessFull(a) {
       if (!a) return true;
-      if (a.type === "Shared") return false;
-      return a.usageCount >= 1;
+      return a.type !== "Shared" && a.usageCount >= 1;
     },
 
     async confirmAddAutomate() {
@@ -339,52 +362,40 @@ function boiauto() {
         return;
       }
       if (this.isAccessFull(selectedAccess)) {
-        this.addAutomateError = `Access ${selectedAccess.name || selectedAccess.accessId} has reached its limit (max 1 automate for ${selectedAccess.type}).`;
+        this.addAutomateError = `Access ${selectedAccess.name || selectedAccess.accessId} has reached its limit.`;
         return;
       }
       this.addingAutomate = true;
       this.addAutomateError = "";
       try {
-        const res = await fetch(`${API}/automates`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bearer: this.newBearer.trim(),
-            access_id: selectedAccess.accessId,
-          }),
+        await this.apiPost("/automates", {
+          bearer: this.newBearer.trim(),
+          access_id: selectedAccess.accessId,
         });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || "Failed to create automate");
-        }
         await this.loadAutomates();
         this.closeAddAutomateModal();
         this.showToast("success", "Automate created");
       } catch (e) {
-        this.addAutomateError = e.message || "Failed to create automate. Please try again.";
+        this.addAutomateError = e.message;
       } finally {
         this.addingAutomate = false;
       }
     },
 
-    async removeAutomate(idx) {
-      const a = this.automates[idx];
-      if (!a) return;
-      const ok = await this.confirmAction(
-        "Delete Automate?",
-        `This will permanently delete "${a.name}". This cannot be undone.`
-      );
-      if (!ok) return;
-      try {
-        await this.apiDelete(`/automates/${a.id}`);
-        if (this.selectedAutomateId === a.id) this.selectedAutomateId = null;
-        this.automates.splice(idx, 1);
-        this.loadAccess();
-        this.showToast("success", "Automate deleted");
-      } catch (e) {
-        console.error("[removeAutomate]", e);
-        this.showToast("error", "Failed to delete automate");
-      }
+    removeAutomate(idx) {
+      return this.confirmAndDelete({
+        array: this.automates,
+        idx,
+        endpoint: "/automates",
+        label: "automate",
+        confirmTitle: "Delete Automate?",
+        confirmMsg: `This will permanently delete "${this.automates[idx]?.name}". This cannot be undone.`,
+        successMsg: "Automate deleted",
+        afterDelete: (item) => {
+          if (this.selectedAutomateId === item.id) this.selectedAutomateId = null;
+          this.loadAccess();
+        },
+      });
     },
 
     async saveAutomate(idx) {
@@ -406,7 +417,8 @@ function boiauto() {
       if (!a) return;
       const key = feature + "Running";
       if (!a.bearer.trim() || !a.accessId) {
-        this.setError(a, "");
+        a.error = "Configure Bearer & Access first.";
+        setTimeout(() => { if (a.error === "Configure Bearer & Access first.") a.error = ""; }, 3000);
         return;
       }
       const newValue = !a[key];
@@ -418,8 +430,9 @@ function boiauto() {
         a.running = a.skillUpRunning;
         a.error = "";
         if (newValue) a.botStatus = "connected";
-      } catch (e) {
-        this.setError(a, "");
+      } catch {
+        a.error = "Failed to toggle feature.";
+        setTimeout(() => { if (a.error === "Failed to toggle feature.") a.error = ""; }, 3000);
       }
     },
 
@@ -440,8 +453,9 @@ function boiauto() {
         a.time = "\u2014";
         a.pendingAt = null;
         a.error = "";
-      } catch (e) {
-        this.setError(a, "");
+      } catch {
+        a.error = "Failed to stop.";
+        setTimeout(() => { if (a.error === "Failed to stop.") a.error = ""; }, 3000);
       }
     },
 
@@ -484,13 +498,11 @@ function boiauto() {
       this.generatingToken = true;
       this.addBotError = "";
       try {
-        const res = await fetch(`${API}/bots/generate-token`, { method: "POST" });
-        if (!res.ok) throw new Error("Failed to generate token");
-        const data = await res.json();
+        const data = await this.apiPost("/bots/generate-token", {});
         this.generatedBotToken = data.token;
         this.tokenCopied = false;
-      } catch (e) {
-        this.addBotError = "Failed to generate token. Please try again.";
+      } catch {
+        this.addBotError = "Failed to generate token.";
       } finally {
         this.generatingToken = false;
       }
@@ -498,13 +510,9 @@ function boiauto() {
 
     async copyBotToken() {
       if (!this.generatedBotToken) return;
-      try {
-        await navigator.clipboard.writeText(this.generatedBotToken);
-        this.tokenCopied = true;
-        setTimeout(() => { this.tokenCopied = false; }, 2000);
-      } catch (e) {
-        this.addBotError = "Failed to copy token.";
-      }
+      await this.copyToClipboard(this.generatedBotToken, "Bot token copied");
+      this.tokenCopied = true;
+      setTimeout(() => { this.tokenCopied = false; }, 2000);
     },
 
     async copyToClipboard(text, toastMsg = "Copied to clipboard") {
@@ -512,23 +520,13 @@ function boiauto() {
       try {
         await navigator.clipboard.writeText(text);
         this.showToast("success", toastMsg);
-      } catch (e) {
+      } catch {
         this.showToast("error", "Failed to copy");
       }
     },
 
-    get addBotButtonLabel() {
-      if (this.botConnectedWhileOpen) return "Finished";
-      if (this.newlyAddedBotId) return "Waiting Later";
-      return "Add Bot";
-    },
-
     async confirmAddBot() {
-      if (this.botConnectedWhileOpen) {
-        this.closeAddBotModal();
-        return;
-      }
-      if (this.newlyAddedBotId) {
+      if (this.botConnectedWhileOpen || this.newlyAddedBotId) {
         this.closeAddBotModal();
         return;
       }
@@ -539,25 +537,16 @@ function boiauto() {
       this.addingBot = true;
       this.addBotError = "";
       try {
-        const res = await fetch(`${API}/bots`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: this.generatedBotToken,
-            name: this.newBotName.trim() || undefined,
-            type: this.newBotType,
-          }),
+        const bot = await this.apiPost("/bots", {
+          token: this.generatedBotToken,
+          name: this.newBotName.trim() || undefined,
+          type: this.newBotType,
         });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || "Failed to create bot");
-        }
-        const bot = await res.json();
         this.newlyAddedBotId = bot.bot_id;
         await this.loadBots();
         this.showToast("success", "Bot created. Waiting for client to connect.");
       } catch (e) {
-        this.addBotError = e.message || "Failed to create bot. Please try again.";
+        this.addBotError = e.message;
       } finally {
         this.addingBot = false;
       }
@@ -582,14 +571,8 @@ function boiauto() {
 
     async saveEditBot() {
       if (!this.editingBotId) return;
-      if (!this.editBotName.trim()) {
-        this.editBotError = "Name is required.";
-        return;
-      }
-      if (!this.editBotToken.trim()) {
-        this.editBotError = "Token is required.";
-        return;
-      }
+      if (!this.editBotName.trim()) { this.editBotError = "Name is required."; return; }
+      if (!this.editBotToken.trim()) { this.editBotError = "Token is required."; return; }
       this.savingBot = true;
       this.editBotError = "";
       try {
@@ -600,32 +583,26 @@ function boiauto() {
         });
         await this.loadBots();
         await this.loadAutomates();
-        this.savingBot = false;
         this.closeEditBotModal();
         this.showToast("success", "Bot updated");
       } catch (e) {
-        this.editBotError = e.message || "Failed to update bot.";
+        this.editBotError = e.message;
+      } finally {
         this.savingBot = false;
       }
     },
 
-    async removeBot(idx) {
-      const b = this.bots[idx];
-      if (!b) return;
-      const ok = await this.confirmAction(
-        "Delete Bot?",
-        `This will permanently delete "${b.name}" and all access tokens linked to it. This cannot be undone.`
-      );
-      if (!ok) return;
-      try {
-        await this.apiDelete(`/bots/${b.id}`);
-        this.bots.splice(idx, 1);
-        await this.loadAccess();
-        this.showToast("success", "Bot deleted");
-      } catch (e) {
-        console.error("[removeBot]", e);
-        this.showToast("error", "Failed to delete bot");
-      }
+    removeBot(idx) {
+      return this.confirmAndDelete({
+        array: this.bots,
+        idx,
+        endpoint: "/bots",
+        label: "bot",
+        confirmTitle: "Delete Bot?",
+        confirmMsg: `This will permanently delete "${this.bots[idx]?.name}" and all access tokens linked to it. This cannot be undone.`,
+        successMsg: "Bot deleted",
+        afterDelete: () => this.loadAccess(),
+      });
     },
 
     // --- Access CRUD ---
@@ -640,15 +617,10 @@ function boiauto() {
       this.showAddAccessModal = true;
     },
 
-    closeAddAccessModal() {
-      this.showAddAccessModal = false;
-    },
+    closeAddAccessModal() { this.showAddAccessModal = false; },
 
     async confirmAddAccess() {
-      if (!this.newAccessBotId) {
-        this.addAccessError = "Please select a bot.";
-        return;
-      }
+      if (!this.newAccessBotId) { this.addAccessError = "Please select a bot."; return; }
       if (this.newAccessType === "Business" && (!this.newAccessPrice || this.newAccessPrice <= 0)) {
         this.addAccessError = "Business type requires price per day.";
         return;
@@ -658,55 +630,40 @@ function boiauto() {
       try {
         const selectedBot = this.bots.find((b) => b.id === Number(this.newAccessBotId));
         if (!selectedBot) throw new Error("Bot not found");
-
-        const res = await fetch(`${API}/access`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bot_id: selectedBot.botId,
-            name: this.newAccessName.trim() || undefined,
-            type: this.newAccessType,
-            price_per_day: this.newAccessType === "Business" ? Number(this.newAccessPrice) || 0 : 0,
-          }),
+        await this.apiPost("/access", {
+          bot_id: selectedBot.botId,
+          name: this.newAccessName.trim() || undefined,
+          type: this.newAccessType,
+          price_per_day: this.newAccessType === "Business" ? Number(this.newAccessPrice) || 0 : 0,
         });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || "Failed to create access token");
-        }
         await this.loadAccess();
         this.closeAddAccessModal();
         this.showToast("success", "Access token created");
       } catch (e) {
-        this.addAccessError = e.message || "Failed to create access token.";
+        this.addAccessError = e.message;
       } finally {
         this.addingAccess = false;
       }
     },
 
-    async removeAccess(idx) {
-      const a = this.accessList[idx];
-      if (!a) return;
-      const ok = await this.confirmAction(
-        "Revoke Access?",
-        `This will permanently revoke access token "${a.name || a.accessId}". The recipient will no longer be able to use it.`
-      );
-      if (!ok) return;
-      try {
-        await this.apiDelete(`/access/${a.id}`);
-        this.accessList.splice(idx, 1);
-        this.showToast("success", "Access token revoked");
-      } catch (e) {
-        console.error("[removeAccess]", e);
-        this.showToast("error", "Failed to revoke access token");
-      }
+    removeAccess(idx) {
+      return this.confirmAndDelete({
+        array: this.accessList,
+        idx,
+        endpoint: "/access",
+        label: "access token",
+        confirmTitle: "Revoke Access?",
+        confirmMsg: `This will permanently revoke access token "${this.accessList[idx]?.name || this.accessList[idx]?.accessId}". The recipient will no longer be able to use it.`,
+        successMsg: "Access token revoked",
+      });
     },
 
     // --- Display helpers ---
 
     maskToken(token) {
-      if (!token) return "—";
-      if (token.length <= 8) return "•".repeat(token.length);
-      return token.slice(0, 4) + "•".repeat(Math.max(4, token.length - 8)) + token.slice(-4);
+      if (!token) return "\u2014";
+      if (token.length <= 8) return "\u2022".repeat(token.length);
+      return token.slice(0, 4) + "\u2022".repeat(Math.max(4, token.length - 8)) + token.slice(-4);
     },
 
     typeClass() {
@@ -717,7 +674,7 @@ function boiauto() {
       if (s === "connecting") return "Connecting";
       if (s === "connected") return "Connected";
       if (s === "disconnected") return "Disconnected";
-      return s === "online" ? "Online" : "Offline";
+      return "Unknown";
     },
 
     botStatusClass(s) {
@@ -737,7 +694,7 @@ function boiauto() {
 
     timeClass(idx) {
       const a = this.automates[idx];
-      if (!a || !a.pendingAt) return "text-base-500";
+      if (!a?.pendingAt) return "text-base-500";
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-danger";
@@ -752,18 +709,15 @@ function boiauto() {
     },
 
     formatBalance(n) {
-      const num = Number(n) || 0;
-      return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     },
 
     formatNumber(n) {
-      const num = Number(n) || 0;
-      return num.toLocaleString("en-US");
+      return (Number(n) || 0).toLocaleString("en-US");
     },
 
     formatRate(n) {
-      const num = Number(n) || 0;
-      return "$" + num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/day";
+      return "$" + (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/day";
     },
   };
 }
