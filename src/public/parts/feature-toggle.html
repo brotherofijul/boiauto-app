@@ -1,4 +1,4 @@
-<!-- /parts/feature-toggle.html -->
+<!-- src/public/parts/feature-toggle.html -->
 <div class="space-y-1.5">
   <template x-for="ft in featureToggles" :key="ft.key">
     <button @click.stop="toggleFeature(idx, ft.feature)" type="button"

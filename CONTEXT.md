@@ -26,52 +26,56 @@ boiauto-app/
 │   ├── api/                   # REST API routes (modular)
 │   │   ├── index.js           # Router dispatcher
 │   │   ├── bots.js            # POST/PATCH/DELETE /api/bots + generate-token
-│   │   ├── accounts.js        # POST/PATCH/DELETE /api/accounts (uses access_id)
+│   │   ├── automates.js       # POST/PATCH/DELETE /api/automates (uses access_id)
 │   │   ├── access.js          # POST/DELETE /api/access (token generation)
 │   │   └── dashboard.js       # GET /api/dashboard (aggregated stats)
 │   ├── db/
 │   │   ├── index.js           # DB connection + init
-│   │   ├── schema.js          # SQL schema (bots, accounts, access_tokens)
+│   │   ├── schema.js          # SQL schema (bots, automates, access_tokens)
 │   │   ├── seed.js            # seedFromConfig() — reads bot.config.json
 │   │   └── queries/           # Query modules (one per entity)
+│   │       ├── helpers.js     # Shared updateFields() DRY utility
 │   │       ├── bots.js
 │   │       ├── access.js
-│   │       ├── accounts.js
+│   │       ├── automates.js
 │   │       ├── dashboard.js
 │   │       └── index.js       # Re-exports all query modules
 │   ├── ws/
 │   │   ├── index.js           # WebSocket handler (auth, broadcast, commands)
 │   │   └── protocol.js        # WS message types + bot commands constants
 │   ├── utils/
-│   │   ├── crypto.js          # genBotId, genToken, genAccessId, maskToken
+│   │   ├── crypto.js          # genBotId, genToken, genAccessId, maskToken, randomHex
 │   │   └── response.js        # json(), error(), readJson() helpers
 │   └── public/                # Static SPA (served directly)
 │       ├── index.html         # Loads parts via fetch + Alpine.initTree
-│       ├── script.js          # Alpine.js store (state + methods)
-│       ├── style.css          # Custom CSS (animations, scrollbars)
+│       ├── script.js          # Alpine.js store (state + methods) with apiPatch/apiDelete helpers
+│       ├── icons.js           # SVG icon path constants (window.ICONS)
+│       ├── style.css          # Custom CSS (animations, scrollbars, grid bg)
 │       └── parts/             # HTML fragments (modular SPA parts)
-│           ├── navbar.html              # Sidebar drawer
-│           ├── stack-toggle.html        # Hamburger button
-│           ├── header.html              # Fixed header
+│           ├── navbar.html                # Sidebar drawer
+│           ├── stack-toggle.html          # Hamburger button
+│           ├── header.html                # Fixed header
 │           ├── footer.html
-│           ├── upgrade-skill.html       # Main view loader (5 views)
-│           ├── dashboard-view.html      # Real-time stats dashboard
-│           ├── access-view.html         # Access page (loader)
+│           ├── upgrade-skill.html          # Main view loader (5 views)
+│           ├── dashboard-view.html         # Real-time stats dashboard
+│           ├── access-view.html            # Access page (loader)
 │           ├── access-topbar.html
 │           ├── access-list.html
 │           ├── add-access-modal.html
-│           ├── topbar.html              # Automate page topbar
-│           ├── empty-state.html         # Automate empty state
-│           ├── account-overview-card.html
-│           ├── feature-toggle.html
-│           ├── account-detail-modal.html
-│           ├── add-account-modal.html
-│           ├── bot-view.html            # Bot page (loader)
+│           ├── topbar.html                # Automate page topbar
+│           ├── empty-state.html           # Automate empty state
+│           ├── automate-overview-card.html
+│           ├── feature-toggle.html        # Reusable Skill/Training/Work toggles
+│           ├── automate-detail-modal.html
+│           ├── add-automate-modal.html
+│           ├── bot-view.html              # Bot page (loader)
 │           ├── bot-topbar.html
 │           ├── bot-list.html
 │           ├── add-bot-modal.html
 │           ├── edit-bot-modal.html
-│           └── guide-view.html          # Guide page
+│           ├── guide-view.html            # Guide page
+│           ├── confirm-modal.html         # Reusable confirmation dialog
+│           └── toast.html                 # Toast notification system
 ├── client/
 │   ├── bot/
 │   │   ├── bot-client.js      # Sample bot client (connects via WS)
@@ -82,7 +86,7 @@ boiauto-app/
 │       └── README.md
 ├── tests/                     # bun:test test suite
 │   ├── crypto.test.js         # Token/ID generation
-│   ├── db.test.js             # DB queries (bots/access/accounts)
+│   ├── db.test.js             # DB queries (bots/access/automates)
 │   ├── api.test.js            # API endpoints end-to-end
 │   ├── ws.test.js             # WS protocol constants
 │   └── response.test.js       # HTTP response helpers
@@ -108,7 +112,7 @@ boiauto-app/
 - **price_per_day**: required for Business type, 0 otherwise
 - Linked to a bot via `bot_id` (FK with CASCADE delete)
 
-### Automates (accounts table)
+### Automates (automates table)
 - **bearer**: game bearer token (provided by user)
 - **access_id**: links to an access token (FK) — inherits type, bot, etc.
 - **bot_id**: derived from the access token's bot
@@ -128,10 +132,10 @@ boiauto-app/
 | GET    | `/api/access` | List all access tokens (with bot_name + usage_count) |
 | POST   | `/api/access` | Create access token (requires bot_id, type, optional price_per_day) |
 | DELETE | `/api/access/:id` | Revoke access token |
-| GET    | `/api/accounts` | List all automates (with bot + access info via JOIN) |
-| POST   | `/api/accounts` | Create automate (requires bearer + access_id) |
-| PATCH  | `/api/accounts/:id` | Update automate (bearer, access_id, feature toggles, balance, etc.) |
-| DELETE | `/api/accounts/:id` | Delete automate |
+| GET    | `/api/automates` | List all automates (with bot + access info via JOIN) |
+| POST   | `/api/automates` | Create automate (requires bearer + access_id) |
+| PATCH  | `/api/automates/:id` | Update automate (bearer, access_id, feature toggles, balance, etc.) |
+| DELETE | `/api/automates/:id` | Delete automate |
 | GET    | `/api/dashboard` | Aggregated stats (totals, running features, sum balance/diamond) |
 
 ## WebSocket Protocol
@@ -153,7 +157,7 @@ Connect to `ws://localhost:3000/ws`.
 - `{type:"snapshot", bots:[...], accounts:[...]}` — sent on auth
 - `{type:"bot_status", bot_id, status}` — when a bot connects/disconnects
 - `{type:"bot_update", bot_id, fields}` — when a bot is created/edited
-- `{type:"account_update", account_id, fields}` — when an account is created/edited
+- `{type:"account_update", account_id, fields}` — when an automate is created/edited
 - `{type:"state_update", bot_id, account_id, payload}` — broadcast from bot client
 
 ### Server → Bot client
@@ -175,10 +179,16 @@ The SPA uses **Alpine.js** for reactivity with a single `boiauto()` store in `sc
 - `bot` — manage bots
 - `guide` — user guide
 
+### Shared frontend helpers (DRY)
+- `apiPatch(endpoint, body)` — generic PATCH with error parsing
+- `apiDelete(endpoint)` — generic DELETE with error throwing
+- `FEATURE_FIELD_MAP` — maps camelCase feature names to snake_case DB columns
+- `loadResource()` — generic GET loader used by all data fetching
+
 ### Key UI patterns
 - **Bot status**: `connecting` (warn spinner) → `connected` (green pulse dot) → `disconnected` (red dot)
 - **Access usage**: `X/1` for Private/Business, single number for Shared
-- **Account overview card**: 3 feature toggles (Skill/Training/Work); border glows when any is ON
+- **Automate overview card**: 3 feature toggles (Skill/Training/Work) via `feature-toggle.html`; border glows when any is ON
 - **Add Bot flow**: Generate Token → secret appears with copy button + connect instructions → "Add Bot" → "Waiting Later" (spinner) → "Finished" (when bot connects)
 - **Body scroll lock**: when any modal is open
 
@@ -264,14 +274,17 @@ Just edit the file — server will re-seed on next restart if the token doesn't 
 ## Coding Conventions
 
 - **Module type**: ESM (`"type": "module"` in package.json)
-- **File header**: every file starts with `// /<path>` or `<!-- /<path> -->` for navigability
+- **File header**: every file starts with `// <path>` or `<!-- <path> -->` for navigability (paths relative to project root, e.g. `src/public/script.js`)
 - **No inline comments** in HTML parts (only the path header at line 1)
 - **Logger**: always use child logger with `module` field: `logger.child({ module: "api" })`
 - **Error responses**: use `error(msg, status)` helper, not raw `json({error})`
 - **Query modules**: one file per entity, exports `<entity>Queries` object
 - **API modules**: one file per resource, exports async `<entity>Router(req, url, idStr, log)`
+- **Shared DB helpers**: use `updateFields()` from `src/db/queries/helpers.js` for dynamic UPDATE queries
+- **Frontend API calls**: use `apiPatch()` and `apiDelete()` helpers in `script.js` for consistent error handling
 - **Tests**: co-located in `tests/`, naming `<module>.test.js`, use `describe`/`test` from `bun:test`
 
 ## Recent Changes
 
+- **v1.1.0**: Major refactor — removed dead code (`src/db.js`, `src/ws.js`), extracted `updateFields()` query helper, added `apiPatch()`/`apiDelete()` frontend helpers, fixed API endpoint URLs (`/accounts` → `/automates`), fixed path comments, removed `startAutomate`/`stopAutomate` in favor of `toggleFeature()`/`stopAllFeatures()`, fixed orphaned CSS, standardized `error()` helper usage in all routers.
 - **v1.0.0**: Initial release with full bot/access/automate/dashboard/guide flow, real-time WS, modular architecture, test suite.

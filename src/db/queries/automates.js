@@ -1,5 +1,6 @@
-// /src/db/queries/automates.js
+// src/db/queries/automates.js
 import db from "../index.js";
+import { updateFields } from "./helpers.js";
 
 const SELECT_WITH_JOINS = `
   SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
@@ -16,13 +17,6 @@ export const automatesQueries = {
     db.prepare(`INSERT INTO automates (name, bearer, bot_id, access_id, type, status)
                 VALUES (?, ?, ?, ?, ?, 'offline')`)
       .run(name, bearer, bot_id, access_id, type || "Private"),
-  update: (id, fields) => {
-    const keys = Object.keys(fields);
-    if (keys.length === 0) return;
-    const sets = keys.map((k) => `${k} = ?`).join(", ");
-    const vals = keys.map((k) => fields[k]);
-    vals.push(id);
-    db.prepare(`UPDATE automates SET ${sets} WHERE id = ?`).run(...vals);
-  },
+  update: (id, fields) => updateFields("automates", id, fields),
   remove: (id) => db.prepare("DELETE FROM automates WHERE id = ?").run(id),
 };

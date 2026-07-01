@@ -1,5 +1,6 @@
-// /src/db/queries/bots.js
+// src/db/queries/bots.js
 import db from "../index.js";
+import { updateFields } from "./helpers.js";
 
 export const botsQueries = {
   list: () => db.query("SELECT * FROM bots ORDER BY created_at DESC").all(),
@@ -9,15 +10,7 @@ export const botsQueries = {
   insert: (botId, name, token, type) =>
     db.prepare("INSERT INTO bots (bot_id, name, token, type, status) VALUES (?, ?, ?, ?, 'connecting')")
       .run(botId, name, token, type),
-  update: (id, fields) => {
-    const allowed = ["name", "token", "type"];
-    const keys = Object.keys(fields).filter((k) => allowed.includes(k));
-    if (keys.length === 0) return;
-    const sets = keys.map((k) => `${k} = ?`).join(", ");
-    const vals = keys.map((k) => fields[k]);
-    vals.push(id);
-    db.prepare(`UPDATE bots SET ${sets} WHERE id = ?`).run(...vals);
-  },
+  update: (id, fields) => updateFields("bots", id, fields, ["name", "token", "type"]),
   remove: (id) => db.prepare("DELETE FROM bots WHERE id = ?").run(id),
   setStatus: (botId, status) =>
     db.prepare("UPDATE bots SET status = ? WHERE bot_id = ?").run(status, botId),
