@@ -63,10 +63,10 @@ function mapAccess(a) {
 function spawnParticles() {
   const c = document.getElementById("particles");
   if (!c) return;
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 18; i++) {
     const p = document.createElement("div");
     p.className = "particle";
-    const sz = 2 + Math.random() * 2;
+    const sz = 2 + Math.random() * 3;
     p.style.cssText =
       "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
       "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
@@ -711,11 +711,7 @@ function boiauto() {
     },
 
     typeClass(type) {
-      if (type === "Dual") return "text-s1 bg-base-800/40 border-base-700/40";
-      if (type === "Shared") return "text-s2 bg-base-800/40 border-base-700/40";
-      if (type === "Business") return "text-s1 bg-base-800/40 border-base-700/40";
-      if (type === "Private") return "text-s1 bg-base-800/40 border-base-700/40";
-      return "text-base-200 bg-base-700/40 border-base-600/40";
+      return "text-base-300 bg-base-800/40 border-base-700/40";
     },
 
     botStatusText(s) {
@@ -726,14 +722,14 @@ function boiauto() {
     },
 
     botStatusClass(s) {
-      if (s === "connecting") return "text-base-400 bg-base-800/40 border-base-700/40";
-      if (s === "connected") return "text-s1 bg-base-800/40 border-base-700/40";
+      if (s === "connecting") return "text-base-300 bg-base-800/40 border-base-600/50";
+      if (s === "connected") return "text-val-green bg-val-green/10 border-val-green/30";
       return "text-danger bg-danger/10 border-danger/30";
     },
 
     botStatusDotClass(s) {
-      if (s === "connecting") return "bg-base-500";
-      if (s === "connected") return "bg-s1";
+      if (s === "connecting") return "bg-base-400";
+      if (s === "connected") return "bg-val-green";
       return "bg-danger";
     },
 
@@ -745,7 +741,7 @@ function boiauto() {
       if (!a || !a.pendingAt) return "text-base-500";
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
-      if (rem < 10000) return "text-warn";
+      if (rem < 10000) return "text-danger";
       return "text-val-blue";
     },
 

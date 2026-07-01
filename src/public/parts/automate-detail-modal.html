@@ -12,7 +12,7 @@
   <div class="absolute inset-0 bg-base-950/75 backdrop-blur-md" @click="closeDetail()"></div>
 
   <div class="relative w-full max-w-lg rounded-2xl border bg-base-900/95 shadow-2xl shadow-black/50 overflow-hidden backdrop-blur-xl max-h-[90vh] flex flex-col"
-       :class="selectedIndex >= 0 && (selectedIndex % 2 === 0 ? 'border-base-700/50' : 'border-base-700/50')"
+       class="border-base-700/50"
        x-transition:enter="transition ease-out duration-200"
        x-transition:enter-start="opacity-0 scale-95 translate-y-3"
        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -24,22 +24,22 @@
       <div class="flex flex-col max-h-[90vh]">
         
         <div class="h-1 flex-shrink-0"
-          :class="'bg-gradient-to-r from-s1 via-base-600-dim to-s1'"></div>
+          class="bg-base-600"></div>
 
         <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60 flex-shrink-0">
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm"
-              :class="(selectedIndex % 2 === 0 ? 'bg-base-800/40 text-base-300 border border-base-700/50' : 'bg-base-800/40 text-base-300 border border-base-700/50')"
+              class="bg-base-800/40 text-base-300 border border-base-700/50"
               x-text="(selectedIndex + 1).toString().padStart(2, '0')"></div>
             <div class="min-w-0">
               <h3 class="text-base font-bold text-base-100 tracking-tight truncate" x-text="selectedAutomate.name || 'Unnamed Automate'"></h3>
               <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="relative flex w-1.5 h-1.5">
                   <template x-if="selectedAutomate.running">
-                    <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
+                    <span class="absolute inline-flex w-full h-full rounded-full bg-val-green opacity-75 animate-ping"></span>
                   </template>
                   <span class="relative inline-flex w-1.5 h-1.5 rounded-full"
-                    :class="selectedAutomate.running ? 'bg-s1' : 'bg-base-500'"></span>
+                    :class="selectedAutomate.running ? 'bg-val-green' : 'bg-base-500'"></span>
                 </span>
                 <p class="text-[10px] text-base-500 font-mono tracking-wider uppercase"
                   x-text="selectedAutomate.running ? 'Running' : 'Idle'"></p>
@@ -84,16 +84,16 @@
               <p class="leading-none flex items-center gap-2">
                 <span class="relative flex w-3 h-3">
                   <template x-if="selectedAutomate.botStatus === 'connected'">
-                    <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
+                    <span class="absolute inline-flex w-full h-full rounded-full bg-val-green opacity-75 animate-ping"></span>
                   </template>
                   <template x-if="selectedAutomate.botStatus === 'connecting'">
                     <svg class="w-3 h-3 animate-spin text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                   </template>
                   <span class="relative inline-flex w-3 h-3 rounded-full"
-                    :class="selectedAutomate.botStatus === 'connected' ? 'bg-s1' : (selectedAutomate.botStatus === 'connecting' ? 'bg-s1' : 'bg-danger')"></span>
+                    :class="selectedAutomate.botStatus === 'connected' ? 'bg-s1' : (selectedAutomate.botStatus === 'connecting' ? 'bg-val-green' : 'bg-danger')"></span>
                 </span>
                 <span class="text-sm font-mono font-bold"
-                  :class="selectedAutomate.botStatus === 'connected' ? (selectedIndex % 2 === 0 ? 'text-base-300' : 'text-base-300') : (selectedAutomate.botStatus === 'connecting' ? (selectedIndex % 2 === 0 ? 'text-base-300' : 'text-base-300') : 'text-danger')"
+                  :class="selectedAutomate.botStatus === 'connected' ? 'text-val-green' : (selectedAutomate.botStatus === 'connecting' ? 'text-base-300' : 'text-danger')"
                   x-text="selectedAutomate.botStatus === 'connected' ? 'Connected' : (selectedAutomate.botStatus === 'connecting' ? 'Connecting' : 'Disconnected')"></span>
               </p>
             </div>
@@ -120,7 +120,7 @@
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
                 <svg class="w-3 h-3 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Access
-                <span class="ml-auto text-[9px] font-mono normal-case tracking-normal flex items-center gap-1" :class="selectedAutomate.accessType === 'Shared' ? (selectedIndex % 2 === 0 ? 'text-base-300' : 'text-base-300') : 'text-base-500'">
+                <span class="ml-auto text-[9px] font-mono normal-case tracking-normal flex items-center gap-1" :class="selectedAutomate.accessType === 'Shared' ? 'text-base-300' : 'text-base-500'">
                   <span x-show="selectedAutomate.accessType" x-text="selectedAutomate.accessType === 'Shared' ? (accessList.find(a=>a.accessId===selectedAutomate.accessId)?.usageCount || 0) + ' using' : (accessList.find(a=>a.accessId===selectedAutomate.accessId)?.usageCount || 0) + '/1'"></span>
                   <span x-show="selectedAutomate.accessType" class="px-1.5 py-0.5 rounded-full border" :class="typeClass(selectedAutomate.accessType)" x-text="selectedAutomate.accessType"></span>
                 </span>
@@ -137,7 +137,7 @@
                       <p class="text-[9px] text-base-500 truncate" x-text="a.botName + ' · ' + a.accessId"></p>
                     </div>
                     <div class="flex items-center gap-1.5 flex-shrink-0">
-                      <span class="text-[9px] font-mono" :class="isAccessFull(a) ? 'text-danger' : (selectedIndex % 2 === 0 ? 'text-base-300' : 'text-base-300')" x-text="accessUsageText(a)"></span>
+                      <span class="text-[9px] font-mono" :class="isAccessFull(a) ? 'text-danger' : 'text-base-300'" x-text="accessUsageText(a)"></span>
                       <span class="text-[9px] px-1.5 py-0.5 rounded-full border" :class="typeClass(a.type)" x-text="a.type"></span>
                     </div>
                   </button>
@@ -157,7 +157,7 @@
                   <template x-for="o in opts" :key="selectedAutomate.id+'sk-'+o.v">
                     <button @click="selectedAutomate.skill=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.skill===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
                       <span x-text="o.l"></span>
-                      <span x-show="selectedAutomate.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
+                      <span x-show="selectedAutomate.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
                     </button>
                   </template>
                 </div>
@@ -173,7 +173,7 @@
                   <template x-for="o in opts" :key="selectedAutomate.id+'pay-'+o.v">
                     <button @click="selectedAutomate.pay=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.pay===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
                       <span x-text="o.l"></span>
-                      <span x-show="selectedAutomate.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
+                      <span x-show="selectedAutomate.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
                     </button>
                   </template>
                 </div>
@@ -191,7 +191,7 @@
               <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
                 <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1 font-mono">Next</p>
                 <p class="text-2xl font-bold font-mono leading-none"
-                  :class="(selectedIndex % 2 === 0 ? 'text-base-300' : 'text-base-300')"
+                  class="text-base-300"
                   x-text="selectedAutomate.targetLevel??'—'">—</p>
               </div>
             </div>

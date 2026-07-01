@@ -83,7 +83,7 @@
           <template x-for="o in opts" :key="'acctype-'+o">
             <button @click="newAccessType=o; open=false" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="newAccessType===o ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
               <span x-text="o"></span>
-              <span x-show="newAccessType===o" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
+              <span x-show="newAccessType===o" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
             </button>
           </template>
         </div>
@@ -123,7 +123,7 @@
         Cancel
       </button>
       <button @click="confirmAddAccess()" :disabled="addingAccess || !newAccessBotId || (newAccessType === 'Business' && !newAccessPrice)" type="button"
-        class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[120px] justify-center"
+        class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center"
         :class="addingAccess || !newAccessBotId || (newAccessType === 'Business' && !newAccessPrice) ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-base-700 text-base-950 hover:shadow-md hover:shadow-base-700/30'">
         <template x-if="!addingAccess">
           <div class="flex items-center gap-1.5">

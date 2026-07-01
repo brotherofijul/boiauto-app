@@ -38,9 +38,9 @@
 
       <button @click="switchView('dashboard')" type="button"
         class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-        :class="currentView === 'dashboard' ? 'bg-gradient-to-r from-s1/10 to-transparent border border-base-600/50 text-base-300' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
+        :class="currentView === 'dashboard' ? 'bg-base-800/60 border border-base-700/50 border-l-2 border-l-base-400 text-base-100' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          :class="currentView === 'dashboard' ? 'bg-base-700/40 text-base-300' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
+          :class="currentView === 'dashboard' ? 'bg-base-700/50 text-base-200' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>
           </svg>
@@ -48,16 +48,16 @@
         <div class="min-w-0 flex-1 text-left">
           <p class="text-sm font-semibold leading-tight">Dashboard</p>
           <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
-            :class="currentView === 'dashboard' ? 'text-base-500' : 'text-base-500'">Real-time overview</p>
+            :class="currentView === 'dashboard' ? 'text-base-400' : 'text-base-500'">Real-time overview</p>
         </div>
         <svg x-show="currentView === 'dashboard'" x-cloak class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
       <button @click="switchView('automate')" type="button"
         class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-        :class="currentView === 'automate' ? 'bg-base-800/40 border border-base-600/50 text-base-300' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
+        :class="currentView === 'automate' ? 'bg-base-800/60 border border-base-700/50 border-l-2 border-l-base-400 text-base-100' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          :class="currentView === 'automate' ? 'bg-base-700/40 text-base-300' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
+          :class="currentView === 'automate' ? 'bg-base-700/50 text-base-200' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
@@ -65,16 +65,16 @@
         <div class="min-w-0 flex-1 text-left">
           <p class="text-sm font-semibold leading-tight">Automate</p>
           <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
-            :class="currentView === 'automate' ? 'text-base-500' : 'text-base-500'">Manage game automates</p>
+            :class="currentView === 'automate' ? 'text-base-400' : 'text-base-500'">Manage game automates</p>
         </div>
         <svg x-show="currentView === 'automate'" x-cloak class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
       <button @click="switchView('access')" type="button"
         class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-        :class="currentView === 'access' ? 'bg-base-800/40 border border-base-600/50 text-base-300' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
+        :class="currentView === 'access' ? 'bg-base-800/60 border border-base-700/50 border-l-2 border-l-base-400 text-base-100' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          :class="currentView === 'access' ? 'bg-base-700/40 text-base-300' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
+          :class="currentView === 'access' ? 'bg-base-700/50 text-base-200' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
@@ -82,16 +82,16 @@
         <div class="min-w-0 flex-1 text-left">
           <p class="text-sm font-semibold leading-tight">Access</p>
           <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
-            :class="currentView === 'access' ? 'text-base-500' : 'text-base-500'">Manage access tokens</p>
+            :class="currentView === 'access' ? 'text-base-400' : 'text-base-500'">Manage access tokens</p>
         </div>
         <svg x-show="currentView === 'access'" x-cloak class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
       <button @click="switchView('bot')" type="button"
         class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-        :class="currentView === 'bot' ? 'bg-base-800/40 border border-base-600/50 text-base-300' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
+        :class="currentView === 'bot' ? 'bg-base-800/60 border border-base-700/50 border-l-2 border-l-base-400 text-base-100' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          :class="currentView === 'bot' ? 'bg-base-700/40 text-base-300' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
+          :class="currentView === 'bot' ? 'bg-base-700/50 text-base-200' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/>
           </svg>
@@ -99,16 +99,16 @@
         <div class="min-w-0 flex-1 text-left">
           <p class="text-sm font-semibold leading-tight">Bot</p>
           <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
-            :class="currentView === 'bot' ? 'text-base-500' : 'text-base-500'">Manage bot sessions</p>
+            :class="currentView === 'bot' ? 'text-base-400' : 'text-base-500'">Manage bot sessions</p>
         </div>
         <svg x-show="currentView === 'bot'" x-cloak class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
       <button @click="switchView('guide')" type="button"
         class="w-full group flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
-        :class="currentView === 'guide' ? 'bg-base-800/40 border border-base-600/50 text-base-300' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
+        :class="currentView === 'guide' ? 'bg-base-800/60 border border-base-700/50 border-l-2 border-l-base-400 text-base-100' : 'text-base-300 hover:bg-base-800/60 hover:text-base-100 border border-transparent'">
         <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          :class="currentView === 'guide' ? 'bg-base-700/40 text-base-300' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
+          :class="currentView === 'guide' ? 'bg-base-700/50 text-base-200' : 'bg-base-800/60 text-base-400 group-hover:text-base-200'">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
@@ -116,7 +116,7 @@
         <div class="min-w-0 flex-1 text-left">
           <p class="text-sm font-semibold leading-tight">Guide</p>
           <p class="text-[10px] font-mono tracking-wider leading-tight mt-0.5"
-            :class="currentView === 'guide' ? 'text-base-500' : 'text-base-500'">How to use BOIAuto</p>
+            :class="currentView === 'guide' ? 'text-base-400' : 'text-base-500'">How to use BOIAuto</p>
         </div>
         <svg x-show="currentView === 'guide'" x-cloak class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>

@@ -45,11 +45,11 @@ body {
 }
 .bg-glow::before {
   top: -18%; right: -8%; width: 520px; height: 520px;
-  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 70%);
 }
 .bg-glow::after {
   bottom: -14%; left: -8%; width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52,211,153,0.03) 0%, transparent 70%);
 }
 @keyframes float-up {
   0% { transform: translateY(100vh) scale(0); opacity: 0; }
@@ -58,9 +58,10 @@ body {
   100% { transform: translateY(-10vh) scale(1); opacity: 0; }
 }
 .particle {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+  position: fixed; border-radius: 50%; pointer-events: none; z-index: 1;
   opacity: 0; animation: float-up linear infinite;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 4px rgba(255,255,255,0.15);
 }
 input:focus, select:focus {
   outline: none;
