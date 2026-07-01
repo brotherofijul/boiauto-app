@@ -11,6 +11,14 @@ export function genToken() {
   return `bot_${hash}`;
 }
 
+export function genAccessToken() {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
+  const timestamp = Date.now();
+  const data = `${Array.from(randomBytes).join("")}${timestamp}`;
+  const hash = Bun.hash(data).toString(16).padStart(16, "0");
+  return `acc_${hash}`;
+}
+
 export function genAccessId() {
   return "acc_" + randomHex(7);
 }

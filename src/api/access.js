@@ -1,7 +1,7 @@
 // /src/api/access.js
 import { json, error, readJson } from "../utils/response.js";
 import { accessQueries, botsQueries } from "../db/queries/index.js";
-import { genToken, genAccessId } from "../utils/crypto.js";
+import { genAccessToken, genAccessId } from "../utils/crypto.js";
 import { ACCESS_TYPES } from "../config.js";
 
 export async function accessRouter(req, url, idStr, log) {
@@ -27,7 +27,7 @@ export async function accessRouter(req, url, idStr, log) {
       return error("Business type requires price_per_day");
     }
 
-    const token = genToken();
+    const token = genAccessToken();
     const accessId = genAccessId();
     const price = type === "Business" ? Number(body.price_per_day) || 0 : 0;
     accessQueries.insert(accessId, token, body.bot_id, body.name, type, price);

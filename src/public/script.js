@@ -689,6 +689,24 @@ function boiauto() {
       return this.bots.find((b) => b.id === this.selectedBotId) || null;
     },
 
+    get selectedBotIndex() {
+      if (!this.selectedBotId) return -1;
+      return this.bots.findIndex((b) => b.id === this.selectedBotId);
+    },
+
+    editSelectedBot() {
+      const idx = this.selectedBotIndex;
+      if (idx < 0) return;
+      this.closeBotDetail();
+      this.openEditBotModal(idx);
+    },
+
+    removeSelectedBot() {
+      const idx = this.selectedBotIndex;
+      if (idx < 0) return;
+      this.removeBot(idx);
+    },
+
     get automatesUsingBot() {
       if (!this.selectedBotId) return [];
       const bot = this.bots.find((b) => b.id === this.selectedBotId);
@@ -711,8 +729,13 @@ function boiauto() {
       return token.slice(0, 4) + "\u2022".repeat(Math.max(4, token.length - 8)) + token.slice(-4);
     },
 
-    typeClass() {
-      return "text-base-300 bg-base-800/40 border-base-700/40";
+    typeClass(type) {
+      // Access types: Private=green, Shared=blue, Business=orange
+      // Bot types: Dual=green, Shared=blue
+      if (type === "Private" || type === "Dual") return "text-val-green border-val-green/30";
+      if (type === "Shared") return "text-val-blue border-val-blue/30";
+      if (type === "Business") return "text-warn border-warn/30";
+      return "text-base-300 border-base-700/40";
     },
 
     botStatusText(s) {

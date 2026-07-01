@@ -106,7 +106,7 @@ describe("API routes", () => {
       );
       const data = await res.json();
       expect(res.status).toBe(201);
-      expect(data.token.startsWith("bot_")).toBe(true);
+      expect(data.token.startsWith("acc_")).toBe(true);
       expect(data.type).toBe("Private");
     });
 

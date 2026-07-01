@@ -1,6 +1,6 @@
 // /tests/crypto.test.js
 import { test, expect, describe } from "bun:test";
-import { genBotId, genToken, genAccessId, randomHex, maskToken } from "../src/utils/crypto.js";
+import { genBotId, genToken, genAccessId, genAccessToken, randomHex, maskToken } from "../src/utils/crypto.js";
 
 describe("crypto utils", () => {
   describe("genBotId", () => {
@@ -41,6 +41,18 @@ describe("crypto utils", () => {
     test("generates unique ids", () => {
       const ids = new Set(Array.from({ length: 100 }, () => genAccessId()));
       expect(ids.size).toBe(100);
+    });
+  });
+
+  describe("genAccessToken", () => {
+    test("returns string starting with 'acc_'", () => {
+      const token = genAccessToken();
+      expect(token.startsWith("acc_")).toBe(true);
+    });
+
+    test("generates unique tokens", () => {
+      const tokens = new Set(Array.from({ length: 100 }, () => genAccessToken()));
+      expect(tokens.size).toBe(100);
     });
   });
 
