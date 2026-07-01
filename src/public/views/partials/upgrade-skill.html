@@ -1,0 +1,33 @@
+<!-- src/public/parts/upgrade-skill.html -->
+<main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
+  <template x-if="currentView === 'dashboard'">
+    <div x-init="fetch('views/partials/dashboard-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
+  <template x-if="currentView === 'access'">
+    <div x-init="fetch('views/partials/access-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
+  <template x-if="currentView === 'automate'">
+    <div>
+      <div x-init="fetch('views/partials/topbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/empty-state.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/automate-overview-card.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+    </div>
+  </template>
+
+  <template x-if="currentView === 'bot'">
+    <div x-init="fetch('views/partials/bot-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
+  <template x-if="currentView === 'guide'">
+    <div x-init="fetch('views/partials/guide-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  </template>
+
+  <div x-init="fetch('views/partials/automate-detail-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('views/partials/add-automate-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('views/partials/add-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('views/partials/edit-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('views/partials/add-access-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('views/partials/navbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+</main>

@@ -91,7 +91,7 @@
     </div>
 
     <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 justify-end">
-      <button @click="closeAddAutomateModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-base-700/70 bg-base-800/50 text-base-200 hover:bg-base-700/40 transition-all active:scale-[.97]">
+      <button @click="closeAddAutomateModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97]">
         Cancel
       </button>
       <button @click="confirmAddAutomate()" :disabled="addingAutomate||!newBearer.trim()||!newSelectedAccessId" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center" :class="addingAutomate||!newBearer.trim()||!newSelectedAccessId ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-base-700 text-base-950 hover:shadow-md hover:shadow-base-700/30'">

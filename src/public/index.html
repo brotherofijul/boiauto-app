@@ -38,16 +38,16 @@
     <div class="scan-container"><div class="scanner"></div></div>
 
     <div x-data="boiauto()" x-init="init()" class="relative z-10 min-h-screen flex flex-col">
-      <div x-init="fetch('parts/stack-toggle.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/stack-toggle.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <div x-init="fetch('parts/header.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/header.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <div class="flex-1" x-init="fetch('parts/upgrade-skill.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div class="flex-1" x-init="fetch('views/partials/upgrade-skill.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <div x-init="fetch('parts/footer.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/footer.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 
-      <div x-init="fetch('parts/toast.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
-      <div x-init="fetch('parts/confirm-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/toast.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('views/partials/confirm-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
     </div>
   </body>
 </html>
