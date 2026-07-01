@@ -1,7 +1,7 @@
 <!-- /parts/dashboard-view.html -->
 <div>
   <div class="flex items-center gap-3 mb-6">
-    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-s1 via-s2 to-s1"></div>
+    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-s1 to-s1-dim"></div>
     <div>
       <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Dashboard</h2>
       <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5">Real-time overview</p>
@@ -9,29 +9,33 @@
   </div>
 
   <div class="space-y-5">
+    <!-- Stat cards: s1, s2, s1, s2 -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <div class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 backdrop-blur-sm">
+      <!-- Automates: s1 -->
+      <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center">
-            <svg class="w-4 h-4 text-s2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-s2/70">Total</span>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-s1/70">Total</span>
         </div>
         <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_automates ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Automates</p>
       </div>
 
-      <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 backdrop-blur-sm">
+      <!-- Bots: s2 -->
+      <div class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
-          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center">
+          <div class="w-9 h-9 rounded-xl bg-s2/10 border border-s2/20 flex items-center justify-center">
             <svg class="w-4 h-4 text-s2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
           </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-s1/70">Total</span>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-s2/70">Total</span>
         </div>
         <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_bots ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Bots</p>
       </div>
 
+      <!-- Access: s1 -->
       <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center">
@@ -43,12 +47,13 @@
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Access Tokens</p>
       </div>
 
-      <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 backdrop-blur-sm">
+      <!-- Live: s2 -->
+      <div class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
-          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center">
-            <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+          <div class="w-9 h-9 rounded-xl bg-s2/10 border border-s2/20 flex items-center justify-center">
+            <svg class="w-4 h-4 text-s2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
           </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-s1 border border-s1/30 bg-s1/10 px-2 py-0.5 rounded-full">Live</span>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-s2 border border-s2/30 bg-s2/10 px-2 py-0.5 rounded-full">Live</span>
         </div>
         <p class="text-2xl font-bold font-mono text-base-100 leading-none flex items-baseline gap-1">
           <span x-text="dashboard?.connected_bots ?? 0"></span>
@@ -58,12 +63,12 @@
       </div>
     </div>
 
+    <!-- Automation Status (s1) + Total Resources (s2) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-      <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <!-- Automation Status: s1 -->
+      <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 overflow-hidden">
         <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Automation Status</h3>
-          </div>
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-s1">Automation Status</h3>
           <span class="text-[10px] font-mono text-base-500" x-text="(dashboard?.online_automates ?? 0) + ' online'"></span>
         </div>
         <div class="p-4 space-y-3">
@@ -76,10 +81,10 @@
           </div>
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-s1 flex-shrink-0"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-s2 flex-shrink-0"></span>
               <span class="text-xs font-mono text-base-300 truncate">Training</span>
             </div>
-            <span class="text-sm font-bold font-mono text-s2 ?? 0"></span>
+            <span class="text-sm font-bold font-mono text-s2" x-text="dashboard?.running_training ?? 0"></span>
           </div>
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-2 min-w-0">
@@ -91,14 +96,15 @@
         </div>
       </div>
 
-      <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+      <!-- Total Resources: s2 -->
+      <div class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 overflow-hidden">
         <div class="px-4 py-3 border-b border-base-800/60 flex items-center gap-2">
-          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Total Resources</h3>
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-s2">Total Resources</h3>
         </div>
         <div class="p-4 grid grid-cols-2 gap-3">
           <div class="rounded-lg bg-base-800/40 border border-base-700/30 p-3">
             <p class="text-[9px] text-base-500 uppercase tracking-widest font-mono mb-1.5">Balance</p>
-            <p class="text-lg font-bold font-mono text-s1 leading-none">
+            <p class="text-lg font-bold font-mono text-s2 leading-none">
               <span class="x-scroll whitespace-nowrap py-1 px-0.5 inline-block" x-text="formatBalance(dashboard?.total_balance ?? 0)"></span>
             </p>
           </div>
@@ -112,15 +118,11 @@
       </div>
     </div>
 
-    <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
+    <!-- Bot Connections: s1 -->
+    <div class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 overflow-hidden">
       <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
-            <svg class="w-3.5 h-3.5 text-s2" viewBox="0 0 24 24" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-          </div>
-          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Bot Connections</h3>
-        </div>
-        <button @click="switchView('bot')" type="button" class="text-[10px] font-mono text-s2 hover:text-s2-dim transition-colors uppercase tracking-wider">View All →</button>
+        <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-s1">Bot Connections</h3>
+        <button @click="switchView('bot')" type="button" class="text-[10px] font-mono text-s1 hover:text-s1-dim transition-colors uppercase tracking-wider">View All →</button>
       </div>
       <div class="p-2">
         <template x-if="bots.length === 0">
@@ -129,8 +131,9 @@
         <template x-for="(b, idx) in bots.slice(0, 5)" :key="'dashbot-'+b.id">
           <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-base-800/40 transition-colors">
             <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-7 h-7 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0">
-                <svg class="w-3.5 h-3.5 text-s2" viewBox="0 0 24 24" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                :class="idx % 2 === 0 ? 'bg-s1/10 border border-s1/20' : 'bg-s2/10 border border-s2/20'">
+                <svg class="w-3.5 h-3.5" :class="idx % 2 === 0 ? 'text-s1' : 'text-s2'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
               </div>
               <div class="min-w-0">
                 <p class="text-xs font-semibold text-base-100 truncate" x-text="b.name"></p>
@@ -160,8 +163,10 @@
       </div>
     </div>
 
+    <!-- Quick actions: s1, s2, s1 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <button @click="switchView('automate')" type="button" class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 text-left hover:border-s2/40 transition-all active:scale-[.98] group">
+      <!-- Automate: s1 -->
+      <button @click="switchView('automate')" type="button" class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 text-left hover:border-s1/40 transition-all active:scale-[.98] group">
         <div class="flex items-center gap-2.5 mb-2">
           <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
             <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -171,9 +176,10 @@
         <p class="text-[10px] text-base-500 font-mono leading-relaxed">Manage game automates and run skill/training/work tasks.</p>
       </button>
 
+      <!-- Bot: s2 -->
       <button @click="switchView('bot')" type="button" class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 text-left hover:border-s2/40 transition-all active:scale-[.98] group">
         <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
+          <div class="w-8 h-8 rounded-lg bg-s2/10 border border-s2/20 flex items-center justify-center">
             <svg class="w-4 h-4 text-s2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
           </div>
           <span class="text-xs font-bold font-mono uppercase tracking-wider text-s2">Bot</span>
@@ -181,7 +187,8 @@
         <p class="text-[10px] text-base-500 font-mono leading-relaxed">Register bots and connect bot clients via WebSocket.</p>
       </button>
 
-      <button @click="switchView('access')" type="button" class="rounded-2xl border border-s2/20 bg-gradient-to-br from-s2/5 to-base-900/60 p-4 text-left hover:border-s2/40 transition-all active:scale-[.98] group">
+      <!-- Access: s1 -->
+      <button @click="switchView('access')" type="button" class="rounded-2xl border border-s1/20 bg-gradient-to-br from-s1/5 to-base-900/60 p-4 text-left hover:border-s1/40 transition-all active:scale-[.98] group">
         <div class="flex items-center gap-2.5 mb-2">
           <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center">
             <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
