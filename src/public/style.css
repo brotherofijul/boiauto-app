@@ -38,33 +38,12 @@ body {
   background-size: 44px 44px;
   background-attachment: fixed;
 }
-#scan-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-#scan-overlay svg {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-}
-.bg-glow::before, .bg-glow::after {
-  content: ""; position: fixed; pointer-events: none; z-index: 0; border-radius: 50%;
-}
-.bg-glow::before {
-  top: -18%; right: -8%; width: 520px; height: 520px;
-  background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
-}
-.bg-glow::after {
-  bottom: -14%; left: -8%; width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(255,255,255,0.015) 0%, transparent 70%);
-}
-@keyframes float-up {
-  0% { transform: translateY(100vh) scale(0); opacity: 0; }
-  10% { opacity: 0.4; }
+
+
+
+
+
+
   90% { opacity: 0.4; }
   100% { transform: translateY(-10vh) scale(1); opacity: 0; }
 }

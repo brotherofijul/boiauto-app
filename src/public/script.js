@@ -60,83 +60,8 @@ function mapAccess(a) {
   };
 }
 
-function spawnParticles() {
-  const c = document.getElementById("particles");
-  if (!c) return;
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement("div");
-    p.className = "particle";
-    const sz = 2 + Math.random() * 3;
-    p.style.cssText =
-      "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
-      "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
-      Math.random() * 14 + "s;";
-    if (i % 3 === 0) {
-      p.style.background = "rgba(96,165,250,0.15)";
-      p.style.boxShadow = "0 0 4px rgba(96,165,250,0.2)";
-    }
-    c.appendChild(p);
-  }
-}
 
 
-function startScanAnimation() {
-  const overlay = document.getElementById('scan-overlay');
-  if (!overlay) return;
-
-  function spawnScan() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    const dirs = [
-      { x1: 0, y1: 0, x2: w, y2: h },
-      { x1: w, y1: 0, x2: 0, y2: h },
-      { x1: 0, y1: h, x2: w, y2: 0 },
-      { x1: w, y1: h, x2: 0, y2: 0 },
-      { x1: 0, y1: 0, x2: 0, y2: h },
-      { x1: 0, y1: 0, x2: w, y2: 0 },
-    ];
-    const dir = dirs[Math.floor(Math.random() * dirs.length)];
-    const ns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    svg.setAttribute('preserveAspectRatio', 'none');
-
-    const line = document.createElementNS(ns, 'line');
-    line.setAttribute('x1', dir.x1);
-    line.setAttribute('y1', dir.y1);
-    line.setAttribute('x2', dir.x2);
-    line.setAttribute('y2', dir.y2);
-    line.setAttribute('stroke', 'rgba(255,255,255,0.15)');
-    line.setAttribute('stroke-width', '2');
-    line.setAttribute('stroke-linecap', 'round');
-    line.style.filter = 'drop-shadow(0 0 6px rgba(255,255,255,0.3))';
-
-    const length = Math.sqrt((dir.x2 - dir.x1) ** 2 + (dir.y2 - dir.y1) ** 2);
-    line.style.strokeDasharray = length;
-    line.style.strokeDashoffset = length;
-    line.style.transition = 'stroke-dashoffset 2.5s ease-out, opacity 0.8s ease-in 2.2s';
-
-    svg.appendChild(line);
-    overlay.appendChild(svg);
-
-    requestAnimationFrame(() => {
-      line.style.strokeDashoffset = '0';
-    });
-
-    setTimeout(() => {
-      line.style.opacity = '0';
-    }, 2300);
-
-    setTimeout(() => {
-      svg.remove();
-    }, 3500);
-
-    const nextDelay = 4000 + Math.random() * 6000;
-    setTimeout(spawnScan, nextDelay);
-  }
-
-  setTimeout(spawnScan, 1500);
-}
 
 function boiauto() {
   return {
@@ -205,7 +130,7 @@ function boiauto() {
       this.loadAutomates();
       this.loadAccess();
       this.loadDashboard();
-      startScanAnimation();
+
       this.modalStates.forEach(state => {
         this.$watch(state, () => this.updateScrollLock());
       });
