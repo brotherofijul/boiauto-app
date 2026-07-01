@@ -71,7 +71,7 @@ function spawnParticles() {
       "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
       "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
       Math.random() * 14 + "s;";
-    if (i % 3 === 0) p.style.background = "#00c8ff";
+    
     c.appendChild(p);
   }
 }
@@ -711,10 +711,10 @@ function boiauto() {
     },
 
     typeClass(type) {
-      if (type === "Dual") return "text-s1 bg-s1/10 border-s1/30";
-      if (type === "Shared") return "text-s2 bg-s2/10 border-s2/30";
-      if (type === "Business") return "text-s1 bg-s1/10 border-s1/30";
-      if (type === "Private") return "text-s1 bg-s1/10 border-s1/30";
+      if (type === "Dual") return "text-s1 bg-base-800/40 border-base-700/40";
+      if (type === "Shared") return "text-s2 bg-base-800/40 border-base-700/40";
+      if (type === "Business") return "text-s1 bg-base-800/40 border-base-700/40";
+      if (type === "Private") return "text-s1 bg-base-800/40 border-base-700/40";
       return "text-base-200 bg-base-700/40 border-base-600/40";
     },
 
@@ -726,13 +726,13 @@ function boiauto() {
     },
 
     botStatusClass(s) {
-      if (s === "connecting") return "text-s1 bg-s1/10 border-s1/30";
-      if (s === "connected") return "text-s1 bg-s1/10 border-s1/30";
+      if (s === "connecting") return "text-base-400 bg-base-800/40 border-base-700/40";
+      if (s === "connected") return "text-s1 bg-base-800/40 border-base-700/40";
       return "text-danger bg-danger/10 border-danger/30";
     },
 
     botStatusDotClass(s) {
-      if (s === "connecting") return "bg-s1";
+      if (s === "connecting") return "bg-base-500";
       if (s === "connected") return "bg-s1";
       return "bg-danger";
     },
