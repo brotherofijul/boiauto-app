@@ -29,7 +29,7 @@ body {
   100% { background-position: 200% center; }
 }
 .text-shimmer {
-  background: linear-gradient(90deg, #e8e8f0 0%, #ffffff 40%, #e8e8f0 80%);
+  background: linear-gradient(90deg, #e8e8f0 0%, #34d399 40%, #e8e8f0 80%);
   background-size: 200% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; animation: shimmer 4s linear infinite;
@@ -45,11 +45,11 @@ body {
 }
 .bg-glow::before {
   top: -18%; right: -8%; width: 520px; height: 520px;
-  background: radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(52,211,153,0.05) 0%, transparent 70%);
 }
 .bg-glow::after {
   bottom: -14%; left: -8%; width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(52,211,153,0.03) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 70%);
 }
 @keyframes float-up {
   0% { transform: translateY(100vh) scale(0); opacity: 0; }
@@ -60,8 +60,8 @@ body {
 .particle {
   position: fixed; border-radius: 50%; pointer-events: none; z-index: 1;
   opacity: 0; animation: float-up linear infinite;
-  background: rgba(255,255,255,0.08);
-  box-shadow: 0 0 4px rgba(255,255,255,0.15);
+  background: rgba(52,211,153,0.15);
+  box-shadow: 0 0 4px rgba(52,211,153,0.2);
 }
 input:focus, select:focus {
   outline: none;

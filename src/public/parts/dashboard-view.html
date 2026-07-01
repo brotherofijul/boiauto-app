@@ -1,7 +1,7 @@
 <!-- /parts/dashboard-view.html -->
 <div>
   <div class="flex items-center gap-3 mb-6">
-    <div class="w-1 h-8 rounded-full bg-base-700"></div>
+    <div class="w-1 h-8 rounded-full bg-base-600"></div>
     <div>
       <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Dashboard</h2>
       <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5">Real-time overview</p>
@@ -9,97 +9,66 @@
   </div>
 
   <div class="space-y-5">
-    
+    <!-- Stat cards: Automate, Access, Bot, Connected -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      
+      <!-- Automates: val-green -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg class="w-4 h-4 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_automates ?? 0"></p>
+        <p class="text-2xl font-bold font-mono text-val-green leading-none" x-text="dashboard?.total_automates ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Automates</p>
       </div>
 
-      
+      <!-- Access: warn (orange) -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+            <svg class="w-4 h-4 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
           <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_bots ?? 0"></p>
-        <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Bots</p>
-      </div>
-
-      
-      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
-        <div class="flex items-start justify-between mb-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
-        </div>
-        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_access ?? 0"></p>
+        <p class="text-2xl font-bold font-mono text-warn leading-none" x-text="dashboard?.total_access ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Access Tokens</p>
       </div>
 
-      
+      <!-- Bots: val-blue -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
         <div class="flex items-start justify-between mb-3">
           <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+            <svg class="w-4 h-4 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
           </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-base-300 border border-base-600/50 bg-base-800/40 px-2 py-0.5 rounded-full">Live</span>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-val-green leading-none flex items-baseline gap-1">
-          <span x-text="dashboard?.connected_bots ?? 0"></span>
+        <p class="text-2xl font-bold font-mono text-val-blue leading-none" x-text="dashboard?.total_bots ?? 0"></p>
+        <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Bots</p>
+      </div>
+
+      <!-- Connected Bots: Live green -->
+      <div class="rounded-2xl border border-val-green/20 bg-val-green/5 p-4 backdrop-blur-sm">
+        <div class="flex items-start justify-between mb-3">
+          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
+            <svg class="w-4 h-4 text-base-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+          </div>
+          <span class="text-[9px] font-mono uppercase tracking-widest text-val-green border border-val-green/30 bg-val-green/10 px-2 py-0.5 rounded-full">Live</span>
+        </div>
+        <p class="text-2xl font-bold font-mono leading-none flex items-baseline gap-1">
+          <span class="text-val-green" x-text="dashboard?.connected_bots ?? 0"></span>
           <span class="text-xs text-base-500" x-text="'/' + (dashboard?.total_bots ?? 0)"></span>
         </p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Connected Bots</p>
       </div>
     </div>
 
-    
+    <!-- Total Resources + Automate Status -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-      
-      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-        <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
-          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Automation Status</h3>
-          <span class="text-[10px] font-mono text-base-500" x-text="(dashboard?.online_automates ?? 0) + ' online'"></span>
-        </div>
-        <div class="p-4 space-y-3">
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-              <span class="text-xs font-mono text-base-300 truncate">Skill</span>
-            </div>
-            <span class="text-sm font-bold font-mono text-base-300" x-text="dashboard?.running_skill ?? 0"></span>
-          </div>
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-              <span class="text-xs font-mono text-base-300 truncate">Training</span>
-            </div>
-            <span class="text-sm font-bold font-mono text-base-300" x-text="dashboard?.running_training ?? 0"></span>
-          </div>
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-              <span class="text-xs font-mono text-base-300 truncate">Work</span>
-            </div>
-            <span class="text-sm font-bold font-mono text-base-300" x-text="dashboard?.running_work ?? 0"></span>
-          </div>
-        </div>
-      </div>
-
-      
+      <!-- Total Resources -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
         <div class="px-4 py-3 border-b border-base-800/60 flex items-center gap-2">
-          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Total Resources</h3>
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Total Resources</h3>
         </div>
         <div class="p-4 grid grid-cols-2 gap-3">
           <div class="rounded-lg bg-base-800/40 border border-base-700/30 p-3">
@@ -116,87 +85,132 @@
           </div>
         </div>
       </div>
-    </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
-        <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Bot Connections</h3>
-        <button @click="switchView('bot')" type="button" class="text-[10px] font-mono text-base-400 hover:text-base-200 transition-colors uppercase tracking-wider">View All →</button>
-      </div>
-      <div class="p-2">
-        <template x-if="bots.length === 0">
-          <div class="text-center py-8 text-base-500 text-xs font-mono">No bots registered yet</div>
-        </template>
-        <template x-for="(b, idx) in bots.slice(0, 5)" :key="'dashbot-'+b.id">
-          <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-base-800/40 transition-colors">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                class="bg-base-800/40 border border-base-700/40">
-                <svg class="w-3.5 h-3.5" class="text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+      <!-- Automate Status (list style like Bot Connections) -->
+      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
+        <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Automate Status</h3>
+          <button @click="switchView('automate')" type="button" class="text-[10px] font-mono text-base-400 hover:text-base-200 transition-colors uppercase tracking-wider">View All →</button>
+        </div>
+        <div class="p-2">
+          <template x-if="automates.length === 0">
+            <div class="text-center py-6 text-base-500 text-xs font-mono">No automates yet</div>
+          </template>
+          <template x-for="(a, idx) in automates.slice(0, 2)" :key="'dashauto-'+a.id">
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-base-800/40 transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-val-green/10 border border-val-green/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-semibold text-base-100 truncate" x-text="a.name"></p>
+                  <p class="text-[9px] text-base-500 font-mono truncate" x-text="a.botId"></p>
+                </div>
               </div>
-              <div class="min-w-0">
-                <p class="text-xs font-semibold text-base-100 truncate" x-text="b.name"></p>
-                <p class="text-[9px] text-base-500 font-mono truncate" x-text="b.botId"></p>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Running/Idle status -->
+                <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border"
+                  :class="(a.skillUpRunning || a.autoWarRunning || a.autoWorkRunning) ? 'text-val-green bg-val-green/10 border-val-green/30' : 'text-base-500 bg-base-800/40 border-base-700/40'">
+                  <span class="w-1.5 h-1.5 rounded-full" :class="(a.skillUpRunning || a.autoWarRunning || a.autoWorkRunning) ? 'bg-val-green' : 'bg-base-500'"></span>
+                  <span x-text="(a.skillUpRunning || a.autoWarRunning || a.autoWorkRunning) ? 'Running' : 'Idle'"></span>
+                </span>
+                <!-- Auto count badge: 0=gray, 1=green, 2=blue, 3=orange -->
+                <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+                  :class="(a.skillUpRunning + a.autoWarRunning + a.autoWorkRunning) === 0 ? 'text-base-500 border-base-700/40'
+                    : (a.skillUpRunning + a.autoWarRunning + a.autoWorkRunning) === 1 ? 'text-val-green border-val-green/30'
+                    : (a.skillUpRunning + a.autoWarRunning + a.autoWorkRunning) === 2 ? 'text-val-blue border-val-blue/30'
+                    : 'text-warn border-warn/30'"
+                  x-text="(a.skillUpRunning + a.autoWarRunning + a.autoWorkRunning) + '/3'"></span>
               </div>
             </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <span class="inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded-full border"
-                :class="botStatusClass(b.status)">
-                <template x-if="isConnecting(b.status)">
-                  <svg class="w-2.5 h-2.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                </template>
-                <template x-if="!isConnecting(b.status)">
-                  <span class="relative flex w-1.5 h-1.5">
-                    <template x-if="isConnected(b.status)">
-                      <span class="absolute inline-flex w-full h-full rounded-full bg-val-green opacity-75 animate-ping"></span>
-                    </template>
-                    <span class="relative inline-flex w-1.5 h-1.5 rounded-full" :class="botStatusDotClass(b.status)"></span>
-                  </span>
-                </template>
-                <span x-text="botStatusText(b.status)"></span>
-              </span>
-              <span class="text-[9px] px-1.5 py-0.5 rounded-full border" :class="typeClass(b.type)" x-text="b.type"></span>
-            </div>
-          </div>
-        </template>
+          </template>
+        </div>
       </div>
     </div>
 
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      
-      <button @click="switchView('automate')" type="button" class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 text-left hover:border-base-600/60 transition-all active:scale-[.98] group">
-        <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-8 h-8 rounded-lg bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <span class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Automate</span>
+    <!-- Access Status + Bot Status -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <!-- Access Status (list style) -->
+      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
+        <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Access Status</h3>
+          <button @click="switchView('access')" type="button" class="text-[10px] font-mono text-base-400 hover:text-base-200 transition-colors uppercase tracking-wider">View All →</button>
         </div>
-        <p class="text-[10px] text-base-500 font-mono leading-relaxed">Manage game automates and run skill/training/work tasks.</p>
-      </button>
+        <div class="p-2">
+          <template x-if="accessList.length === 0">
+            <div class="text-center py-6 text-base-500 text-xs font-mono">No access tokens yet</div>
+          </template>
+          <template x-for="(a, idx) in accessList.slice(0, 2)" :key="'dashacc-'+a.id">
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-base-800/40 transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-semibold text-base-100 truncate" x-text="a.name || a.accessId"></p>
+                  <p class="text-[9px] text-base-500 font-mono truncate" x-text="maskToken(a.token).slice(0, 12) + '...'"></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Type badge: Private=green, Shared=blue, Business=orange -->
+                <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+                  :class="a.type === 'Private' ? 'text-val-green border-val-green/30'
+                    : a.type === 'Shared' ? 'text-val-blue border-val-blue/30'
+                    : 'text-warn border-warn/30'"
+                  x-text="a.type"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
 
-      
-      <button @click="switchView('bot')" type="button" class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 text-left hover:border-base-600/60 transition-all active:scale-[.98] group">
-        <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-8 h-8 rounded-lg bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-          </div>
-          <span class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Bot</span>
+      <!-- Bot Status (list style) -->
+      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
+        <div class="px-4 py-3 border-b border-base-800/60 flex items-center justify-between">
+          <h3 class="text-xs font-bold font-mono uppercase tracking-wider text-base-200">Bot Status</h3>
+          <button @click="switchView('bot')" type="button" class="text-[10px] font-mono text-base-400 hover:text-base-200 transition-colors uppercase tracking-wider">View All →</button>
         </div>
-        <p class="text-[10px] text-base-500 font-mono leading-relaxed">Register bots and connect bot clients via WebSocket.</p>
-      </button>
-
-      
-      <button @click="switchView('access')" type="button" class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 text-left hover:border-base-600/60 transition-all active:scale-[.98] group">
-        <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-8 h-8 rounded-lg bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <span class="text-xs font-bold font-mono uppercase tracking-wider text-base-300">Access</span>
+        <div class="p-2">
+          <template x-if="bots.length === 0">
+            <div class="text-center py-6 text-base-500 text-xs font-mono">No bots registered yet</div>
+          </template>
+          <template x-for="(b, idx) in bots.slice(0, 2)" :key="'dashbot-'+b.id">
+            <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg hover:bg-base-800/40 transition-colors">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-val-blue/10 border border-val-blue/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-semibold text-base-100 truncate" x-text="b.name"></p>
+                  <p class="text-[9px] text-base-500 font-mono truncate" x-text="b.botId"></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- Status: connected=green, connecting=orange spinner, disconnected=gray -->
+                <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border"
+                  :class="botStatusClass(b.status)">
+                  <template x-if="isConnecting(b.status)">
+                    <svg class="w-2.5 h-2.5 animate-spin text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  </template>
+                  <template x-if="!isConnecting(b.status)">
+                    <span class="relative flex w-1.5 h-1.5">
+                      <template x-if="isConnected(b.status)">
+                        <span class="absolute inline-flex w-full h-full rounded-full bg-val-green opacity-75 animate-ping"></span>
+                      </template>
+                      <span class="relative inline-flex w-1.5 h-1.5 rounded-full" :class="botStatusDotClass(b.status)"></span>
+                    </span>
+                  </template>
+                  <span x-text="botStatusText(b.status)"></span>
+                </span>
+                <!-- Type badge: Dual=green, Shared=blue -->
+                <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+                  :class="b.type === 'Dual' ? 'text-val-green border-val-green/30' : 'text-val-blue border-val-blue/30'"
+                  x-text="b.type"></span>
+              </div>
+            </div>
+          </template>
         </div>
-        <p class="text-[10px] text-base-500 font-mono leading-relaxed">Generate access tokens (Private/Shared/Business) for other users.</p>
-      </button>
+      </div>
     </div>
   </div>
 </div>

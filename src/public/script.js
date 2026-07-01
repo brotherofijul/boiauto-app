@@ -71,7 +71,10 @@ function spawnParticles() {
       "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
       "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
       Math.random() * 14 + "s;";
-    
+    if (i % 3 === 0) {
+      p.style.background = "rgba(96,165,250,0.15)";
+      p.style.boxShadow = "0 0 4px rgba(96,165,250,0.2)";
+    }
     c.appendChild(p);
   }
 }
@@ -722,13 +725,13 @@ function boiauto() {
     },
 
     botStatusClass(s) {
-      if (s === "connecting") return "text-base-300 bg-base-800/40 border-base-600/50";
+      if (s === "connecting") return "text-warn bg-warn/10 border-warn/30";
       if (s === "connected") return "text-val-green bg-val-green/10 border-val-green/30";
-      return "text-danger bg-danger/10 border-danger/30";
+      return "text-base-400 bg-base-800/40 border-base-700/40";
     },
 
     botStatusDotClass(s) {
-      if (s === "connecting") return "bg-base-400";
+      if (s === "connecting") return "bg-warn";
       if (s === "connected") return "bg-val-green";
       return "bg-danger";
     },
