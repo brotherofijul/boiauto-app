@@ -3,7 +3,7 @@ import { test, expect, describe, beforeAll, beforeEach } from "bun:test";
 import db from "../src/db/index.js";
 import { botsQueries } from "../src/db/queries/bots.js";
 import { accessQueries } from "../src/db/queries/access.js";
-import { accountsQueries } from "../src/db/queries/accounts.js";
+import { automatesQueries } from "../src/db/queries/automates.js";
 import { genBotId, genToken, genAccessId } from "../src/utils/crypto.js";
 
 function createTestBot(opts = {}) {
@@ -29,7 +29,7 @@ describe("database", () => {
     beforeEach(() => {
       db.exec("DELETE FROM bots");
       db.exec("DELETE FROM access_tokens");
-      db.exec("DELETE FROM accounts");
+      db.exec("DELETE FROM automates");
     });
 
     test("insert and getByBotId", () => {
@@ -100,7 +100,7 @@ describe("database", () => {
     beforeEach(() => {
       db.exec("DELETE FROM bots");
       db.exec("DELETE FROM access_tokens");
-      db.exec("DELETE FROM accounts");
+      db.exec("DELETE FROM automates");
     });
 
     test("insert and getByAccessId", () => {
@@ -123,11 +123,11 @@ describe("database", () => {
       expect(list[0].usage_count).toBe(0);
     });
 
-    test("countAccountsByAccess counts linked accounts", () => {
+    test("countAutomatesByAccess counts linked automates", () => {
       const { botId } = createTestBot();
       const { accessId } = createTestAccess(botId, { type: "Shared" });
-      accountsQueries.insert({ name: "Acc1", bearer: "b1", bot_id: botId, access_id: accessId, type: "Shared" });
-      accountsQueries.insert({ name: "Acc2", bearer: "b2", bot_id: botId, access_id: accessId, type: "Shared" });
+      automatesQueries.insert({ name: "Acc1", bearer: "b1", bot_id: botId, access_id: accessId, type: "Shared" });
+      automatesQueries.insert({ name: "Acc2", bearer: "b2", bot_id: botId, access_id: accessId, type: "Shared" });
       expect(accessQueries.countAccountsByAccess(accessId)).toBe(2);
     });
 
@@ -147,18 +147,18 @@ describe("database", () => {
     });
   });
 
-  describe("accounts queries", () => {
+  describe("automates queries", () => {
     beforeEach(() => {
       db.exec("DELETE FROM bots");
       db.exec("DELETE FROM access_tokens");
-      db.exec("DELETE FROM accounts");
+      db.exec("DELETE FROM automates");
     });
 
     test("insert and getById", () => {
       const { botId } = createTestBot();
       const { accessId } = createTestAccess(botId);
-      accountsQueries.insert({ name: "Acc", bearer: "tok", bot_id: botId, access_id: accessId, type: "Private" });
-      const list = accountsQueries.list();
+      automatesQueries.insert({ name: "Acc", bearer: "tok", bot_id: botId, access_id: accessId, type: "Private" });
+      const list = automatesQueries.list();
       expect(list.length).toBe(1);
       expect(list[0].name).toBe("Acc");
       expect(list[0].access_name).toBeNull();
@@ -168,10 +168,10 @@ describe("database", () => {
     test("update changes fields", () => {
       const { botId } = createTestBot();
       const { accessId } = createTestAccess(botId);
-      accountsQueries.insert({ name: "Acc", bearer: "tok", bot_id: botId, access_id: accessId, type: "Private" });
-      const acc = accountsQueries.list()[0];
-      accountsQueries.update(acc.id, { balance: 100.5, status: "online" });
-      const updated = accountsQueries.getById(acc.id);
+      automatesQueries.insert({ name: "Acc", bearer: "tok", bot_id: botId, access_id: accessId, type: "Private" });
+      const acc = automatesQueries.list()[0];
+      automatesQueries.update(acc.id, { balance: 100.5, status: "online" });
+      const updated = automatesQueries.getById(acc.id);
       expect(updated.balance).toBe(100.5);
       expect(updated.status).toBe("online");
     });

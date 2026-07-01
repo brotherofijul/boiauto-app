@@ -4,7 +4,7 @@ import db from "../index.js";
 export const accessQueries = {
   list: () => db.query(`
     SELECT a.*, b.name as bot_name, b.type as bot_type,
-           (SELECT COUNT(*) FROM accounts acc WHERE acc.access_id = a.access_id) as usage_count
+           (SELECT COUNT(*) FROM automates acc WHERE acc.access_id = a.access_id) as usage_count
     FROM access_tokens a
     LEFT JOIN bots b ON a.bot_id = b.bot_id
     ORDER BY a.created_at DESC
@@ -18,5 +18,5 @@ export const accessQueries = {
   countByBot: (botId) =>
     db.query("SELECT COUNT(*) as c FROM access_tokens WHERE bot_id = ?").get(botId).c,
   countAccountsByAccess: (accessId) =>
-    db.query("SELECT COUNT(*) as c FROM accounts WHERE access_id = ?").get(accessId).c,
+    db.query("SELECT COUNT(*) as c FROM automates WHERE access_id = ?").get(accessId).c,
 };

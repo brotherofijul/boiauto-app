@@ -1,75 +1,29 @@
 <!-- /parts/feature-toggle.html -->
 <div class="space-y-1.5">
-  
-  <button @click.stop="toggleFeature(idx, 'skillUp')" type="button"
-    class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
-    :class="acc.skillUpRunning
-      ? (idx % 2 === 0 ? 'border-s1/30 bg-s1/10 text-s1' : 'border-s2/30 bg-s2/10 text-s2')
-      : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
-    <div class="flex items-center gap-1.5 min-w-0">
-      <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-      </svg>
-      <span class="text-[11px] font-mono uppercase tracking-wider truncate">Skill</span>
-    </div>
-    <div class="flex items-center gap-1.5 flex-shrink-0">
-      <span class="text-[10px] font-mono font-bold" x-text="acc.skillUpRunning ? 'ON' : 'OFF'"></span>
-      <span class="relative flex w-2 h-2">
-        <template x-if="acc.skillUpRunning">
-          <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"
-            :class="idx % 2 === 0 ? 'bg-s1' : 'bg-s2'"></span>
-        </template>
-        <span class="relative inline-flex w-2 h-2 rounded-full transition-colors"
-          :class="acc.skillUpRunning ? (idx % 2 === 0 ? 'bg-s1' : 'bg-s2') : 'bg-base-600'"></span>
-      </span>
-    </div>
-  </button>
-
-  <button @click.stop="toggleFeature(idx, 'autoWar')" type="button"
-    class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
-    :class="acc.autoWarRunning
-      ? (idx % 2 === 0 ? 'border-s1/30 bg-s1/10 text-s1' : 'border-s2/30 bg-s2/10 text-s2')
-      : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
-    <div class="flex items-center gap-1.5 min-w-0">
-      <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6 3 3-6 6-3-3z"/><path d="M16 16l4-4"/><path d="M19 21l2-2"/>
-      </svg>
-      <span class="text-[11px] font-mono uppercase tracking-wider truncate">Training</span>
-    </div>
-    <div class="flex items-center gap-1.5 flex-shrink-0">
-      <span class="text-[10px] font-mono font-bold" x-text="acc.autoWarRunning ? 'ON' : 'OFF'"></span>
-      <span class="relative flex w-2 h-2">
-        <template x-if="acc.autoWarRunning">
-          <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"
-            :class="idx % 2 === 0 ? 'bg-s1' : 'bg-s2'"></span>
-        </template>
-        <span class="relative inline-flex w-2 h-2 rounded-full transition-colors"
-          :class="acc.autoWarRunning ? (idx % 2 === 0 ? 'bg-s1' : 'bg-s2') : 'bg-base-600'"></span>
-      </span>
-    </div>
-  </button>
-
-  <button @click.stop="toggleFeature(idx, 'autoWork')" type="button"
-    class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
-    :class="acc.autoWorkRunning
-      ? (idx % 2 === 0 ? 'border-s1/30 bg-s1/10 text-s1' : 'border-s2/30 bg-s2/10 text-s2')
-      : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
-    <div class="flex items-center gap-1.5 min-w-0">
-      <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 7h-4V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3H4l2 13h12l2-13z"/><path d="M10 7V4h4v3"/>
-      </svg>
-      <span class="text-[11px] font-mono uppercase tracking-wider truncate">Work</span>
-    </div>
-    <div class="flex items-center gap-1.5 flex-shrink-0">
-      <span class="text-[10px] font-mono font-bold" x-text="acc.autoWorkRunning ? 'ON' : 'OFF'"></span>
-      <span class="relative flex w-2 h-2">
-        <template x-if="acc.autoWorkRunning">
-          <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"
-            :class="idx % 2 === 0 ? 'bg-s1' : 'bg-s2'"></span>
-        </template>
-        <span class="relative inline-flex w-2 h-2 rounded-full transition-colors"
-          :class="acc.autoWorkRunning ? (idx % 2 === 0 ? 'bg-s1' : 'bg-s2') : 'bg-base-600'"></span>
-      </span>
-    </div>
-  </button>
+  <template x-for="ft in featureToggles" :key="ft.key">
+    <button @click.stop="toggleFeature(idx, ft.feature)" type="button"
+      class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
+      :class="acc[ft.key]
+        ? (idx % 2 === 0 ? 'border-s1/30 bg-s1/10 text-s1' : 'border-s2/30 bg-s2/10 text-s2')
+        : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
+      <div class="flex items-center gap-1.5 min-w-0">
+        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+          :class="ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2'"></span>
+        <span class="text-[11px] font-mono uppercase tracking-wider truncate" x-text="ft.label"></span>
+      </div>
+      <div class="flex items-center gap-1.5 flex-shrink-0">
+        <span class="text-[10px] font-mono font-bold" x-text="acc[ft.key] ? 'ON' : 'OFF'"></span>
+        <span class="relative flex w-2 h-2">
+          <template x-if="acc[ft.key]">
+            <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"
+              :class="ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2'"></span>
+          </template>
+          <span class="relative inline-flex w-2 h-2 rounded-full transition-colors"
+            :class="acc[ft.key]
+              ? (ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2')
+              : 'bg-base-600'"></span>
+        </span>
+      </div>
+    </button>
+  </template>
 </div>

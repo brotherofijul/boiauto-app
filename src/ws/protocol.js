@@ -18,7 +18,7 @@ export const WS_MESSAGES = {
   SNAPSHOT: "snapshot",
   BOT_STATUS: "bot_status",
   BOT_UPDATE: "bot_update",
-  ACCOUNT_UPDATE: "account_update",
+  AUTOMATE_UPDATE: "account_update",
   ERROR: "error",
 };
 

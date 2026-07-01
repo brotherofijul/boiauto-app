@@ -1,5 +1,5 @@
 // /src/ws/index.js
-import { botsQueries, accountsQueries } from "../db/queries/index.js";
+import { botsQueries, automatesQueries } from "../db/queries/index.js";
 import logger from "../logger.js";
 import { WS_ROLES, WS_MESSAGES } from "./protocol.js";
 
@@ -122,7 +122,7 @@ function handleAuth(ws, ctx, msg) {
     send(ws, {
       type: WS_MESSAGES.SNAPSHOT,
       bots: botsQueries.list(),
-      accounts: accountsQueries.list(),
+      accounts: automatesQueries.list(),
     });
     log.debug("web subscriber connected");
     return;
@@ -156,7 +156,7 @@ function handleStateUpdate(ws, ctx, msg) {
     payload: msg.payload,
   });
   if (msg.payload && msg.payload.account_id != null) {
-    accountsQueries.update(msg.payload.account_id, {
+    automatesQueries.update(msg.payload.account_id, {
       balance: msg.payload.balance,
       diamond: msg.payload.diamond,
       status: msg.payload.status,
@@ -165,8 +165,8 @@ function handleStateUpdate(ws, ctx, msg) {
   log.debug({ botId: ctx.botId, accountId: msg.account_id, subscribers: sent }, "state_update broadcast");
 }
 
-export function broadcastAccountUpdate(accountId, fields) {
-  const sent = broadcastToSubscribers({ type: WS_MESSAGES.ACCOUNT_UPDATE, account_id: accountId, fields });
+export function broadcastAutomateUpdate(accountId, fields) {
+  const sent = broadcastToSubscribers({ type: WS_MESSAGES.AUTOMATE_UPDATE, account_id: accountId, fields });
   log.debug({ accountId, subscribers: sent }, "account_update broadcast");
 }
 

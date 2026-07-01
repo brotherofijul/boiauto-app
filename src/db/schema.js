@@ -11,7 +11,7 @@ export const schemaSql = `
     created_at INTEGER DEFAULT (unixepoch())
   );
 
-  CREATE TABLE IF NOT EXISTS accounts (
+  CREATE TABLE IF NOT EXISTS automates (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     bearer TEXT NOT NULL,
@@ -44,8 +44,8 @@ export const schemaSql = `
     FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE CASCADE
   );
 
-  CREATE INDEX IF NOT EXISTS idx_accounts_bot_id ON accounts(bot_id);
-  CREATE INDEX IF NOT EXISTS idx_accounts_access_id ON accounts(access_id);
+  CREATE INDEX IF NOT EXISTS idx_automates_bot_id ON automates(bot_id);
+  CREATE INDEX IF NOT EXISTS idx_automates_access_id ON automates(access_id);
   CREATE INDEX IF NOT EXISTS idx_bots_status ON bots(status);
   CREATE INDEX IF NOT EXISTS idx_access_bot_id ON access_tokens(bot_id);
 `;

@@ -1,5 +1,5 @@
-<!-- /parts/account-detail-modal.html -->
-<div x-show="selectedAccountId" x-cloak
+<!-- /parts/automate-detail-modal.html -->
+<div x-show="selectedAutomateId" x-cloak
      x-transition:enter="transition ease-out duration-200"
      x-transition:enter-start="opacity-0"
      x-transition:enter-end="opacity-100"
@@ -20,7 +20,7 @@
        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
        x-transition:leave-end="opacity-0 scale-95 translate-y-3">
 
-    <template x-if="selectedAccount">
+    <template x-if="selectedAutomate">
       <div class="flex flex-col max-h-[90vh]">
         
         <div class="h-1 flex-shrink-0"
@@ -32,17 +32,17 @@
               :class="selectedIndex % 2 === 0 ? 'bg-s1/10 text-s1 border border-s1/25' : 'bg-s2/10 text-s2 border border-s2/25'"
               x-text="(selectedIndex + 1).toString().padStart(2, '0')"></div>
             <div class="min-w-0">
-              <h3 class="text-base font-bold text-base-100 tracking-tight truncate" x-text="selectedAccount.name || 'Unnamed Automate'"></h3>
+              <h3 class="text-base font-bold text-base-100 tracking-tight truncate" x-text="selectedAutomate.name || 'Unnamed Automate'"></h3>
               <div class="flex items-center gap-1.5 mt-0.5">
                 <span class="relative flex w-1.5 h-1.5">
-                  <template x-if="selectedAccount.running">
+                  <template x-if="selectedAutomate.running">
                     <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
                   </template>
                   <span class="relative inline-flex w-1.5 h-1.5 rounded-full"
-                    :class="selectedAccount.running ? 'bg-s1' : 'bg-base-500'"></span>
+                    :class="selectedAutomate.running ? 'bg-s1' : 'bg-base-500'"></span>
                 </span>
                 <p class="text-[10px] text-base-500 font-mono tracking-wider uppercase"
-                  x-text="selectedAccount.running ? 'Running' : 'Idle'"></p>
+                  x-text="selectedAutomate.running ? 'Running' : 'Idle'"></p>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Balance</p>
               <p class="text-xl font-bold font-mono text-base-100 leading-none flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-s1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <span class="x-scroll whitespace-nowrap pb-0.5" x-text="formatBalance(selectedAccount.balance)"></span>
+                <span class="x-scroll whitespace-nowrap pb-0.5" x-text="formatBalance(selectedAutomate.balance)"></span>
               </p>
             </div>
             
@@ -67,7 +67,7 @@
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Diamond</p>
               <p class="text-xl font-bold font-mono text-s2 leading-none flex items-center gap-1.5">
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/></svg>
-                <span class="x-scroll whitespace-nowrap pb-0.5" x-text="formatNumber(selectedAccount.diamond)"></span>
+                <span class="x-scroll whitespace-nowrap pb-0.5" x-text="formatNumber(selectedAutomate.diamond)"></span>
               </p>
             </div>
             
@@ -75,7 +75,7 @@
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Bot ID</p>
               <p class="text-sm font-bold font-mono text-base-200 leading-none flex items-center gap-1.5 min-w-0">
                 <svg class="w-4 h-4 text-base-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
-                <span class="x-scroll whitespace-nowrap pb-0.5 min-w-0" x-text="selectedAccount.botId || '—'"></span>
+                <span class="x-scroll whitespace-nowrap pb-0.5 min-w-0" x-text="selectedAutomate.botId || '—'"></span>
               </p>
             </div>
             
@@ -83,18 +83,18 @@
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Bot Status</p>
               <p class="leading-none flex items-center gap-2">
                 <span class="relative flex w-3 h-3">
-                  <template x-if="selectedAccount.botStatus === 'connected'">
+                  <template x-if="selectedAutomate.botStatus === 'connected'">
                     <span class="absolute inline-flex w-full h-full rounded-full bg-s1 opacity-75 animate-ping"></span>
                   </template>
-                  <template x-if="selectedAccount.botStatus === 'connecting'">
+                  <template x-if="selectedAutomate.botStatus === 'connecting'">
                     <svg class="w-3 h-3 animate-spin text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                   </template>
                   <span class="relative inline-flex w-3 h-3 rounded-full"
-                    :class="selectedAccount.botStatus === 'connected' ? 'bg-s1' : (selectedAccount.botStatus === 'connecting' ? 'bg-warn' : 'bg-danger')"></span>
+                    :class="selectedAutomate.botStatus === 'connected' ? 'bg-s1' : (selectedAutomate.botStatus === 'connecting' ? 'bg-warn' : 'bg-danger')"></span>
                 </span>
                 <span class="text-sm font-mono font-bold"
-                  :class="selectedAccount.botStatus === 'connected' ? 'text-s1' : (selectedAccount.botStatus === 'connecting' ? 'text-warn' : 'text-danger')"
-                  x-text="selectedAccount.botStatus === 'connected' ? 'Connected' : (selectedAccount.botStatus === 'connecting' ? 'Connecting' : 'Disconnected')"></span>
+                  :class="selectedAutomate.botStatus === 'connected' ? 'text-s1' : (selectedAutomate.botStatus === 'connecting' ? 'text-warn' : 'text-danger')"
+                  x-text="selectedAutomate.botStatus === 'connected' ? 'Connected' : (selectedAutomate.botStatus === 'connecting' ? 'Connecting' : 'Disconnected')"></span>
               </p>
             </div>
           </div>
@@ -108,10 +108,10 @@
                 Bearer Token
               </label>
               <div class="relative">
-                <input x-model="selectedAccount.bearer" @input="saveAccount(selectedIndex)" :type="selectedAccount.showBearer?'text':'password'" :disabled="selectedAccount.running" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-10 font-mono placeholder:text-base-600 transition-all focus:bg-base-800" />
-                <button @click="selectedAccount.showBearer=!selectedAccount.showBearer" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
-                  <svg x-show="!selectedAccount.showBearer" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                  <svg x-show="selectedAccount.showBearer" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                <input x-model="selectedAutomate.bearer" @input="saveAutomate(selectedIndex)" :type="selectedAutomate.showBearer?'text':'password'" :disabled="selectedAutomate.running" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-10 font-mono placeholder:text-base-600 transition-all focus:bg-base-800" />
+                <button @click="selectedAutomate.showBearer=!selectedAutomate.showBearer" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
+                  <svg x-show="!selectedAutomate.showBearer" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                  <svg x-show="selectedAutomate.showBearer" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
                 </button>
               </div>
             </div>
@@ -120,18 +120,18 @@
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
                 <svg class="w-3 h-3 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Access
-                <span class="ml-auto text-[9px] font-mono normal-case tracking-normal flex items-center gap-1" :class="selectedAccount.accessType === 'Shared' ? 'text-s2' : 'text-base-500'">
-                  <span x-show="selectedAccount.accessType" x-text="selectedAccount.accessType === 'Shared' ? (accessList.find(a=>a.accessId===selectedAccount.accessId)?.usageCount || 0) + ' using' : (accessList.find(a=>a.accessId===selectedAccount.accessId)?.usageCount || 0) + '/1'"></span>
-                  <span x-show="selectedAccount.accessType" class="px-1.5 py-0.5 rounded-full border" :class="typeClass(selectedAccount.accessType)" x-text="selectedAccount.accessType"></span>
+                <span class="ml-auto text-[9px] font-mono normal-case tracking-normal flex items-center gap-1" :class="selectedAutomate.accessType === 'Shared' ? 'text-s2' : 'text-base-500'">
+                  <span x-show="selectedAutomate.accessType" x-text="selectedAutomate.accessType === 'Shared' ? (accessList.find(a=>a.accessId===selectedAutomate.accessId)?.usageCount || 0) + ' using' : (accessList.find(a=>a.accessId===selectedAutomate.accessId)?.usageCount || 0) + '/1'"></span>
+                  <span x-show="selectedAutomate.accessType" class="px-1.5 py-0.5 rounded-full border" :class="typeClass(selectedAutomate.accessType)" x-text="selectedAutomate.accessType"></span>
                 </span>
               </label>
-              <button @click="open=!open" :disabled="selectedAccount.running || accessList.length === 0" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-warn/30 text-left disabled:cursor-not-allowed disabled:opacity-60">
-                <span x-text="accessList.find(a=>a.accessId===selectedAccount.accessId)?.name || accessList.find(a=>a.accessId===selectedAccount.accessId)?.accessId || 'Select access...'"></span>
+              <button @click="open=!open" :disabled="selectedAutomate.running || accessList.length === 0" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-warn/30 text-left disabled:cursor-not-allowed disabled:opacity-60">
+                <span x-text="accessList.find(a=>a.accessId===selectedAutomate.accessId)?.name || accessList.find(a=>a.accessId===selectedAutomate.accessId)?.accessId || 'Select access...'"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
               <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-warn/20 shadow-lg shadow-black/40 overflow-hidden max-h-60 overflow-y-auto log-scroll">
                 <template x-for="a in accessList" :key="'detacc-'+a.accessId">
-                  <button @click="selectedAccount.accessId=a.accessId; selectedAccount.accessName=a.name; selectedAccount.accessType=a.type; selectedAccount.botId=a.botId; selectedAccount.botName=a.botName; selectedAccount.type=a.type; open=false; saveAccount(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between gap-2" :class="selectedAccount.accessId===a.accessId ? 'bg-warn/10 text-warn' : 'text-base-200 hover:bg-base-700/50'">
+                  <button @click="selectedAutomate.accessId=a.accessId; selectedAutomate.accessName=a.name; selectedAutomate.accessType=a.type; selectedAutomate.botId=a.botId; selectedAutomate.botName=a.botName; selectedAutomate.type=a.type; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between gap-2" :class="selectedAutomate.accessId===a.accessId ? 'bg-warn/10 text-warn' : 'text-base-200 hover:bg-base-700/50'">
                     <div class="min-w-0">
                       <p class="truncate" x-text="a.name || a.accessId"></p>
                       <p class="text-[9px] text-base-500 truncate" x-text="a.botName + ' · ' + a.accessId"></p>
@@ -149,15 +149,15 @@
               
               <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Barrack'},{v:2,l:'War Tech'},{v:3,l:'Scientist'}] }" @click.outside="open=false">
                 <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Skill</label>
-                <button @click="open=!open" :disabled="selectedAccount.running" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left disabled:cursor-not-allowed">
-                  <span x-text="opts.find(o=>o.v===selectedAccount.skill)?.l"></span>
+                <button @click="open=!open" :disabled="selectedAutomate.running" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left disabled:cursor-not-allowed">
+                  <span x-text="opts.find(o=>o.v===selectedAutomate.skill)?.l"></span>
                   <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-s1/20 shadow-lg shadow-black/40 overflow-hidden">
-                  <template x-for="o in opts" :key="selectedAccount.id+'sk-'+o.v">
-                    <button @click="selectedAccount.skill=o.v; open=false; saveAccount(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAccount.skill===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
+                  <template x-for="o in opts" :key="selectedAutomate.id+'sk-'+o.v">
+                    <button @click="selectedAutomate.skill=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.skill===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
                       <span x-text="o.l"></span>
-                      <span x-show="selectedAccount.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
+                      <span x-show="selectedAutomate.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
                     </button>
                   </template>
                 </div>
@@ -165,15 +165,15 @@
               
               <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Money'},{v:2,l:'Diamond'}] }" @click.outside="open=false">
                 <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Pay</label>
-                <button @click="open=!open" :disabled="selectedAccount.running" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left disabled:cursor-not-allowed">
-                  <span x-text="opts.find(o=>o.v===selectedAccount.pay)?.l"></span>
+                <button @click="open=!open" :disabled="selectedAutomate.running" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-s1/30 text-left disabled:cursor-not-allowed">
+                  <span x-text="opts.find(o=>o.v===selectedAutomate.pay)?.l"></span>
                   <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-s1/20 shadow-lg shadow-black/40 overflow-hidden">
-                  <template x-for="o in opts" :key="selectedAccount.id+'pay-'+o.v">
-                    <button @click="selectedAccount.pay=o.v; open=false; saveAccount(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAccount.pay===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
+                  <template x-for="o in opts" :key="selectedAutomate.id+'pay-'+o.v">
+                    <button @click="selectedAutomate.pay=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.pay===o.v ? 'bg-s1/10 text-s1' : 'text-base-200 hover:bg-base-700/50'">
                       <span x-text="o.l"></span>
-                      <span x-show="selectedAccount.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
+                      <span x-show="selectedAutomate.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-s1"></span>
                     </button>
                   </template>
                 </div>
@@ -186,13 +186,13 @@
             <div class="grid grid-cols-2 gap-2">
               <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
                 <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1 font-mono">Current</p>
-                <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="selectedAccount.currentLevel??'—'">—</p>
+                <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="selectedAutomate.currentLevel??'—'">—</p>
               </div>
               <div class="rounded-lg bg-base-800/50 border border-base-700/30 p-2.5 text-center">
                 <p class="text-[9px] text-base-500 uppercase tracking-widest mb-1 font-mono">Next</p>
                 <p class="text-2xl font-bold font-mono leading-none"
                   :class="selectedIndex % 2 === 0 ? 'text-s1' : 'text-s2'"
-                  x-text="selectedAccount.targetLevel??'—'">—</p>
+                  x-text="selectedAutomate.targetLevel??'—'">—</p>
               </div>
             </div>
             <div class="rounded-lg bg-base-800/50 border border-base-700/30 px-3 py-2 text-center">
@@ -200,26 +200,26 @@
               <p class="text-lg font-bold font-mono leading-none"
                 :class="timeClass(selectedIndex)"
                 :style="timeLow(selectedIndex)?'animation:count-pulse 1s ease-in-out infinite':''"
-                x-text="selectedAccount.time">—</p>
+                x-text="selectedAutomate.time">—</p>
             </div>
           </div>
 
-          <div x-show="selectedAccount.error" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
+          <div x-show="selectedAutomate.error" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
             <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span x-text="selectedAccount.error"></span>
+            <span x-text="selectedAutomate.error"></span>
           </div>
         </div>
 
         <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 flex-shrink-0">
-          <button @click="removeAccount(selectedIndex)" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97] flex items-center gap-1.5">
+          <button @click="removeAutomate(selectedIndex)" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97] flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
             Remove
           </button>
           <div class="flex-1"></div>
-          <button @click="stopAccount(selectedIndex)" :disabled="!selectedAccount.running" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border transition-all active:scale-[.97]" :class="!selectedAccount.running ? 'border-base-700/50 bg-base-800/50 text-base-600 cursor-not-allowed' : 'border-danger/40 bg-danger/10 text-danger hover:bg-danger/15'">
+          <button @click="stopAutomate(selectedIndex)" :disabled="!selectedAutomate.running" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border transition-all active:scale-[.97]" :class="!selectedAutomate.running ? 'border-base-700/50 bg-base-800/50 text-base-600 cursor-not-allowed' : 'border-danger/40 bg-danger/10 text-danger hover:bg-danger/15'">
             Stop
           </button>
-          <button @click="startAccount(selectedIndex)" :disabled="selectedAccount.running||!selectedAccount.bearer.trim()||!selectedAccount.accessId" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97]" :class="selectedAccount.running||!selectedAccount.bearer.trim()||!selectedAccount.accessId ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-gradient-to-br from-s1 to-s1-dim text-base-950 hover:shadow-md hover:shadow-s1/30'">
+          <button @click="startAutomate(selectedIndex)" :disabled="selectedAutomate.running||!selectedAutomate.bearer.trim()||!selectedAutomate.accessId" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97]" :class="selectedAutomate.running||!selectedAutomate.bearer.trim()||!selectedAutomate.accessId ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-gradient-to-br from-s1 to-s1-dim text-base-950 hover:shadow-md hover:shadow-s1/30'">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21" /></svg>
             Start
           </button>

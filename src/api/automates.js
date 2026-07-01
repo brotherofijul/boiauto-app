@@ -1,11 +1,11 @@
-// /src/api/accounts.js
+// /src/api/automates.js
 import { json, error, readJson } from "../utils/response.js";
-import { accountsQueries, accessQueries, botsQueries } from "../db/queries/index.js";
-import { broadcastAccountUpdate } from "../ws/index.js";
+import { automatesQueries, accessQueries, botsQueries } from "../db/queries/index.js";
+import { broadcastAutomateUpdate } from "../ws/index.js";
 
-export async function accountsRouter(req, url, idStr, log) {
+export async function automatesRouter(req, url, idStr, log) {
   if (req.method === "GET") {
-    return json(accountsQueries.list());
+    return json(automatesQueries.list());
   }
 
   if (req.method === "POST") {
@@ -22,16 +22,16 @@ export async function accountsRouter(req, url, idStr, log) {
     }
 
     const bot = botsQueries.getByBotId(access.bot_id);
-    accountsQueries.insert({
+    automatesQueries.insert({
       name: body.name || `Account-${Date.now().toString(36).slice(-4)}`,
       bearer: body.bearer,
       bot_id: access.bot_id,
       access_id: access.access_id,
       type: access.type,
     });
-    const list = accountsQueries.list();
+    const list = automatesQueries.list();
     const acc = list[0];
-    broadcastAccountUpdate(acc.id, acc);
+    broadcastAutomateUpdate(acc.id, acc);
     log.info({ accountId: acc.id, name: acc.name, accessId: access.access_id }, "account created");
     return json(acc, 201);
   }
@@ -39,7 +39,7 @@ export async function accountsRouter(req, url, idStr, log) {
   if (req.method === "PATCH" && idStr) {
     const id = Number(idStr);
     const body = await readJson(req);
-    const acc = accountsQueries.getById(id);
+    const acc = automatesQueries.getById(id);
     if (!acc) return error("Account not found", 404);
     const allowed = [
       "name", "bearer", "skill_up_running", "auto_war_running",
@@ -55,16 +55,16 @@ export async function accountsRouter(req, url, idStr, log) {
       fields.access_id = access.access_id;
       fields.type = access.type;
     }
-    accountsQueries.update(id, fields);
-    const updated = accountsQueries.getById(id);
-    broadcastAccountUpdate(id, updated);
+    automatesQueries.update(id, fields);
+    const updated = automatesQueries.getById(id);
+    broadcastAutomateUpdate(id, updated);
     log.info({ accountId: id, fields: Object.keys(fields) }, "account updated");
     return json(updated);
   }
 
   if (req.method === "DELETE" && idStr) {
     const id = Number(idStr);
-    accountsQueries.remove(id);
+    automatesQueries.remove(id);
     log.info({ accountId: id }, "account deleted");
     return json({ ok: true });
   }

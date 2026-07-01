@@ -3,7 +3,7 @@ import { test, expect, describe, beforeAll, beforeEach, afterAll } from "bun:tes
 import db from "../src/db/index.js";
 import { botsQueries } from "../src/db/queries/bots.js";
 import { accessQueries } from "../src/db/queries/access.js";
-import { accountsQueries } from "../src/db/queries/accounts.js";
+import { automatesQueries } from "../src/db/queries/automates.js";
 import { handleApi } from "../src/api/index.js";
 import { genBotId, genToken, genAccessId } from "../src/utils/crypto.js";
 
@@ -37,7 +37,7 @@ describe("API routes", () => {
   beforeEach(() => {
     db.exec("DELETE FROM bots");
     db.exec("DELETE FROM access_tokens");
-    db.exec("DELETE FROM accounts");
+    db.exec("DELETE FROM automates");
   });
 
   describe("bots", () => {
@@ -153,13 +153,13 @@ describe("API routes", () => {
     });
   });
 
-  describe("accounts", () => {
-    test("POST /api/accounts creates account via access_id", async () => {
+  describe("automates", () => {
+    test("POST /api/automates creates account via access_id", async () => {
       const { botId } = setupBot();
       const { accessId } = setupAccess(botId, { type: "Private" });
       const res = await handleApi(
         makeReq("POST", { bearer: "bearer-tok", access_id: accessId }),
-        makeUrl("/api/accounts")
+        makeUrl("/api/automates")
       );
       const data = await res.json();
       expect(res.status).toBe(201);
@@ -169,43 +169,43 @@ describe("API routes", () => {
       expect(data.type).toBe("Private");
     });
 
-    test("POST /api/accounts rejects Private access after 1 account", async () => {
+    test("POST /api/automates rejects Private access after 1 account", async () => {
       const { botId } = setupBot();
       const { accessId } = setupAccess(botId, { type: "Private" });
-      await handleApi(makeReq("POST", { bearer: "b1", access_id: accessId }), makeUrl("/api/accounts"));
+      await handleApi(makeReq("POST", { bearer: "b1", access_id: accessId }), makeUrl("/api/automates"));
       const res = await handleApi(
         makeReq("POST", { bearer: "b2", access_id: accessId }),
-        makeUrl("/api/accounts")
+        makeUrl("/api/automates")
       );
       expect(res.status).toBe(400);
     });
 
-    test("POST /api/accounts allows Shared access unlimited", async () => {
+    test("POST /api/automates allows Shared access unlimited", async () => {
       const { botId } = setupBot();
       const { accessId } = setupAccess(botId, { type: "Shared" });
       for (let i = 0; i < 3; i++) {
         const res = await handleApi(
           makeReq("POST", { bearer: `b${i}`, access_id: accessId }),
-          makeUrl("/api/accounts")
+          makeUrl("/api/automates")
         );
         expect(res.status).toBe(201);
       }
     });
 
-    test("POST /api/accounts rejects missing bearer", async () => {
+    test("POST /api/automates rejects missing bearer", async () => {
       const { botId } = setupBot();
       const { accessId } = setupAccess(botId);
       const res = await handleApi(
         makeReq("POST", { access_id: accessId }),
-        makeUrl("/api/accounts")
+        makeUrl("/api/automates")
       );
       expect(res.status).toBe(400);
     });
 
-    test("POST /api/accounts rejects missing access_id", async () => {
+    test("POST /api/automates rejects missing access_id", async () => {
       const res = await handleApi(
         makeReq("POST", { bearer: "b" }),
-        makeUrl("/api/accounts")
+        makeUrl("/api/automates")
       );
       expect(res.status).toBe(400);
     });

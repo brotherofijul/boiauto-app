@@ -3,7 +3,7 @@ import { json, error } from "../utils/response.js";
 import logger from "../logger.js";
 import { botsRouter } from "./bots.js";
 import { accessRouter } from "./access.js";
-import { accountsRouter } from "./accounts.js";
+import { automatesRouter } from "./automates.js";
 import { dashboardRouter } from "./dashboard.js";
 
 const log = logger.child({ module: "api" });
@@ -11,7 +11,7 @@ const log = logger.child({ module: "api" });
 const routes = {
   bots: botsRouter,
   access: accessRouter,
-  accounts: accountsRouter,
+  automates: automatesRouter,
   dashboard: dashboardRouter,
 };
 

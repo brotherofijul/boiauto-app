@@ -30,7 +30,7 @@ db.exec(`
     created_at INTEGER DEFAULT (unixepoch())
   );
 
-  CREATE TABLE IF NOT EXISTS accounts (
+  CREATE TABLE IF NOT EXISTS automates (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     bearer TEXT NOT NULL,
@@ -63,8 +63,8 @@ db.exec(`
     FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE CASCADE
   );
 
-  CREATE INDEX IF NOT EXISTS idx_accounts_bot_id ON accounts(bot_id);
-  CREATE INDEX IF NOT EXISTS idx_accounts_access_id ON accounts(access_id);
+  CREATE INDEX IF NOT EXISTS idx_automates_bot_id ON accounts(bot_id);
+  CREATE INDEX IF NOT EXISTS idx_automates_access_id ON accounts(access_id);
   CREATE INDEX IF NOT EXISTS idx_bots_status ON bots(status);
   CREATE INDEX IF NOT EXISTS idx_access_bot_id ON access_tokens(bot_id);
 `);
@@ -144,7 +144,7 @@ export const queries = {
   listAccounts: () => db.query(`
     SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
            ac.name as access_name, ac.type as access_type, ac.price_per_day as access_price
-    FROM accounts a
+    FROM automates a
     LEFT JOIN bots b ON a.bot_id = b.bot_id
     LEFT JOIN access_tokens ac ON a.access_id = ac.access_id
     ORDER BY a.created_at DESC
@@ -152,13 +152,13 @@ export const queries = {
   getAccountById: (id) => db.query(`
     SELECT a.*, b.name as bot_name, b.type as bot_type, b.status as bot_status_raw,
            ac.name as access_name, ac.type as access_type, ac.price_per_day as access_price
-    FROM accounts a
+    FROM automates a
     LEFT JOIN bots b ON a.bot_id = b.bot_id
     LEFT JOIN access_tokens ac ON a.access_id = ac.access_id
     WHERE a.id = ?
   `).get(id),
   insertAccount: ({ name, bearer, bot_id, access_id, type }) =>
-    db.prepare(`INSERT INTO accounts (name, bearer, bot_id, access_id, type, status)
+    db.prepare(`INSERT INTO automates (name, bearer, bot_id, access_id, type, status)
                 VALUES (?, ?, ?, ?, ?, 'offline')`)
       .run(name, bearer, bot_id, access_id, type || "Private"),
   updateAccount: (id, fields) => {
@@ -167,13 +167,13 @@ export const queries = {
     const sets = keys.map((k) => `${k} = ?`).join(", ");
     const vals = keys.map((k) => fields[k]);
     vals.push(id);
-    db.prepare(`UPDATE accounts SET ${sets} WHERE id = ?`).run(...vals);
+    db.prepare(`UPDATE automates SET ${sets} WHERE id = ?`).run(...vals);
   },
-  deleteAccount: (id) => db.prepare("DELETE FROM accounts WHERE id = ?").run(id),
+  deleteAccount: (id) => db.prepare("DELETE FROM automates WHERE id = ?").run(id),
 
   listAccess: () => db.query(`
     SELECT a.*, b.name as bot_name, b.type as bot_type,
-           (SELECT COUNT(*) FROM accounts acc WHERE acc.access_id = a.access_id) as usage_count
+           (SELECT COUNT(*) FROM automates acc WHERE acc.access_id = a.access_id) as usage_count
     FROM access_tokens a
     LEFT JOIN bots b ON a.bot_id = b.bot_id
     ORDER BY a.created_at DESC
@@ -187,7 +187,7 @@ export const queries = {
   accessCountByBot: (botId) =>
     db.query("SELECT COUNT(*) as c FROM access_tokens WHERE bot_id = ?").get(botId).c,
   accountCountByAccess: (accessId) =>
-    db.query("SELECT COUNT(*) as c FROM accounts WHERE access_id = ?").get(accessId).c,
+    db.query("SELECT COUNT(*) as c FROM automates WHERE access_id = ?").get(accessId).c,
 };
 
 export default db;

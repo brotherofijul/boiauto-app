@@ -12,7 +12,7 @@
     <div>
       <div x-init="fetch('parts/topbar.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
       <div x-init="fetch('parts/empty-state.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
-      <div x-init="fetch('parts/account-overview-card.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+      <div x-init="fetch('parts/automate-overview-card.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
     </div>
   </template>
 
@@ -24,8 +24,8 @@
     <div x-init="fetch('parts/guide-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   </template>
 
-  <div x-init="fetch('parts/account-detail-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
-  <div x-init="fetch('parts/add-account-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/automate-detail-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
+  <div x-init="fetch('parts/add-automate-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/add-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/edit-bot-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   <div x-init="fetch('parts/add-access-modal.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
