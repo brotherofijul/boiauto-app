@@ -1,19 +1,17 @@
-<!-- src/public/parts/access-list.html -->
-<div x-show="loadingAccess && accessList.length === 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-  <div class="hidden md:grid grid-cols-[1.5fr_1.2fr_1fr_0.8fr_1.8fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
+<!-- /views/partials/access-list.html -->
+<div x-show="loadingAccess && accessList.length === 0" class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
+  <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.8fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
     <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
     <div class="h-3 bg-base-800 rounded w-2/3 animate-pulse"></div>
     <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
-    <div class="h-3 bg-base-800 rounded w-1/3 animate-pulse"></div>
     <div class="h-3 bg-base-800 rounded w-3/4 animate-pulse"></div>
     <div></div>
   </div>
   <template x-for="i in 3" :key="'skel-acc-'+i">
-    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1.2fr_1fr_0.8fr_1.8fr_auto] gap-3 px-4 py-3.5 border-b border-base-800/40 last:border-b-0">
+    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.8fr_auto] gap-3 px-4 py-3.5 border-b border-base-800/40 last:border-b-0">
       <div class="h-4 bg-base-800 rounded animate-pulse w-3/4"></div>
       <div class="h-4 bg-base-800/70 rounded animate-pulse w-2/3 hidden md:block"></div>
       <div class="h-4 bg-base-800/70 rounded animate-pulse w-1/2"></div>
-      <div class="h-4 bg-base-800/70 rounded animate-pulse w-1/3"></div>
       <div class="h-4 bg-base-800/70 rounded animate-pulse w-3/4"></div>
       <div class="h-4 bg-base-800/70 rounded animate-pulse w-6"></div>
     </div>
@@ -22,7 +20,7 @@
 
 <div x-show="!loadingAccess && filteredAccess.length === 0 && !searchAccess.trim()" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
   <div class="relative mb-6">
-    <div class="absolute inset-0 rounded-3xl bg-base-800/40 blur-2xl"></div>
+    <div class="absolute inset-0 rounded-3xl bg-warn/10 blur-2xl"></div>
     <div class="relative w-20 h-20 rounded-3xl border-2 border-dashed border-base-700 flex items-center justify-center bg-base-900/50">
       <svg class="w-9 h-9 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 12l2 2 4-4"/>
@@ -45,43 +43,48 @@
   <p class="text-xs text-base-400 font-mono">No access tokens match "<span x-text="searchAccess"></span>"</p>
 </div>
 
-<div x-show="!loadingAccess && filteredAccess.length > 0" class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-  <div class="hidden md:grid grid-cols-[1.5fr_1.2fr_1fr_0.8fr_1.8fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Access ID</p>
+<div x-show="!loadingAccess && filteredAccess.length > 0" class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
+  <div class="hidden md:grid grid-cols-[1.5fr_1fr_0.8fr_1.8fr_auto] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Label</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot ID</p>
     <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Type</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Usage</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Token</p>
+    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Access Token</p>
     <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold text-right">Actions</p>
   </div>
 
   <template x-for="(a, idx) in filteredAccess" :key="a.id">
-    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1.2fr_1fr_0.8fr_1.8fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
+    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_0.8fr_1.8fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
+      <!-- Label + usage count -->
       <div class="flex items-center gap-2 min-w-0">
-        <div class="w-8 h-8 rounded-lg bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div class="w-8 h-8 rounded-lg bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <div class="min-w-0">
-          <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="a.botName || a.botId"></p>
-          <p class="text-[10px] text-base-500 font-mono leading-tight mt-0.5" x-text="a.name ? ('label: ' + a.name) : '(no label)'"></p>
+          <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="a.name || a.accessId"></p>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="text-[10px] font-mono font-bold"
+              :class="a.type === 'Shared' ? 'text-base-400' : (a.usageCount >= 1 ? 'text-danger' : 'text-base-400')"
+              x-text="a.type === 'Shared' ? a.usageCount + ' using' : (a.usageCount + '/1')"></span>
+          </div>
         </div>
       </div>
 
+      <!-- Bot ID -->
       <div class="hidden md:block min-w-0">
-        <p class="text-xs font-mono text-base-300 truncate x-scroll whitespace-nowrap py-1 px-0.5" x-text="a.accessId"></p>
+        <p class="text-xs font-mono text-base-300 truncate x-scroll whitespace-nowrap py-1 px-0.5" x-text="a.botName || a.botId"></p>
       </div>
 
+      <!-- Type badge -->
       <div class="flex items-center gap-1.5">
-        <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border" :class="typeClass(a.type)" x-text="a.type"></span>
-        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-base-300" x-text="formatRate(a.pricePerDay)"></span>
+        <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+          :class="a.type === 'Private' ? 'text-val-green border-val-green/30'
+            : a.type === 'Shared' ? 'text-val-blue border-val-blue/30'
+            : 'text-warn border-warn/30'"
+          x-text="a.type"></span>
+        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-val-green" x-text="formatRate(a.pricePerDay)"></span>
       </div>
 
-      <div>
-        <span class="text-xs font-mono font-bold"
-          :class="a.type === 'Shared' ? 'text-base-300' : (a.usageCount >= 1 ? 'text-danger' : 'text-base-300')"
-          x-text="a.type === 'Shared' ? a.usageCount : (a.usageCount + '/1')"></span>
-      </div>
-
+      <!-- Access Token (not bot token) -->
       <div class="min-w-0 flex items-center gap-1">
         <code class="text-xs font-mono text-base-300 truncate x-scroll whitespace-nowrap py-1 px-0.5 flex-1" x-text="a.showToken ? a.token : maskToken(a.token)"></code>
         <button @click="a.showToken=!a.showToken" type="button" class="text-base-500 hover:text-base-200 transition-colors p-1 flex-shrink-0">
@@ -93,9 +96,10 @@
         </button>
       </div>
 
+      <!-- Actions: only eye (view detail) -->
       <div class="flex items-center gap-1 md:justify-end">
-        <button @click="removeAccess(idx)" type="button" class="w-7 h-7 rounded-lg flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-all active:scale-90" title="Revoke access">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        <button @click="openAccessDetail(a.id)" type="button" class="w-7 h-7 rounded-lg flex items-center justify-center text-base-500 hover:text-warn hover:bg-warn/10 transition-all active:scale-90" title="View details">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
     </div>

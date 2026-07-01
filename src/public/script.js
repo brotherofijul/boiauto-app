@@ -126,9 +126,11 @@ function boiauto() {
     addingAccess: false,
 
     selectedAutomateId: null,
+    selectedAccessId: null,
+    selectedBotId: null,
     navbarOpen: false,
     currentView: "dashboard",
-    modalStates: ["selectedAutomateId", "showAddAutomateModal", "showAddBotModal", "showEditBotModal", "showAddAccessModal", "confirmModal.open", "navbarOpen"],
+    modalStates: ["selectedAutomateId", "showAddAutomateModal", "showAddBotModal", "showEditBotModal", "showAddAccessModal", "confirmModal.open", "navbarOpen", "selectedAccessId", "selectedBotId"],
     featureToggles: [
       { key: "skillUpRunning", feature: "skillUp", label: "Skill" },
       { key: "autoWarRunning", feature: "autoWar", label: "Training" },
@@ -656,6 +658,49 @@ function boiauto() {
         confirmMsg: `This will permanently revoke access token "${this.accessList[idx]?.name || this.accessList[idx]?.accessId}". The recipient will no longer be able to use it.`,
         successMsg: "Access token revoked",
       });
+    },
+
+
+    // --- Access Detail ---
+
+    openAccessDetail(id) { this.selectedAccessId = id; },
+    closeAccessDetail() { this.selectedAccessId = null; },
+
+    get selectedAccess() {
+      if (!this.selectedAccessId) return null;
+      return this.accessList.find((a) => a.id === this.selectedAccessId) || null;
+    },
+
+    get automatesUsingAccess() {
+      if (!this.selectedAccessId) return [];
+      const access = this.accessList.find((a) => a.id === this.selectedAccessId);
+      if (!access) return [];
+      return this.automates.filter((a) => a.accessId === access.accessId);
+    },
+
+
+    // --- Bot Detail ---
+
+    openBotDetail(id) { this.selectedBotId = id; },
+    closeBotDetail() { this.selectedBotId = null; },
+
+    get selectedBot() {
+      if (!this.selectedBotId) return null;
+      return this.bots.find((b) => b.id === this.selectedBotId) || null;
+    },
+
+    get automatesUsingBot() {
+      if (!this.selectedBotId) return [];
+      const bot = this.bots.find((b) => b.id === this.selectedBotId);
+      if (!bot) return [];
+      return this.automates.filter((a) => a.botId === bot.botId);
+    },
+
+    get accessTokensForBot() {
+      if (!this.selectedBotId) return [];
+      const bot = this.bots.find((b) => b.id === this.selectedBotId);
+      if (!bot) return [];
+      return this.accessList.filter((a) => a.botId === bot.botId);
     },
 
     // --- Display helpers ---

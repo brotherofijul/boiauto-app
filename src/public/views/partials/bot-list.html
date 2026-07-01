@@ -58,8 +58,8 @@
     <template x-for="(b, idx) in filteredBots" :key="b.id">
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
         <div class="flex items-center gap-2 min-w-0">
-          <div class="w-8 h-8 rounded-lg bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0">
-            <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+          <div class="w-8 h-8 rounded-lg bg-val-blue/10 border border-val-blue/20 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-val-blue" viewBox="0 0 24 24" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
           </div>
           <div class="min-w-0 flex-1">
             <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="b.name"></p>
