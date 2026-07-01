@@ -17,11 +17,11 @@
        x-transition:leave="transition ease-in duration-150"
        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
        x-transition:leave-end="opacity-0 scale-95 translate-y-3">
-    <div class="h-1 bg-base-700"></div>
+    <div class="h-1 bg-val-blue"></div>
 
     <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60 flex-shrink-0">
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/50 flex items-center justify-center">
+        <div class="w-9 h-9 rounded-xl bg-val-blue/10 border border-val-blue/20 flex items-center justify-center">
           <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
         <div>
@@ -64,17 +64,17 @@
 
       <div x-show="newBotType === 'Dual'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
         <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
-        <span>Dual type allows a maximum of <span class="text-base-300 font-bold">2 access tokens</span> per bot.</span>
+        <span>Dual type allows a maximum of <span class="text-val-blue font-bold">2 access tokens</span> per bot.</span>
       </div>
 
       <div x-show="newBotType === 'Shared'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
         <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
-        <span>Shared type allows <span class="text-base-300 font-bold">unlimited access tokens</span>. Best for multi-user setups.</span>
+        <span>Shared type allows <span class="text-val-blue font-bold">unlimited access tokens</span>. Best for multi-user setups.</span>
       </div>
 
       <button x-show="!newlyAddedBotId && !generatedBotToken" @click="generateBotToken()" :disabled="generatingToken" type="button"
         class="w-full rounded-lg font-semibold text-xs py-2.5 flex items-center justify-center gap-2 transition-all active:scale-[.97]"
-        :class="generatingToken ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-base-700 text-base-950 hover:shadow-md hover:shadow-base-700/30'">
+        :class="generatingToken ? 'bg-val-blue/50 text-base-500 cursor-not-allowed' : 'bg-val-blue text-base-950 hover:shadow-md hover:shadow-val-blue/30'">
         <template x-if="!generatingToken">
           <div class="flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
@@ -150,8 +150,8 @@
       </button>
       <button @click="confirmAddBot()" :disabled="addingBot || (!generatedBotToken && !newlyAddedBotId)" type="button"
         class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center"
-        :class="botConnectedWhileOpen ? 'bg-base-700 text-base-950 hover:shadow-md hover:shadow-base-700/30'
-          : (addingBot || (!generatedBotToken && !newlyAddedBotId) ? 'bg-base-700/50 text-base-500 cursor-not-allowed' : 'bg-base-700 text-base-950 hover:shadow-md hover:shadow-base-700/30')">
+        :class="botConnectedWhileOpen ? 'bg-val-blue text-base-950 hover:shadow-md hover:shadow-val-blue/30'
+          : (addingBot || (!generatedBotToken && !newlyAddedBotId) ? 'bg-val-blue/50 text-base-500 cursor-not-allowed' : 'bg-val-blue text-base-950 hover:shadow-md hover:shadow-val-blue/30')">
         <template x-if="botConnectedWhileOpen">
           <div class="flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
