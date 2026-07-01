@@ -23,7 +23,7 @@
 
     <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60">
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s1/15 border border-base-700/50 flex items-center justify-center">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-base-800/40 to-s1/15 border border-base-700/50 flex items-center justify-center">
           <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
         <div>
@@ -71,7 +71,7 @@
                 <p class="text-[9px] text-base-500 truncate" x-text="a.botName + ' · ' + a.accessId"></p>
               </div>
               <div class="flex items-center gap-1.5 flex-shrink-0">
-                <span class="text-[9px] font-mono" :class="isAccessFull(a) ? 'text-danger' : 'text-s1'" x-text="accessUsageText(a)"></span>
+                <span class="text-[9px] font-mono" :class="isAccessFull(a) ? 'text-danger' : 'text-base-300'" x-text="accessUsageText(a)"></span>
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border" :class="typeClass(a.type)" x-text="a.type"></span>
               </div>
             </button>

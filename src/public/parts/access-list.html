@@ -73,12 +73,12 @@
 
       <div class="flex items-center gap-1.5">
         <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border" :class="typeClass(a.type)" x-text="a.type"></span>
-        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-s1" x-text="formatRate(a.pricePerDay)"></span>
+        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-base-300" x-text="formatRate(a.pricePerDay)"></span>
       </div>
 
       <div>
         <span class="text-xs font-mono font-bold"
-          :class="a.type === 'Shared' ? 'text-s1' : (a.usageCount >= 1 ? 'text-danger' : 'text-s1')"
+          :class="a.type === 'Shared' ? 'text-base-300' : (a.usageCount >= 1 ? 'text-danger' : 'text-base-300')"
           x-text="a.type === 'Shared' ? a.usageCount : (a.usageCount + '/1')"></span>
       </div>
 

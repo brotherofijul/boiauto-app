@@ -4,7 +4,7 @@
     <button @click.stop="toggleFeature(idx, ft.feature)" type="button"
       class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
       :class="acc[ft.key]
-        ? (ft.color === 's1' ? 'border-base-600/50 bg-base-800/40 text-s1' : 'border-base-600/50 bg-base-800/40 text-s2')
+        ? (ft.color === 's1' ? 'border-base-600/50 bg-base-800/40 text-base-300' : 'border-base-600/50 bg-base-800/40 text-base-300')
         : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
       <div class="flex items-center gap-1.5 min-w-0">
         <span class="w-1.5 h-1.5 rounded-full flex-shrink-0"

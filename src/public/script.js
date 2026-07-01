@@ -134,9 +134,9 @@ function boiauto() {
     currentView: "dashboard",
     modalStates: ['selectedAutomateId', 'showAddAutomateModal', 'showAddBotModal', 'showEditBotModal', 'showAddAccessModal', 'confirmModal.open'],
     featureToggles: [
-      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill', color: 's1' },
-      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training', color: 's2' },
-      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work', color: 's1' },
+      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill' },
+      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training' },
+      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work' },
     ],
 
     init() {
@@ -746,7 +746,7 @@ function boiauto() {
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-warn";
-      return idx % 2 === 0 ? "text-s1" : "text-s2";
+      return "text-val-blue";
     },
 
     timeLow(idx) {
