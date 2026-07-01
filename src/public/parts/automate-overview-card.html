@@ -32,15 +32,15 @@
   <template x-for="(acc, idx) in filteredAutomates" :key="acc.id">
     <div class="rounded-2xl border overflow-hidden transition-all duration-300 relative backdrop-blur-sm hover:border-base-700/70"
       :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning)
-         ? 'border-s1/30 glow-s1 bg-base-900/80'
+         ? (idx % 2 === 0 ? 'border-s1/30 glow-s1 bg-base-900/80' : 'border-s2/30 glow-s2 bg-base-900/80')
          : 'border-base-800/50 bg-base-900/45'">
       <div class="h-1 flex-shrink-0 transition-colors"
-        :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning) ? 'bg-s1/60' : 'bg-base-700/40'"></div>
+        :class="(acc.skillUpRunning || acc.autoWarRunning || acc.autoWorkRunning) ? (idx % 2 === 0 ? 'bg-s1/60' : 'bg-s2/60') : 'bg-base-700/40'"></div>
 
       <button @click="openDetail(acc.id)" type="button" class="w-full text-left p-4 pb-3 flex items-center justify-between gap-2 hover:bg-base-800/30 transition-colors">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-mono font-bold text-xs"
-            :class="'bg-s1/10 text-s1 border border-s1/20'"
+            :class="(idx % 2 === 0 ? 'bg-s1/10 text-s1 border border-s1/20' : 'bg-s2/10 text-s2 border border-s2/20')"
             x-text="(idx + 1).toString().padStart(2, '0')"></div>
           <div class="min-w-0">
             <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="acc.name || 'Unnamed'"></p>

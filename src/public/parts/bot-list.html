@@ -1,7 +1,7 @@
 <!-- /parts/bot-list.html -->
 <div x-show="!loadingBots && bots.length === 0 && !searchBots.trim()" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
   <div class="relative mb-6">
-    <div class="absolute inset-0 rounded-3xl bg-s1/10 blur-2xl"></div>
+    <div class="absolute inset-0 rounded-3xl bg-s2/10 blur-2xl"></div>
     <div class="relative w-20 h-20 rounded-3xl border-2 border-dashed border-base-700 flex items-center justify-center bg-base-900/50">
       <svg class="w-9 h-9 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="11" width="18" height="11" rx="2"/>
@@ -14,7 +14,7 @@
   </div>
   <p class="text-base text-base-200 font-semibold mb-1.5">No bots yet</p>
   <p class="text-xs text-base-500 font-mono mb-6 max-w-xs leading-relaxed">Add your first bot to start managing bot sessions and link them to automates.</p>
-  <button @click="openAddBotModal()" type="button" class="group rounded-xl bg-gradient-to-br from-s1 to-s1-dim text-base-950 font-bold text-xs px-5 py-3 flex items-center gap-2 transition-all active:scale-[.96] hover:shadow-lg hover:shadow-s1/30">
+  <button @click="openAddBotModal()" type="button" class="group rounded-xl bg-gradient-to-br from-s2 to-s2-dim text-base-950 px-5 py-3 flex items-center gap-2 transition-all active:scale-[.96] hover:shadow-lg hover:shadow-s2/30">
     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     <span class="tracking-wider uppercase">Add Bot</span>
   </button>
@@ -59,7 +59,7 @@
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.6fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
         <div class="flex items-center gap-2 min-w-0">
           <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0">
-            <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+            <svg class="w-4 h-4 text-s2" viewBox="0 0 24 24" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
           </div>
           <div class="min-w-0 flex-1">
             <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="b.name"></p>
@@ -104,7 +104,7 @@
         </div>
 
         <div class="flex items-center gap-1 md:justify-end">
-          <button @click="openEditBotModal(idx)" type="button" class="w-7 h-7 rounded-lg flex items-center justify-center text-base-500 hover:text-s1 hover:bg-s1/10 transition-all active:scale-90" title="Edit bot">
+          <button @click="openEditBotModal(idx)" type="button" class="w-7 h-7 rounded-lg flex items-center justify-center text-base-500 hover:text-s2 hover:bg-s2/10 transition-all active:scale-90" title="Edit bot">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
           <button @click="removeBot(idx)" type="button" class="w-7 h-7 rounded-lg flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-all active:scale-90" title="Delete bot">

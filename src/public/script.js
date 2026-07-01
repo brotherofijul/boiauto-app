@@ -71,9 +71,11 @@ function spawnParticles() {
       "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
       "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
       Math.random() * 14 + "s;";
-        c.appendChild(p);
+    if (i % 3 === 0) p.style.background = "#00c8ff";
+    c.appendChild(p);
   }
 }
+
 
 function boiauto() {
   return {
@@ -132,9 +134,9 @@ function boiauto() {
     currentView: "dashboard",
     modalStates: ['selectedAutomateId', 'showAddAutomateModal', 'showAddBotModal', 'showEditBotModal', 'showAddAccessModal', 'confirmModal.open'],
     featureToggles: [
-      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill' },
-      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training' },
-      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work' },
+      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill', color: 's1' },
+      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training', color: 's2' },
+      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work', color: 's1' },
     ],
 
     init() {
@@ -710,8 +712,8 @@ function boiauto() {
 
     typeClass(type) {
       if (type === "Dual") return "text-s1 bg-s1/10 border-s1/30";
-      if (type === "Shared") return "text-base-200 bg-base-700/40 border-base-600/40";
-      if (type === "Business") return "text-base-200 bg-base-700/40 border-base-600/40";
+      if (type === "Shared") return "text-s2 bg-s2/10 border-s2/30";
+      if (type === "Business") return "text-s1 bg-s1/10 border-s1/30";
       if (type === "Private") return "text-s1 bg-s1/10 border-s1/30";
       return "text-base-200 bg-base-700/40 border-base-600/40";
     },
@@ -744,7 +746,7 @@ function boiauto() {
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-warn";
-      return "text-s1";
+      return idx % 2 === 0 ? "text-s1" : "text-s2";
     },
 
     timeLow(idx) {

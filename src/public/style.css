@@ -74,6 +74,18 @@ body {
   animation: glow-1 2s ease-in-out infinite;
 }
 
+@keyframes glow-2 {
+  0%,
+  100% {
+    border-color: rgba(0, 200, 255, 0.18);
+  }
+  50% {
+    border-color: rgba(0, 200, 255, 0.45);
+  }
+}
+.glow-s2 {
+  animation: glow-2 2s ease-in-out infinite;
+}
 
 @keyframes shimmer {
   0% {
@@ -129,7 +141,7 @@ body {
   height: 440px;
   background: radial-gradient(
     circle,
-    rgba(0, 232, 143, 0.035) 0%,
+    rgba(0, 200, 255, 0.035) 0%,
     transparent 70%
   );
 }
