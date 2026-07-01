@@ -24,7 +24,7 @@
     <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-xl bg-val-green/10 border border-val-green/20 flex items-center justify-center">
-          <svg class="w-4 h-4 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg class="w-4 h-4 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
         <div>
           <h3 class="text-sm font-bold text-base-100 tracking-tight">Add New Automate</h3>
@@ -40,7 +40,7 @@
       
       <div>
         <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <svg class="w-3 h-3 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Bearer Token
         </label>
         <div class="relative">
@@ -54,7 +54,7 @@
 
       <div class="relative" x-data="{ open: false }" @click.outside="open=false">
         <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-base-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <svg class="w-3 h-3 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Access
           <span x-show="accessList.length === 0" x-cloak class="text-base-300 ml-1 normal-case tracking-normal text-[9px]">(generate access first)</span>
         </label>
@@ -94,7 +94,7 @@
       <button @click="closeAddAutomateModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97]">
         Cancel
       </button>
-      <button @click="confirmAddAutomate()" :disabled="addingAutomate||!newBearer.trim()||!newSelectedAccessId" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center" :class="addingAutomate||!newBearer.trim()||!newSelectedAccessId ? 'bg-val-green/50 text-base-500 cursor-not-allowed' : 'bg-val-green text-base-950 hover:shadow-md hover:shadow-val-green/30'">
+      <button @click="confirmAddAutomate()" :disabled="addingAutomate||!newBearer.trim()||!newSelectedAccessId" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center" :class="addingAutomate||!newBearer.trim()||!newSelectedAccessId ? 'border border-base-700/40 bg-base-800/40 text-base-500 cursor-not-allowed' : 'border border-val-green/30 bg-val-green/5 text-val-green hover:bg-val-green/10 hover:border-val-green/50'">
         <template x-if="!addingAutomate">
           <div class="flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
