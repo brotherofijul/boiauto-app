@@ -71,8 +71,7 @@ function spawnParticles() {
       "left:" + Math.random() * 100 + "%;width:" + sz + "px;height:" + sz +
       "px;animation-duration:" + (14 + Math.random() * 18) + "s;animation-delay:" +
       Math.random() * 14 + "s;";
-    if (i % 3 === 0) p.style.background = "#00c8ff";
-    c.appendChild(p);
+        c.appendChild(p);
   }
 }
 
@@ -133,9 +132,9 @@ function boiauto() {
     currentView: "dashboard",
     modalStates: ['selectedAutomateId', 'showAddAutomateModal', 'showAddBotModal', 'showEditBotModal', 'showAddAccessModal', 'confirmModal.open'],
     featureToggles: [
-      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill', color: 's1' },
-      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training', color: 'warn' },
-      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work', color: 's2' },
+      { key: 'skillUpRunning', feature: 'skillUp', label: 'Skill' },
+      { key: 'autoWarRunning', feature: 'autoWar', label: 'Training' },
+      { key: 'autoWorkRunning', feature: 'autoWork', label: 'Work' },
     ],
 
     init() {
@@ -711,8 +710,8 @@ function boiauto() {
 
     typeClass(type) {
       if (type === "Dual") return "text-s1 bg-s1/10 border-s1/30";
-      if (type === "Shared") return "text-s2 bg-s2/10 border-s2/30";
-      if (type === "Business") return "text-warn bg-warn/10 border-warn/30";
+      if (type === "Shared") return "text-base-200 bg-base-700/40 border-base-600/40";
+      if (type === "Business") return "text-base-200 bg-base-700/40 border-base-600/40";
       if (type === "Private") return "text-s1 bg-s1/10 border-s1/30";
       return "text-base-200 bg-base-700/40 border-base-600/40";
     },
@@ -725,13 +724,13 @@ function boiauto() {
     },
 
     botStatusClass(s) {
-      if (s === "connecting") return "text-warn bg-warn/10 border-warn/30";
+      if (s === "connecting") return "text-s1 bg-s1/10 border-s1/30";
       if (s === "connected") return "text-s1 bg-s1/10 border-s1/30";
       return "text-danger bg-danger/10 border-danger/30";
     },
 
     botStatusDotClass(s) {
-      if (s === "connecting") return "bg-warn";
+      if (s === "connecting") return "bg-s1";
       if (s === "connected") return "bg-s1";
       return "bg-danger";
     },
@@ -745,7 +744,7 @@ function boiauto() {
       const rem = new Date(a.pendingAt).getTime() - Date.now();
       if (rem <= 0) return "text-base-500";
       if (rem < 10000) return "text-warn";
-      return idx % 2 === 0 ? "text-s1" : "text-s2";
+      return "text-s1";
     },
 
     timeLow(idx) {

@@ -22,7 +22,7 @@
 
 <div x-show="!loadingAccess && filteredAccess.length === 0 && !searchAccess.trim()" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
   <div class="relative mb-6">
-    <div class="absolute inset-0 rounded-3xl bg-warn/10 blur-2xl"></div>
+    <div class="absolute inset-0 rounded-3xl bg-s1/10 blur-2xl"></div>
     <div class="relative w-20 h-20 rounded-3xl border-2 border-dashed border-base-700 flex items-center justify-center bg-base-900/50">
       <svg class="w-9 h-9 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 12l2 2 4-4"/>
@@ -58,8 +58,8 @@
   <template x-for="(a, idx) in filteredAccess" :key="a.id">
     <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1.2fr_1fr_0.8fr_1.8fr_auto] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center">
       <div class="flex items-center gap-2 min-w-0">
-        <div class="w-8 h-8 rounded-lg bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div class="w-8 h-8 rounded-lg bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <div class="min-w-0">
           <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="a.botName || a.botId"></p>
@@ -73,12 +73,12 @@
 
       <div class="flex items-center gap-1.5">
         <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border" :class="typeClass(a.type)" x-text="a.type"></span>
-        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-warn" x-text="formatRate(a.pricePerDay)"></span>
+        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-s1" x-text="formatRate(a.pricePerDay)"></span>
       </div>
 
       <div>
         <span class="text-xs font-mono font-bold"
-          :class="a.type === 'Shared' ? 'text-s2' : (a.usageCount >= 1 ? 'text-danger' : 'text-s1')"
+          :class="a.type === 'Shared' ? 'text-s1' : (a.usageCount >= 1 ? 'text-danger' : 'text-s1')"
           x-text="a.type === 'Shared' ? a.usageCount : (a.usageCount + '/1')"></span>
       </div>
 

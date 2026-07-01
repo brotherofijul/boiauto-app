@@ -4,11 +4,11 @@
     <button @click.stop="toggleFeature(idx, ft.feature)" type="button"
       class="w-full flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 border transition-all active:scale-[.97]"
       :class="acc[ft.key]
-        ? (idx % 2 === 0 ? 'border-s1/30 bg-s1/10 text-s1' : 'border-s2/30 bg-s2/10 text-s2')
+        ? 'border-s1/30 bg-s1/10 text-s1'
         : 'border-base-700/50 bg-base-800/40 text-base-400 hover:border-base-600/50'">
       <div class="flex items-center gap-1.5 min-w-0">
         <span class="w-1.5 h-1.5 rounded-full flex-shrink-0"
-          :class="ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2'"></span>
+          :class="'bg-s1'"></span>
         <span class="text-[11px] font-mono uppercase tracking-wider truncate" x-text="ft.label"></span>
       </div>
       <div class="flex items-center gap-1.5 flex-shrink-0">
@@ -16,11 +16,11 @@
         <span class="relative flex w-2 h-2">
           <template x-if="acc[ft.key]">
             <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"
-              :class="ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2'"></span>
+              :class="'bg-s1'"></span>
           </template>
           <span class="relative inline-flex w-2 h-2 rounded-full transition-colors"
             :class="acc[ft.key]
-              ? (ft.color === 's1' ? 'bg-s1' : ft.color === 'warn' ? 'bg-warn' : 'bg-s2')
+              ? ('bg-s1')
               : 'bg-base-600'"></span>
         </span>
       </div>

@@ -1,7 +1,7 @@
 <!-- /parts/guide-view.html -->
 <div>
   <div class="flex items-center gap-3 mb-6">
-    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-warn to-s1"></div>
+    <div class="w-1 h-8 rounded-full bg-gradient-to-b from-s1 to-s1"></div>
     <div>
       <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Guide</h2>
       <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5">How to use BOIAuto</p>
@@ -10,24 +10,24 @@
 
   <div class="space-y-4">
     <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-gradient-to-r from-s2 to-s2-dim"></div>
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1-dim"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-s2/10 border border-s2/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s2">1</div>
+          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">1</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add a Bot</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-s2">Bot</span> page from the sidebar and click <span class="text-s2">+ Add</span>. Enter an optional name, pick a Type, then click <span class="text-s2">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-s1">Bot</span> page from the sidebar and click <span class="text-s1">+ Add</span>. Enter an optional name, pick a Type, then click <span class="text-s1">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s1 bg-s1/10 border-s1/30 flex-shrink-0 mt-0.5">Dual</span>
-                <span>Allows a maximum of <span class="text-warn font-bold">2 access tokens</span> per bot.</span>
+                <span>Allows a maximum of <span class="text-s1 font-bold">2 access tokens</span> per bot.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s2 bg-s2/10 border-s2/30 flex-shrink-0 mt-0.5">Shared</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-200 bg-base-700/40 border-base-600/40 flex-shrink-0 mt-0.5">Shared</span>
                 <span>Unlimited access tokens. Best for multi-user setups.</span>
               </div>
             </div>
-            <p class="text-[10px] text-base-500 font-mono mt-2">After creating the bot, the button changes to <span class="text-warn">Waiting Later</span> with a spinner. When your bot client connects, it becomes <span class="text-s1">Finished</span>.</p>
+            <p class="text-[10px] text-base-500 font-mono mt-2">After creating the bot, the button changes to <span class="text-s1">Waiting Later</span> with a spinner. When your bot client connects, it becomes <span class="text-s1">Finished</span>.</p>
           </div>
         </div>
       </div>
@@ -40,31 +40,31 @@
           <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">2</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Connect a Bot Client</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">Copy the bot token from the Add Bot modal. Set <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-warn">Connecting</span> to <span class="text-s1">Connected</span> once the client is online.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">Copy the bot token from the Add Bot modal. Set <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-s1 bg-base-900/60 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-s1">Connecting</span> to <span class="text-s1">Connected</span> once the client is online.</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-gradient-to-r from-warn to-s1"></div>
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-warn">3</div>
+          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">3</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Generate Access Tokens</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">On the <span class="text-warn">Access</span> page, click <span class="text-warn">+ Add</span> to create an access token tied to a specific bot. Pick a Type:</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">On the <span class="text-s1">Access</span> page, click <span class="text-s1">+ Add</span> to create an access token tied to a specific bot. Pick a Type:</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
                 <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s1 bg-s1/10 border-s1/30 flex-shrink-0 mt-0.5">Private</span>
-                <span>Single-use access. Max <span class="text-warn font-bold">1 automate</span> per token.</span>
+                <span>Single-use access. Max <span class="text-s1 font-bold">1 automate</span> per token.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-s2 bg-s2/10 border-s2/30 flex-shrink-0 mt-0.5">Shared</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-200 bg-base-700/40 border-base-600/40 flex-shrink-0 mt-0.5">Shared</span>
                 <span>Unlimited automates.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-warn bg-warn/10 border-warn/30 flex-shrink-0 mt-0.5">Business</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-200 bg-base-700/40 border-base-600/40 flex-shrink-0 mt-0.5">Business</span>
                 <span>Single-use access + <span class="text-s1">price/day</span> (game currency).</span>
               </div>
             </div>
@@ -75,23 +75,23 @@
     </div>
 
     <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-gradient-to-r from-s1 to-s2"></div>
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s2/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">4</div>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s1/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">4</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Add an Automate</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-s1">Automate</span> page, click <span class="text-s1">+ Add</span>. Enter your Bearer token, then <span class="text-warn">select an access token</span> from the dropdown. Each access item shows its usage (<span class="text-s1">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
+            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-s1">Automate</span> page, click <span class="text-s1">+ Add</span>. Enter your Bearer token, then <span class="text-s1">select an access token</span> from the dropdown. Each access item shows its usage (<span class="text-s1">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-gradient-to-r from-warn to-s1"></div>
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-warn">5</div>
+          <div class="w-9 h-9 rounded-xl bg-s1/10 border border-s1/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-s1">5</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Toggle Automation Features</h3>
             <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Each automate card has 3 toggles:</p>
@@ -101,12 +101,12 @@
                 <span><span class="text-s1 font-bold">Skill</span> — auto-upgrade skill levels</span>
               </div>
               <div class="flex items-center gap-2 text-xs font-mono text-base-300">
-                <span class="w-1.5 h-1.5 rounded-full bg-warn flex-shrink-0"></span>
-                <span><span class="text-warn font-bold">Training</span> — auto-train units</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-s1 flex-shrink-0"></span>
+                <span><span class="text-s1 font-bold">Training</span> — auto-train units</span>
               </div>
               <div class="flex items-center gap-2 text-xs font-mono text-base-300">
-                <span class="w-1.5 h-1.5 rounded-full bg-s2 flex-shrink-0"></span>
-                <span><span class="text-s2 font-bold">Work</span> — auto-perform work tasks</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-s1 flex-shrink-0"></span>
+                <span><span class="text-s1 font-bold">Work</span> — auto-perform work tasks</span>
               </div>
             </div>
             <p class="text-[10px] text-base-500 font-mono mt-2">When any feature is ON, the card border glows and 3 small dots light up next to the automate label.</p>
@@ -116,10 +116,10 @@
     </div>
 
     <div class="rounded-2xl border border-base-800/50 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-gradient-to-r from-s1 to-s2"></div>
+      <div class="h-1 bg-gradient-to-r from-s1 to-s1"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s2/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">6</div>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-s1/15 to-s1/15 border border-s1/25 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-100">6</div>
           <div class="flex-1 min-w-0">
             <h3 class="text-sm font-bold text-base-100 leading-tight mb-1">Dashboard Overview</h3>
             <p class="text-xs text-base-400 font-mono leading-relaxed">The <span class="text-s1">Dashboard</span> page shows real-time stats: total automates, total bots, total access tokens, connected bots, automation status (Skill/Training/Work counts), and total balance + diamond. Below the stats are quick-action cards and a list of the latest 5 bots with their connection status.</p>
@@ -128,11 +128,11 @@
       </div>
     </div>
 
-    <div class="rounded-xl bg-warn/5 border border-warn/20 px-4 py-3 flex items-start gap-2.5">
-      <svg class="w-4 h-4 text-warn flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+    <div class="rounded-xl bg-s1/5 border border-s1/20 px-4 py-3 flex items-start gap-2.5">
+      <svg class="w-4 h-4 text-s1 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
       <div>
-        <p class="text-[11px] text-warn font-mono font-bold mb-0.5">Tip</p>
-        <p class="text-[11px] text-base-300 font-mono leading-relaxed">Bot status: <span class="text-warn">Connecting</span> (spinner, just added) → <span class="text-s1">Connected</span> (green pulse, client online) → <span class="text-danger">Disconnected</span> (red, client offline).</p>
+        <p class="text-[11px] text-s1 font-mono font-bold mb-0.5">Tip</p>
+        <p class="text-[11px] text-base-300 font-mono leading-relaxed">Bot status: <span class="text-s1">Connecting</span> (spinner, just added) → <span class="text-s1">Connected</span> (green pulse, client online) → <span class="text-danger">Disconnected</span> (red, client offline).</p>
       </div>
     </div>
   </div>
