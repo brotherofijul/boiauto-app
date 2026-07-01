@@ -35,8 +35,6 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen text-base-100 bg-grid bg-glow overflow-x-hidden">
-    <div id="particles" class="fixed inset-0 pointer-events-none z-0" aria-hidden="true"></div>
-
     <div x-data="boiauto()" x-init="init()" class="relative z-10 min-h-screen flex flex-col">
       <div x-init="fetch('parts/stack-toggle.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
 

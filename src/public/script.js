@@ -147,7 +147,6 @@ function boiauto() {
       this.loadAutomates();
       this.loadAccess();
       this.loadDashboard();
-      spawnParticles();
       this.modalStates.forEach(state => {
         this.$watch(state, () => this.updateScrollLock());
       });
