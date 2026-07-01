@@ -9,7 +9,7 @@
   </div>
 
   <div class="space-y-5">
-    <!-- Stat cards -->
+    <!-- Stat cards: Automate, Access, Bot, Chart -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
       <!-- Automates -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
@@ -19,7 +19,7 @@
           </div>
           <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-val-green leading-none" x-text="dashboard?.total_automates ?? 0"></p>
+        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_automates ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Automates</p>
       </div>
 
@@ -31,7 +31,7 @@
           </div>
           <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-warn leading-none" x-text="dashboard?.total_access ?? 0"></p>
+        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_access ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Access Tokens</p>
       </div>
 
@@ -43,23 +43,40 @@
           </div>
           <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Total</span>
         </div>
-        <p class="text-2xl font-bold font-mono text-val-blue leading-none" x-text="dashboard?.total_bots ?? 0"></p>
+        <p class="text-2xl font-bold font-mono text-base-100 leading-none" x-text="dashboard?.total_bots ?? 0"></p>
         <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Bots</p>
       </div>
 
-      <!-- Connected Bots -->
-      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm">
-        <div class="flex items-start justify-between mb-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center">
-            <svg class="w-4 h-4 text-base-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+      <!-- Distribution Chart -->
+      <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm flex items-center justify-center">
+        <div class="relative">
+          <svg width="80" height="80" viewBox="0 0 80 80" class="transform -rotate-90">
+            <circle cx="40" cy="40" r="36" fill="none" stroke="#1a1a1e" stroke-width="8"/>
+            <template x-for="(seg, i) in chartData.segments" :key="'chart-'+i">
+              <circle cx="40" cy="40" r="36" fill="none" :stroke="seg.color" stroke-width="8"
+                :stroke-dasharray="seg.dash + ' ' + chartData.circ"
+                :stroke-dashoffset="seg.offset"
+                stroke-linecap="butt"/>
+            </template>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-xs font-bold font-mono text-base-200" x-text="chartData.total"></span>
           </div>
-          <span class="text-[9px] font-mono uppercase tracking-widest text-base-500">Live</span>
         </div>
-        <p class="text-2xl font-bold font-mono leading-none flex items-baseline gap-1">
-          <span class="text-val-green" x-text="dashboard?.connected_bots ?? 0"></span>
-          <span class="text-xs text-base-500" x-text="'/' + (dashboard?.total_bots ?? 0)"></span>
-        </p>
-        <p class="text-[10px] text-base-500 font-mono tracking-wider mt-1.5">Connected Bots</p>
+        <div class="ml-3 space-y-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full" style="background:#34d399"></span>
+            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[0]?.pct ?? 0).toFixed(0) + '%'"></span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full" style="background:#f5a623"></span>
+            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[1]?.pct ?? 0).toFixed(0) + '%'"></span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full" style="background:#60a5fa"></span>
+            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[2]?.pct ?? 0).toFixed(0) + '%'"></span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -73,13 +90,13 @@
         <div class="p-4 grid grid-cols-2 gap-3">
           <div class="rounded-lg bg-base-800/40 border border-base-700/30 p-3">
             <p class="text-[9px] text-base-500 uppercase tracking-widest font-mono mb-1.5">Balance</p>
-            <p class="text-lg font-bold font-mono text-val-green leading-none">
+            <p class="text-lg font-bold font-mono text-base-100 leading-none">
               <span class="x-scroll whitespace-nowrap py-1 px-0.5 inline-block" x-text="formatBalance(dashboard?.total_balance ?? 0)"></span>
             </p>
           </div>
           <div class="rounded-lg bg-base-800/40 border border-base-700/30 p-3">
             <p class="text-[9px] text-base-500 uppercase tracking-widest font-mono mb-1.5">Diamond</p>
-            <p class="text-lg font-bold font-mono text-val-blue leading-none">
+            <p class="text-lg font-bold font-mono text-base-100 leading-none">
               <span class="x-scroll whitespace-nowrap py-1 px-0.5 inline-block" x-text="formatNumber(dashboard?.total_diamond ?? 0)"></span>
             </p>
           </div>

@@ -43,16 +43,17 @@ body {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(52,211,153,0.15), transparent);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
   z-index: 0;
   pointer-events: none;
-  animation: scan-line 8s linear infinite;
+  animation: scan-line 6s linear infinite;
+  box-shadow: 0 0 8px rgba(255,255,255,0.1);
 }
 @keyframes scan-line {
-  0% { top: 0; opacity: 0; }
-  5% { opacity: 1; }
-  95% { opacity: 1; }
+  0% { top: -1px; opacity: 0; }
+  3% { opacity: 1; }
+  97% { opacity: 1; }
   100% { top: 100vh; opacity: 0; }
 }
 .bg-glow::before, .bg-glow::after {
@@ -60,11 +61,11 @@ body {
 }
 .bg-glow::before {
   top: -18%; right: -8%; width: 520px; height: 520px;
-  background: radial-gradient(circle, rgba(52,211,153,0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
 }
 .bg-glow::after {
   bottom: -14%; left: -8%; width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(96,165,250,0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.015) 0%, transparent 70%);
 }
 @keyframes float-up {
   0% { transform: translateY(100vh) scale(0); opacity: 0; }

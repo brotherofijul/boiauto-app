@@ -170,8 +170,8 @@ function boiauto() {
       }) ? 'hidden' : '';
     },
 
-    openNavbar() { this.navbarOpen = true; },
-    closeNavbar() { this.navbarOpen = false; },
+    openNavbar() { this.navbarOpen = true; document.body.style.overflow = 'hidden'; },
+    closeNavbar() { this.navbarOpen = false; document.body.style.overflow = ''; },
 
     switchView(view) {
       if (this.currentView === view) {
@@ -179,7 +179,8 @@ function boiauto() {
         return;
       }
       this.currentView = view;
-      this.closeNavbar();
+      document.body.style.overflow = '';
+      this.navbarOpen = false;
       if (view === 'dashboard') this.loadDashboard();
       if (view === 'automate') this.loadAutomates();
       if (view === 'bot') this.loadBots();
@@ -205,6 +206,22 @@ function boiauto() {
     loadAutomates() { return this.loadResource('/automates', 'automates', mapAutomate, 'Failed to load automates', 'loadingAutomates'); },
     loadBots() { return this.loadResource('/bots', 'bots', mapBot, 'Failed to load bots', 'loadingBots'); },
     loadAccess() { return this.loadResource('/access', 'accessList', mapAccess, 'Failed to load access tokens', 'loadingAccess'); },
+
+    get chartData() {
+      const a = this.dashboard?.total_automates ?? 0;
+      const b = this.dashboard?.total_access ?? 0;
+      const c = this.dashboard?.total_bots ?? 0;
+      const total = a + b + c;
+      if (total === 0) return { segments: [], total: 0 };
+      const circ = 2 * Math.PI * 36;
+      let offset = 0;
+      const segments = [
+        { label: 'Automate', value: a, color: '#34d399', pct: (a / total) * 100, dash: (a / total) * circ, offset: 0 },
+        { label: 'Access', value: b, color: '#f5a623', pct: (b / total) * 100, dash: (b / total) * circ, offset: -(a / total) * circ },
+        { label: 'Bot', value: c, color: '#60a5fa', pct: (c / total) * 100, dash: (c / total) * circ, offset: -((a + b) / total) * circ },
+      ];
+      return { segments, total, circ };
+    },
 
     filterBySearch(items, query, fields) {
       if (!query.trim()) return items;
