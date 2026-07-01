@@ -80,6 +80,64 @@ function spawnParticles() {
 }
 
 
+function startScanAnimation() {
+  const overlay = document.getElementById('scan-overlay');
+  if (!overlay) return;
+
+  function spawnScan() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const dirs = [
+      { x1: 0, y1: 0, x2: w, y2: h },
+      { x1: w, y1: 0, x2: 0, y2: h },
+      { x1: 0, y1: h, x2: w, y2: 0 },
+      { x1: w, y1: h, x2: 0, y2: 0 },
+      { x1: 0, y1: 0, x2: 0, y2: h },
+      { x1: 0, y1: 0, x2: w, y2: 0 },
+    ];
+    const dir = dirs[Math.floor(Math.random() * dirs.length)];
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+
+    const line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', dir.x1);
+    line.setAttribute('y1', dir.y1);
+    line.setAttribute('x2', dir.x2);
+    line.setAttribute('y2', dir.y2);
+    line.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-linecap', 'round');
+    line.style.filter = 'drop-shadow(0 0 6px rgba(255,255,255,0.3))';
+
+    const length = Math.sqrt((dir.x2 - dir.x1) ** 2 + (dir.y2 - dir.y1) ** 2);
+    line.style.strokeDasharray = length;
+    line.style.strokeDashoffset = length;
+    line.style.transition = 'stroke-dashoffset 2.5s ease-out, opacity 0.8s ease-in 2.2s';
+
+    svg.appendChild(line);
+    overlay.appendChild(svg);
+
+    requestAnimationFrame(() => {
+      line.style.strokeDashoffset = '0';
+    });
+
+    setTimeout(() => {
+      line.style.opacity = '0';
+    }, 2300);
+
+    setTimeout(() => {
+      svg.remove();
+    }, 3500);
+
+    const nextDelay = 4000 + Math.random() * 6000;
+    setTimeout(spawnScan, nextDelay);
+  }
+
+  setTimeout(spawnScan, 1500);
+}
+
 function boiauto() {
   return {
     automates: [],
@@ -147,6 +205,7 @@ function boiauto() {
       this.loadAutomates();
       this.loadAccess();
       this.loadDashboard();
+      startScanAnimation();
       this.modalStates.forEach(state => {
         this.$watch(state, () => this.updateScrollLock());
       });
@@ -212,15 +271,26 @@ function boiauto() {
       const b = this.dashboard?.total_access ?? 0;
       const c = this.dashboard?.total_bots ?? 0;
       const total = a + b + c;
-      if (total === 0) return { segments: [], total: 0 };
-      const circ = 2 * Math.PI * 36;
-      let offset = 0;
-      const segments = [
-        { label: 'Automate', value: a, color: '#34d399', pct: (a / total) * 100, dash: (a / total) * circ, offset: 0 },
-        { label: 'Access', value: b, color: '#f5a623', pct: (b / total) * 100, dash: (b / total) * circ, offset: -(a / total) * circ },
-        { label: 'Bot', value: c, color: '#60a5fa', pct: (c / total) * 100, dash: (c / total) * circ, offset: -((a + b) / total) * circ },
+      if (total === 0) return { svg: '', total: 0, legend: [] };
+      const r = 32;
+      const circ = 2 * Math.PI * r;
+      const data = [
+        { label: 'Automate', value: a, color: '#34d399' },
+        { label: 'Access', value: b, color: '#f5a623' },
+        { label: 'Bot', value: c, color: '#60a5fa' },
       ];
-      return { segments, total, circ };
+      let accumulated = 0;
+      let svgCircles = '';
+      const legend = [];
+      for (const seg of data) {
+        const frac = seg.value / total;
+        const dash = frac * circ;
+        const offset = -accumulated * circ;
+        svgCircles += `<circle cx="40" cy="40" r="${r}" fill="none" stroke="${seg.color}" stroke-width="8" stroke-dasharray="${dash} ${circ - dash}" stroke-dashoffset="${offset}"/>`;
+        legend.push({ label: seg.label, pct: (frac * 100).toFixed(0), color: seg.color });
+        accumulated += frac;
+      }
+      return { svg: svgCircles, total, legend };
     },
 
     filterBySearch(items, query, fields) {

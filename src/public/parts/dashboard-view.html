@@ -49,33 +49,20 @@
 
       <!-- Distribution Chart -->
       <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 backdrop-blur-sm flex items-center justify-center">
-        <div class="relative">
-          <svg width="80" height="80" viewBox="0 0 80 80" class="transform -rotate-90">
-            <circle cx="40" cy="40" r="36" fill="none" stroke="#1a1a1e" stroke-width="8"/>
-            <template x-for="(seg, i) in chartData.segments" :key="'chart-'+i">
-              <circle cx="40" cy="40" r="36" fill="none" :stroke="seg.color" stroke-width="8"
-                :stroke-dasharray="seg.dash + ' ' + chartData.circ"
-                :stroke-dashoffset="seg.offset"
-                stroke-linecap="butt"/>
-            </template>
+        <div class="relative w-[80px] h-[80px] flex-shrink-0">
+          <svg width="80" height="80" viewBox="0 0 80 80" class="transform -rotate-90" x-html="chartData.svg">
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
             <span class="text-xs font-bold font-mono text-base-200" x-text="chartData.total"></span>
           </div>
         </div>
-        <div class="ml-3 space-y-1">
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full" style="background:#34d399"></span>
-            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[0]?.pct ?? 0).toFixed(0) + '%'"></span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full" style="background:#f5a623"></span>
-            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[1]?.pct ?? 0).toFixed(0) + '%'"></span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full" style="background:#60a5fa"></span>
-            <span class="text-[9px] font-mono text-base-400" x-text="(chartData.segments[2]?.pct ?? 0).toFixed(0) + '%'"></span>
-          </div>
+        <div class="ml-3 space-y-1.5">
+          <template x-for="(leg, i) in chartData.legend" :key="'leg-'+i">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full" :style="'background:' + leg.color"></span>
+              <span class="text-[9px] font-mono text-base-400" x-text="leg.pct + '%'"></span>
+            </div>
+          </template>
         </div>
       </div>
     </div>
