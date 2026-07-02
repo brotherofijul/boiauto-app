@@ -44,7 +44,7 @@ export async function automatesRouter(req, url, idStr, log) {
     const allowed = [
       "name", "bearer", "skill_up_running", "auto_war_running",
       "auto_work_running", "current_level", "target_level",
-      "pending_at", "balance", "diamond", "status",
+      "pending_at", "balance", "diamond", "status", "skill", "pay",
     ];
     const fields = {};
     for (const k of allowed) if (k in body) fields[k] = body[k];

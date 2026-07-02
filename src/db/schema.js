@@ -24,6 +24,8 @@ export const schemaSql = `
     skill_up_running INTEGER DEFAULT 0,
     auto_war_running INTEGER DEFAULT 0,
     auto_work_running INTEGER DEFAULT 0,
+    skill INTEGER DEFAULT 3,
+    pay INTEGER DEFAULT 1,
     current_level INTEGER,
     target_level INTEGER,
     pending_at INTEGER,

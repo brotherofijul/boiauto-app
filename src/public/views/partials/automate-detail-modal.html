@@ -54,11 +54,11 @@
             </div>
             <div class="rounded-xl bg-base-800/50 border border-base-700/40 p-3">
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Cash</p>
-              <p class="text-sm font-bold font-mono text-base-200 leading-none" x-text="formatBalance(selectedAutomate.balance)"></p>
+              <p class="text-sm font-bold font-mono text-val-green leading-none" x-text="formatBalance(selectedAutomate.balance)"></p>
             </div>
             <div class="rounded-xl bg-base-800/50 border border-base-700/40 p-3">
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Diamond</p>
-              <p class="text-sm font-bold font-mono text-base-200 leading-none" x-text="formatNumber(selectedAutomate.diamond)"></p>
+              <p class="text-sm font-bold font-mono text-val-blue leading-none" x-text="formatNumber(selectedAutomate.diamond)"></p>
             </div>
           </div>
 
@@ -106,42 +106,36 @@
             <div class="grid grid-cols-3 gap-2">
               <!-- Skill toggle -->
               <button @click="toggleFeature(selectedIndex, 'skillUp')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                :class="selectedAutomate.skillUpRunning ? 'text-val-green bg-val-green/10 border-val-green/30' : 'text-base-500 bg-base-800/40 border-base-700/40 hover:border-base-600/50'">
-                <span class="w-1.5 h-1.5 rounded-full" :class="selectedAutomate.skillUpRunning ? 'bg-val-green' : 'bg-base-500'"></span>
+                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
                 <span>Skill</span>
-                <span x-text="selectedAutomate.skillUpRunning ? 'ON' : 'OFF'"></span>
+                <span :class="selectedAutomate.skillUpRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.skillUpRunning ? 'ON' : 'OFF'"></span>
               </button>
               <!-- Training toggle -->
               <button @click="toggleFeature(selectedIndex, 'autoWar')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                :class="selectedAutomate.autoWarRunning ? 'text-val-blue bg-val-blue/10 border-val-blue/30' : 'text-base-500 bg-base-800/40 border-base-700/40 hover:border-base-600/50'">
-                <span class="w-1.5 h-1.5 rounded-full" :class="selectedAutomate.autoWarRunning ? 'bg-val-blue' : 'bg-base-500'"></span>
+                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
                 <span>Training</span>
-                <span x-text="selectedAutomate.autoWarRunning ? 'ON' : 'OFF'"></span>
+                <span :class="selectedAutomate.autoWarRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.autoWarRunning ? 'ON' : 'OFF'"></span>
               </button>
               <!-- Work toggle -->
               <button @click="toggleFeature(selectedIndex, 'autoWork')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                :class="selectedAutomate.autoWorkRunning ? 'text-warn bg-warn/10 border-warn/30' : 'text-base-500 bg-base-800/40 border-base-700/40 hover:border-base-600/50'">
-                <span class="w-1.5 h-1.5 rounded-full" :class="selectedAutomate.autoWorkRunning ? 'bg-warn' : 'bg-base-500'"></span>
+                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
                 <span>Work</span>
-                <span x-text="selectedAutomate.autoWorkRunning ? 'ON' : 'OFF'"></span>
+                <span :class="selectedAutomate.autoWorkRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.autoWorkRunning ? 'ON' : 'OFF'"></span>
               </button>
             </div>
           </div>
 
-          <!-- Skill Type + Pay (below toggles) -->
+          <!-- Skill Type + Pay (below toggles, disabled when skill running) -->
           <div class="grid grid-cols-2 gap-3">
             <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Barrack'},{v:2,l:'War Tech'},{v:3,l:'Scientist'}] }" @click.outside="open=false">
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Skill Type</label>
-              <button @click="open=!open" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left">
+              <button @click="open=!open" :disabled="selectedAutomate.skillUpRunning" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
                 <span x-text="opts.find(o=>o.v===selectedAutomate.skill)?.l"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
               <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden">
                 <template x-for="o in opts" :key="selectedAutomate.id+'sk-'+o.v">
-                  <button @click="selectedAutomate.skill=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.skill===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
+                  <button @click="selectedAutomate.skill=o.v; open=false; saveAutomateConfig(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.skill===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
                     <span x-text="o.l"></span>
                     <span x-show="selectedAutomate.skill===o.v" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
                   </button>
@@ -150,13 +144,13 @@
             </div>
             <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Money'},{v:2,l:'Diamond'}] }" @click.outside="open=false">
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Pay</label>
-              <button @click="open=!open" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left">
+              <button @click="open=!open" :disabled="selectedAutomate.skillUpRunning" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
                 <span x-text="opts.find(o=>o.v===selectedAutomate.pay)?.l"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
               <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden">
                 <template x-for="o in opts" :key="selectedAutomate.id+'pay-'+o.v">
-                  <button @click="selectedAutomate.pay=o.v; open=false; saveAutomate(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.pay===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
+                  <button @click="selectedAutomate.pay=o.v; open=false; saveAutomateConfig(selectedIndex)" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="selectedAutomate.pay===o.v ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
                     <span x-text="o.l"></span>
                     <span x-show="selectedAutomate.pay===o.v" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
                   </button>

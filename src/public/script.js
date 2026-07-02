@@ -34,8 +34,8 @@ function mapAutomate(a) {
     showBearer: false,
     running: !!a.skill_up_running,
     error: "",
-    skill: 3,
-    pay: 1,
+    skill: a.skill ?? 3,
+    pay: a.pay ?? 1,
     currentLevel: a.current_level ?? null,
     targetLevel: a.target_level ?? null,
     pendingAt: a.pending_at ?? null,
@@ -423,10 +423,24 @@ function boiauto() {
         await this.apiPatch(`/automates/${a.id}`, {
           bearer: a.bearer,
           access_id: a.accessId,
+          skill: a.skill,
+          pay: a.pay,
         });
-        await this.loadAutomates();
       } catch (e) {
         console.error("[saveAutomate]", e);
+      }
+    },
+
+    async saveAutomateConfig(idx) {
+      const a = this.automates[idx];
+      if (!a) return;
+      try {
+        await this.apiPatch(`/automates/${a.id}`, {
+          skill: a.skill,
+          pay: a.pay,
+        });
+      } catch (e) {
+        console.error("[saveAutomateConfig]", e);
       }
     },
 
