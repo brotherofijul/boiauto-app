@@ -14,11 +14,10 @@ export async function seedFromConfig() {
     return;
   }
 
-  // Support both "bots" array and single-bot format (for backward compat)
   const bots = Array.isArray(cfg.bots) ? cfg.bots : [cfg];
 
   for (const botCfg of bots) {
-    if (!botCfg.token) {
+    if (!botCfg.token || typeof botCfg.token !== "string") {
       logger.warn("bot config entry missing 'token' — skipping");
       continue;
     }
@@ -29,8 +28,8 @@ export async function seedFromConfig() {
       continue;
     }
 
-    const botId = botCfg.bot_id || genBotId();
-    const name = botCfg.name || botId;
+    const botId = typeof botCfg.bot_id === "string" ? botCfg.bot_id : genBotId();
+    const name = typeof botCfg.name === "string" ? botCfg.name : botId;
     const type = botCfg.type === "Shared" ? "Shared" : "Dual";
     const ratePerDay = Number(botCfg.rate_per_day) || 0;
 

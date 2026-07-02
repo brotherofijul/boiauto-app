@@ -69,7 +69,7 @@
             <div>
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Bearer Token</label>
               <div class="relative">
-                <input x-model="selectedAutomate.bearer" @input="saveAutomate(selectedIndex)" :type="selectedAutomate.showBearer?'text':'password'" :disabled="selectedAutomate.running" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-10 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 disabled:opacity-60" />
+                <input x-model="selectedAutomate.bearer" @input="saveAutomate(selectedIndex)" :type="selectedAutomate.showBearer?'text':'password'" :disabled="isAutomateRunning(selectedAutomate)" placeholder="Bearer token..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-10 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 disabled:opacity-60" />
                 <button @click="selectedAutomate.showBearer=!selectedAutomate.showBearer" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
                   <svg x-show="!selectedAutomate.showBearer" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   <svg x-show="selectedAutomate.showBearer" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -79,7 +79,7 @@
 
             <div class="relative" x-data="{ open: false }" @click.outside="open=false">
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Access</label>
-              <button @click="open=!open" :disabled="selectedAutomate.running || accessList.length === 0" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
+              <button @click="open=!open" :disabled="isAutomateRunning(selectedAutomate) || accessList.length === 0" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
                 <span x-text="accessList.find(a=>a.accessId===selectedAutomate.accessId)?.name || accessList.find(a=>a.accessId===selectedAutomate.accessId)?.accessId || 'Select access...'"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
@@ -144,7 +144,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Barrack'},{v:2,l:'War Tech'},{v:3,l:'Scientist'}] }" @click.outside="open=false">
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Skill Type</label>
-              <button @click="open=!open" :disabled="selectedAutomate.skillUpRunning" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
+              <button @click="open=!open" :disabled="isAutomateRunning(selectedAutomate)" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
                 <span x-text="opts.find(o=>o.v===selectedAutomate.skill)?.l"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
@@ -159,7 +159,7 @@
             </div>
             <div class="relative" x-data="{ open: false, opts: [{v:1,l:'Money'},{v:2,l:'Diamond'}] }" @click.outside="open=false">
               <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Pay</label>
-              <button @click="open=!open" :disabled="selectedAutomate.skillUpRunning" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
+              <button @click="open=!open" :disabled="isAutomateRunning(selectedAutomate)" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
                 <span x-text="opts.find(o=>o.v===selectedAutomate.pay)?.l"></span>
                 <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </button>

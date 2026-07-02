@@ -47,7 +47,6 @@ if (!token) {
   const configPath = resolve(configFlag || __dirname, "../../bot.config.json");
   try {
     const config = JSON.parse(await readFile(configPath, "utf-8"));
-    // Support both "bots" array format and single-bot format (config.token)
     const bot = Array.isArray(config.bots) ? config.bots[0] : config;
     if (bot?.token) {
       token = bot.token;
@@ -74,6 +73,7 @@ let botId = null;
 let botName = null;
 let heartbeatTimer = null;
 let updateTimer = null;
+let reconnectTimer = null;
 let reconnectAttempts = 0;
 
 function connect() {
@@ -130,7 +130,8 @@ function scheduleReconnect() {
   reconnectAttempts++;
   const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
   log.info({ delay, attempt: reconnectAttempts }, "reconnecting");
-  setTimeout(connect, delay);
+  if (reconnectTimer) clearTimeout(reconnectTimer);
+  reconnectTimer = setTimeout(connect, delay);
 }
 
 function startHeartbeat() {
@@ -151,8 +152,10 @@ function startStateUpdates() {
 function stopTimers() {
   if (heartbeatTimer) clearInterval(heartbeatTimer);
   if (updateTimer) clearInterval(updateTimer);
+  if (reconnectTimer) clearTimeout(reconnectTimer);
   heartbeatTimer = null;
   updateTimer = null;
+  reconnectTimer = null;
 }
 
 function sendMockStateUpdate() {

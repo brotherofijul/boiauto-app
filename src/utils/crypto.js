@@ -3,7 +3,6 @@ export function genBotId() {
   return "bot_" + randomHex(7);
 }
 
-// Generate a very long secure token (96 hex chars = 384 bits entropy)
 function genSecureHash() {
   const parts = [];
   const seeds = ["", "salt", "pepper", "sugar", "spice", "herb", "mint", "basil"];

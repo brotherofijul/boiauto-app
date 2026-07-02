@@ -46,8 +46,10 @@ export const schemaSql = `
     FOREIGN KEY (bot_id) REFERENCES bots(bot_id) ON DELETE CASCADE
   );
 
+  CREATE INDEX IF NOT EXISTS idx_bots_token ON bots(token);
+  CREATE INDEX IF NOT EXISTS idx_bots_status ON bots(status);
   CREATE INDEX IF NOT EXISTS idx_automates_bot_id ON automates(bot_id);
   CREATE INDEX IF NOT EXISTS idx_automates_access_id ON automates(access_id);
-  CREATE INDEX IF NOT EXISTS idx_bots_status ON bots(status);
+  CREATE INDEX IF NOT EXISTS idx_access_token ON access_tokens(token);
   CREATE INDEX IF NOT EXISTS idx_access_bot_id ON access_tokens(bot_id);
 `;

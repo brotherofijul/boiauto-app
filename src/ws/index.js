@@ -10,7 +10,7 @@ const subscribers = new Set();
 
 function send(ws, obj) {
   try {
-    ws.send(JSON.stringify(obj));
+    if (ws.readyState === 1) ws.send(JSON.stringify(obj));
   } catch {}
 }
 
@@ -22,7 +22,9 @@ function broadcastToSubscribers(payload, excludeWs = null) {
     try {
       ws.send(msg);
       sent++;
-    } catch {}
+    } catch {
+      subscribers.delete(ws);
+    }
   }
   return sent;
 }
@@ -50,6 +52,9 @@ export const wsHandler = {
       msg = JSON.parse(raw);
     } catch {
       return send(ws, { type: WS_MESSAGES.ERROR, message: "Invalid JSON" });
+    }
+    if (msg == null || typeof msg !== "object" || typeof msg.type !== "string") {
+      return send(ws, { type: WS_MESSAGES.ERROR, message: "Invalid message" });
     }
 
     const ctx = sockets.get(ws);
@@ -96,7 +101,10 @@ export const wsHandler = {
 
 function handleAuth(ws, ctx, msg) {
   if (msg.role === WS_ROLES.BOT) {
-    const bot = msg.token ? botsQueries.getByToken(msg.token) : null;
+    if (typeof msg.token !== "string" || msg.token.length === 0 || msg.token.length > 256) {
+      return send(ws, { type: WS_MESSAGES.AUTH_FAILED, message: "Invalid token" });
+    }
+    const bot = botsQueries.getByToken(msg.token);
     if (!bot) {
       log.warn({ token: msg.token?.slice(0, 12) + "..." }, "bot auth failed");
       return send(ws, { type: WS_MESSAGES.AUTH_FAILED, message: "Invalid bot token" });
@@ -133,6 +141,9 @@ function handleAuth(ws, ctx, msg) {
 
 function handleCommand(ws, ctx, msg) {
   if (ctx.role !== WS_ROLES.WEB) return;
+  if (typeof msg.bot_id !== "string") {
+    return send(ws, { type: WS_MESSAGES.ERROR, message: "Invalid bot_id" });
+  }
   const botWs = findBotSocket(msg.bot_id);
   if (!botWs) {
     log.warn({ botId: msg.bot_id }, "command target bot not connected");
@@ -149,20 +160,33 @@ function handleCommand(ws, ctx, msg) {
 
 function handleStateUpdate(ws, ctx, msg) {
   if (ctx.role !== WS_ROLES.BOT) return;
+  if (msg.payload == null || typeof msg.payload !== "object") {
+    return send(ws, { type: WS_MESSAGES.ERROR, message: "Invalid payload" });
+  }
+  const accountId = msg.payload.account_id;
+  if (typeof accountId !== "number" || !Number.isFinite(accountId)) {
+    return send(ws, { type: WS_MESSAGES.ERROR, message: "Invalid account_id" });
+  }
   const sent = broadcastToSubscribers({
     type: WS_MESSAGES.STATE_UPDATE,
     bot_id: ctx.botId,
-    account_id: msg.account_id,
+    account_id: accountId,
     payload: msg.payload,
   });
-  if (msg.payload && msg.payload.account_id != null) {
-    automatesQueries.update(msg.payload.account_id, {
-      balance: msg.payload.balance,
-      diamond: msg.payload.diamond,
-      status: msg.payload.status,
-    });
+  const updates = {};
+  if (typeof msg.payload.balance === "number" && Number.isFinite(msg.payload.balance)) {
+    updates.balance = msg.payload.balance;
   }
-  log.debug({ botId: ctx.botId, accountId: msg.account_id, subscribers: sent }, "state_update broadcast");
+  if (typeof msg.payload.diamond === "number" && Number.isFinite(msg.payload.diamond)) {
+    updates.diamond = msg.payload.diamond;
+  }
+  if (typeof msg.payload.status === "string") {
+    updates.status = msg.payload.status.slice(0, 16);
+  }
+  if (Object.keys(updates).length > 0) {
+    automatesQueries.update(accountId, updates);
+  }
+  log.debug({ botId: ctx.botId, accountId, subscribers: sent }, "state_update broadcast");
 }
 
 export function broadcastAutomateUpdate(accountId, fields) {
