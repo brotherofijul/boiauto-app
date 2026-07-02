@@ -125,6 +125,16 @@ function boiauto() {
     addAccessError: "",
     addingAccess: false,
 
+    // Login with existing token
+    loginBotToken: "",
+    loginBotError: "",
+    loggingInBot: false,
+    showLoginBotToken: false,
+    loginAccessToken: "",
+    loginAccessError: "",
+    loggingInAccess: false,
+    showLoginAccessToken: false,
+
     selectedAutomateId: null,
     selectedAccessId: null,
     selectedBotId: null,
@@ -605,6 +615,46 @@ function boiauto() {
         successMsg: "Bot deleted",
         afterDelete: () => this.loadAccess(),
       });
+    },
+
+    // --- Login with existing token ---
+
+    async loginWithBotToken() {
+      if (!this.loginBotToken.trim()) {
+        this.loginBotError = "Bot token is required.";
+        return;
+      }
+      this.loggingInBot = true;
+      this.loginBotError = "";
+      try {
+        const data = await this.apiPost("/bots/verify-token", { token: this.loginBotToken.trim() });
+        await this.loadBots();
+        this.loginBotToken = "";
+        this.showToast("success", `Bot "${data.name}" verified and loaded`);
+      } catch (e) {
+        this.loginBotError = e.message;
+      } finally {
+        this.loggingInBot = false;
+      }
+    },
+
+    async loginWithAccessToken() {
+      if (!this.loginAccessToken.trim()) {
+        this.loginAccessError = "Access token is required.";
+        return;
+      }
+      this.loggingInAccess = true;
+      this.loginAccessError = "";
+      try {
+        const data = await this.apiPost("/access/verify-token", { token: this.loginAccessToken.trim() });
+        await this.loadAccess();
+        this.loginAccessToken = "";
+        this.showToast("success", `Access "${data.name || data.access_id}" verified and loaded`);
+      } catch (e) {
+        this.loginAccessError = e.message;
+      } finally {
+        this.loggingInAccess = false;
+      }
     },
 
     // --- Access CRUD ---

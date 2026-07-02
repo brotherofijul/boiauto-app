@@ -5,6 +5,23 @@ import { genAccessToken, genAccessId } from "../utils/crypto.js";
 import { ACCESS_TYPES } from "../config.js";
 
 export async function accessRouter(req, url, idStr, log) {
+  // Verify existing access token (login with token)
+  if (idStr === "verify-token" && req.method === "POST") {
+    const body = await readJson(req);
+    if (!body?.token) return error("Token is required");
+    const access = accessQueries.getByToken(body.token.trim());
+    if (!access) return error("Access token not found", 404);
+    const bot = botsQueries.getByBotId(access.bot_id);
+    const result = {
+      ...access,
+      bot_name: bot?.name || "",
+      bot_type: bot?.type || "",
+      usage_count: accessQueries.countAccountsByAccess(access.access_id),
+    };
+    log.info({ accessId: access.access_id }, "access token verified");
+    return json(result);
+  }
+
   if (req.method === "GET") {
     return json(accessQueries.list());
   }

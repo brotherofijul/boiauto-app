@@ -12,6 +12,16 @@ export async function botsRouter(req, url, idStr, log) {
     return json({ token });
   }
 
+  // Verify existing bot token (login with token)
+  if (idStr === "verify-token" && req.method === "POST") {
+    const body = await readJson(req);
+    if (!body?.token) return error("Token is required");
+    const bot = botsQueries.getByToken(body.token.trim());
+    if (!bot) return error("Bot token not found", 404);
+    log.info({ botId: bot.bot_id }, "bot token verified");
+    return json(bot);
+  }
+
   if (req.method === "GET") {
     const bots = botsQueries.list();
     log.debug({ count: bots.length }, "list bots");
