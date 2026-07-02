@@ -47,9 +47,11 @@ if (!token) {
   const configPath = resolve(configFlag || __dirname, "../../bot.config.json");
   try {
     const config = JSON.parse(await readFile(configPath, "utf-8"));
-    if (config.token) {
-      token = config.token;
-      log.info({ configPath, name: config.name }, "loaded token from bot.config.json");
+    // Support both "bots" array format and single-bot format (config.token)
+    const bot = Array.isArray(config.bots) ? config.bots[0] : config;
+    if (bot?.token) {
+      token = bot.token;
+      log.info({ configPath, name: bot.name }, "loaded token from bot.config.json");
     }
   } catch (e) {
     log.warn({ configPath, err: e.message }, "could not read bot.config.json");
