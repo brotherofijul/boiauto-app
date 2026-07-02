@@ -3,12 +3,17 @@ export function genBotId() {
   return "bot_" + randomHex(7);
 }
 
-// Generate a long secure token (48 hex chars = 192 bits entropy)
+// Generate a very long secure token (96 hex chars = 384 bits entropy)
 function genSecureHash() {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(24));
-  const timestamp = Date.now();
-  const data = `${Array.from(randomBytes).join("")}${timestamp}${Math.random()}`;
-  return Bun.hash(data).toString(16).padStart(16, "0") + Bun.hash(data + "salt").toString(16).padStart(16, "0") + Bun.hash(data + "pepper").toString(16).padStart(16, "0");
+  const parts = [];
+  const seeds = ["", "salt", "pepper", "sugar", "spice", "herb", "mint", "basil"];
+  for (let i = 0; i < 6; i++) {
+    const randomBytes = crypto.getRandomValues(new Uint8Array(24));
+    const timestamp = Date.now() + i;
+    const data = `${Array.from(randomBytes).join("")}${timestamp}${Math.random()}${seeds[i]}`;
+    parts.push(Bun.hash(data).toString(16).padStart(16, "0"));
+  }
+  return parts.join("");
 }
 
 export function genToken() {
