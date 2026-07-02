@@ -1,5 +1,5 @@
 <!-- src/public/parts/upgrade-skill.html -->
-<main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7">
+<main class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-7 md:ml-[260px]">
   <template x-if="currentView === 'dashboard'">
     <div x-init="fetch('views/partials/dashboard-view.html').then(r=>r.text()).then(h=>{$el.innerHTML=h; Alpine.initTree($el)})"></div>
   </template>
