@@ -131,6 +131,8 @@ function boiauto() {
     loginBotError: "",
     loggingInBot: false,
     showLoginBotToken: false,
+    showDetailBotToken: false,
+    showDetailAccessToken: false,
     botLoginMode: false,
     loginAccessToken: "",
     loginAccessName: "",
@@ -770,6 +772,30 @@ function boiauto() {
       return this.removeAutomate(realIdx);
     },
 
+    get selectedAccessIndex() {
+      if (!this.selectedAccessId) return -1;
+      return this.accessList.findIndex((a) => a.id === this.selectedAccessId);
+    },
+
+    removeSelectedAccess() {
+      const idx = this.selectedAccessIndex;
+      if (idx < 0) return;
+      this.closeAccessDetail();
+      this.removeAccess(idx);
+    },
+
+    accessCountForBot(botId) {
+      return this.accessList.filter((a) => a.botId === botId).length;
+    },
+
+    removeAccessFromBot(idx) {
+      const access = this.accessTokensForBot[idx];
+      if (!access) return;
+      const realIdx = this.accessList.findIndex((a) => a.id === access.id);
+      if (realIdx < 0) return;
+      return this.removeAccess(realIdx);
+    },
+
 
     // --- Bot Detail ---
 
@@ -893,6 +919,10 @@ function boiauto() {
 
     formatRate(n) {
       return "$" + (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/day";
+    },
+
+    formatRateNoSymbol(n) {
+      return (Number(n) || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "/day";
     },
   };
 }

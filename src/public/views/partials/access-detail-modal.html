@@ -61,16 +61,20 @@
             </div>
             <div class="rounded-xl bg-base-800/50 border border-base-700/40 p-3" x-show="selectedAccess.type === 'Business' && selectedAccess.pricePerDay" x-cloak>
               <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono mb-1.5">Price/Day</p>
-              <p class="text-sm font-bold font-mono text-val-green leading-none" x-text="formatRate(selectedAccess.pricePerDay)"></p>
+              <p class="text-sm font-bold font-mono text-val-green leading-none" x-text="formatRateNoSymbol(selectedAccess.pricePerDay)"></p>
             </div>
           </div>
 
-          <!-- Token -->
+          <!-- Token (with eye toggle, neutral colors) -->
           <div>
             <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">              Access Token
             </label>
             <div class="flex items-stretch gap-2">
-              <input :value="selectedAccess.token" readonly class="flex-1 rounded-lg bg-base-800/70 border border-warn/30 text-xs px-3 py-2.5 font-mono text-warn focus:outline-none" />
+              <input :type="showDetailAccessToken ? 'text' : 'password'" :value="selectedAccess.token" readonly class="flex-1 rounded-lg bg-base-800/70 border border-base-700/70 text-xs px-3 py-2.5 font-mono text-base-300 focus:outline-none" />
+              <button @click="showDetailAccessToken=!showDetailAccessToken" type="button" class="px-3 rounded-lg border border-base-700/40 bg-base-800/40 text-base-400 hover:text-base-200 transition-all active:scale-90 flex items-center justify-center">
+                <svg x-show="!showDetailAccessToken" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg x-show="showDetailAccessToken" x-cloak class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
               <button @click="copyToClipboard(selectedAccess.token, 'Access token copied')" type="button"
                 class="px-3 rounded-lg border border-base-700/40 bg-base-800/40 text-base-400 hover:text-base-200 transition-all active:scale-90 flex items-center justify-center">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -112,10 +116,15 @@
           </div>
         </div>
 
-        <!-- Footer -->
-        <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 justify-end flex-shrink-0">
-          <button @click="closeAccessDetail()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97]">
-            Close
+        <!-- Footer: Remove + Done -->
+        <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 flex-shrink-0">
+          <button @click="removeSelectedAccess()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97] flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Remove
+          </button>
+          <div class="flex-1"></div>
+          <button @click="closeAccessDetail()" type="button" class="rounded-lg font-semibold text-xs px-5 py-2.5 border border-warn/30 bg-warn/5 text-warn hover:bg-warn/10 hover:border-warn/50 transition-all active:scale-[.97]">
+            Done
           </button>
         </div>
       </div>
