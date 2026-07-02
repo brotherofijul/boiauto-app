@@ -1,21 +1,24 @@
 <!-- /views/partials/access-list.html -->
-<div x-show="loadingAccess && accessList.length === 0" class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-  <div class="hidden md:grid grid-cols-[1.5fr_1fr_1fr_1.8fr] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
-    <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
-    <div class="h-3 bg-base-800 rounded w-2/3 animate-pulse"></div>
-    <div class="h-3 bg-base-800 rounded w-1/2 animate-pulse"></div>
-    <div class="h-3 bg-base-800 rounded w-3/4 animate-pulse"></div>
-  </div>
-  <template x-for="i in 3" :key="'skel-acc-'+i">
-    <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr_1.8fr] gap-3 px-4 py-3.5 border-b border-base-800/40 last:border-b-0">
-      <div class="h-4 bg-base-800 rounded animate-pulse w-3/4"></div>
-      <div class="h-4 bg-base-800/70 rounded animate-pulse w-2/3 hidden md:block"></div>
-      <div class="h-4 bg-base-800/70 rounded animate-pulse w-1/2"></div>
-      <div class="h-4 bg-base-800/70 rounded animate-pulse w-3/4"></div>
+<!-- Skeleton loading -->
+<div x-show="loadingAccess && accessList.length === 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+  <template x-for="i in 4" :key="'skel-acc-'+i">
+    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 p-4 animate-pulse">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 rounded-lg bg-base-800"></div>
+        <div class="flex-1 space-y-1.5">
+          <div class="h-3.5 bg-base-800 rounded w-2/3"></div>
+          <div class="h-2.5 bg-base-800/70 rounded w-1/3"></div>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <div class="h-3 bg-base-800/70 rounded w-3/4"></div>
+        <div class="h-3 bg-base-800/70 rounded w-1/2"></div>
+      </div>
     </div>
   </template>
 </div>
 
+<!-- Empty state -->
 <div x-show="!loadingAccess && filteredAccess.length === 0 && !searchAccess.trim()" x-cloak x-transition.opacity.duration.300ms class="flex flex-col items-center justify-center py-24 text-center">
   <div class="relative mb-6">
     <div class="absolute inset-0 rounded-3xl bg-warn/10 blur-2xl"></div>
@@ -34,6 +37,7 @@
   </button>
 </div>
 
+<!-- Search empty -->
 <div x-show="!loadingAccess && filteredAccess.length === 0 && searchAccess.trim()" x-cloak class="flex flex-col items-center justify-center py-16 text-center">
   <div class="w-12 h-12 rounded-xl border border-base-700/40 flex items-center justify-center mb-3">
     <svg class="w-5 h-5 text-base-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -41,45 +45,39 @@
   <p class="text-xs text-base-400 font-mono">No access tokens match "<span x-text="searchAccess"></span>"</p>
 </div>
 
-<div x-show="!loadingAccess && filteredAccess.length > 0" class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-  <div class="hidden md:grid grid-cols-[1.5fr_1fr_0.8fr_1.8fr] gap-3 px-4 py-2.5 border-b border-base-800/60 bg-base-900/60">
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Label</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Bot ID</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Type</p>
-    <p class="text-[10px] text-base-500 uppercase tracking-widest font-mono font-bold">Access Token</p>
-  </div>
-
+<!-- Access cards (separate per item) -->
+<div x-show="!loadingAccess && filteredAccess.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
   <template x-for="(a, idx) in filteredAccess" :key="a.id">
-    <button @click="openAccessDetail(a.id)" type="button" class="w-full text-left grid grid-cols-1 md:grid-cols-[1.5fr_1fr_0.8fr_1.8fr] gap-2 md:gap-3 px-4 py-3 border-b border-base-800/40 last:border-b-0 hover:bg-base-800/30 transition-colors items-center cursor-pointer">
-      <!-- Label + usage count top-right -->
-      <div class="flex items-center gap-2 min-w-0">
-        <svg class="w-4 h-4 text-warn flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="a.name || a.accessId"></p>
-            <span class="text-[10px] font-mono font-bold flex-shrink-0"
-              :class="a.type === 'Shared' ? 'text-base-400' : (a.usageCount >= 1 ? 'text-danger' : 'text-base-400')"
-              x-text="a.type === 'Shared' ? a.usageCount + ' using' : (a.usageCount + '/1')"></span>
-          </div>
+    <button @click="openAccessDetail(a.id)" type="button" class="text-left rounded-2xl border border-base-700/40 bg-base-900/45 hover:border-base-600/60 hover:bg-base-800/30 transition-all p-4 cursor-pointer">
+      <!-- Header: icon + label + usage top-right -->
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <svg class="w-4 h-4 text-warn flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <p class="text-sm font-semibold text-base-100 truncate leading-tight" x-text="a.name || a.accessId"></p>
+        </div>
+        <span class="text-[10px] font-mono font-bold flex-shrink-0"
+          :class="a.type === 'Shared' ? 'text-base-400' : (a.usageCount >= 1 ? 'text-danger' : 'text-base-400')"
+          x-text="a.type === 'Shared' ? a.usageCount + ' using' : (a.usageCount + '/1')"></span>
+      </div>
+
+      <!-- Body: bot id + type -->
+      <div class="space-y-1.5 mb-3">
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-[9px] text-base-500 uppercase tracking-widest font-mono w-12 flex-shrink-0">Bot</span>
+          <p class="font-mono text-base-300 truncate" x-text="a.botName || a.botId"></p>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-[9px] text-base-500 uppercase tracking-widest font-mono w-12 flex-shrink-0">Type</span>
+          <span class="font-mono font-bold"
+            :class="a.type === 'Private' ? 'text-val-green' : a.type === 'Shared' ? 'text-val-blue' : 'text-warn'"
+            x-text="a.type"></span>
+          <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[10px] font-mono text-val-green" x-text="formatRate(a.pricePerDay)"></span>
         </div>
       </div>
 
-      <!-- Bot ID -->
-      <div class="hidden md:block min-w-0">
-        <p class="text-xs font-mono text-base-300 truncate x-scroll whitespace-nowrap py-1 px-0.5" x-text="a.botName || a.botId"></p>
-      </div>
-
-      <!-- Type badge -->
-      <div class="flex items-center gap-1.5">
-        <span class="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
-          :class="typeClass(a.type)"
-          x-text="a.type"></span>
-        <span x-show="a.type === 'Business' && a.pricePerDay" x-cloak class="text-[9px] font-mono text-val-green" x-text="formatRate(a.pricePerDay)"></span>
-      </div>
-
-      <!-- Access Token (not bot token) -->
-      <div class="min-w-0 flex items-center gap-1" @click.stop>
-        <code class="text-xs font-mono text-base-300 truncate x-scroll whitespace-nowrap py-1 px-0.5 flex-1" x-text="a.showToken ? a.token : maskToken(a.token)"></code>
+      <!-- Token (click stops propagation) -->
+      <div class="flex items-center gap-1 border-t border-base-800/40 pt-2.5" @click.stop>
+        <code class="text-xs font-mono text-base-400 truncate flex-1" x-text="a.showToken ? a.token : maskToken(a.token)"></code>
         <button @click.stop="a.showToken=!a.showToken" type="button" class="text-base-500 hover:text-base-200 transition-colors p-1 flex-shrink-0">
           <svg x-show="!a.showToken" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg x-show="a.showToken" x-cloak class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>

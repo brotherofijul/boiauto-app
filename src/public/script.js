@@ -678,6 +678,14 @@ function boiauto() {
       return this.automates.filter((a) => a.accessId === access.accessId);
     },
 
+    removeAutomateFromAccess(idx) {
+      const auto = this.automatesUsingAccess[idx];
+      if (!auto) return;
+      const realIdx = this.automates.findIndex((a) => a.id === auto.id);
+      if (realIdx < 0) return;
+      return this.removeAutomate(realIdx);
+    },
+
 
     // --- Bot Detail ---
 
@@ -705,6 +713,21 @@ function boiauto() {
       const idx = this.selectedBotIndex;
       if (idx < 0) return;
       this.removeBot(idx);
+    },
+
+    async saveBotDirect() {
+      if (!this.selectedBot) return;
+      try {
+        await this.apiPatch(`/bots/${this.selectedBot.id}`, {
+          name: this.selectedBot.name,
+          token: this.selectedBot.token,
+          type: this.selectedBot.type,
+        });
+        await this.loadBots();
+        await this.loadAutomates();
+      } catch (e) {
+        console.error("[saveBotDirect]", e);
+      }
     },
 
     get automatesUsingBot() {
