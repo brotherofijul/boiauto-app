@@ -125,15 +125,19 @@ function boiauto() {
     addAccessError: "",
     addingAccess: false,
 
-    // Login with existing token
+    // Login with existing token (in-modal)
     loginBotToken: "",
+    loginBotName: "",
     loginBotError: "",
     loggingInBot: false,
     showLoginBotToken: false,
+    botLoginMode: false,
     loginAccessToken: "",
+    loginAccessName: "",
     loginAccessError: "",
     loggingInAccess: false,
     showLoginAccessToken: false,
+    accessLoginMode: false,
 
     selectedAutomateId: null,
     selectedAccessId: null,
@@ -496,7 +500,18 @@ function boiauto() {
       this.addingBot = false;
       this.botConnectedWhileOpen = false;
       this.newlyAddedBotId = null;
+      this.botLoginMode = false;
+      this.loginBotToken = "";
+      this.loginBotName = "";
+      this.loginBotError = "";
+      this.showLoginBotToken = false;
       this.showAddBotModal = true;
+    },
+
+    toggleBotLoginMode() {
+      this.botLoginMode = !this.botLoginMode;
+      this.loginBotError = "";
+      this.addBotError = "";
     },
 
     closeAddBotModal() {
@@ -617,7 +632,7 @@ function boiauto() {
       });
     },
 
-    // --- Login with existing token ---
+    // --- Login with existing token (in-modal) ---
 
     async loginWithBotToken() {
       if (!this.loginBotToken.trim()) {
@@ -628,9 +643,13 @@ function boiauto() {
       this.loginBotError = "";
       try {
         const data = await this.apiPost("/bots/verify-token", { token: this.loginBotToken.trim() });
+        // If user provided a custom label, update the bot name
+        if (this.loginBotName.trim()) {
+          await this.apiPatch(`/bots/${data.id}`, { name: this.loginBotName.trim() });
+        }
         await this.loadBots();
-        this.loginBotToken = "";
-        this.showToast("success", `Bot "${data.name}" verified and loaded`);
+        this.showToast("success", `Bot "${this.loginBotName.trim() || data.name}" verified and loaded`);
+        this.closeAddBotModal();
       } catch (e) {
         this.loginBotError = e.message;
       } finally {
@@ -647,9 +666,13 @@ function boiauto() {
       this.loginAccessError = "";
       try {
         const data = await this.apiPost("/access/verify-token", { token: this.loginAccessToken.trim() });
+        // If user provided a custom label, update the access name
+        if (this.loginAccessName.trim()) {
+          await this.apiPatch(`/access/${data.id}`, { name: this.loginAccessName.trim() });
+        }
         await this.loadAccess();
-        this.loginAccessToken = "";
-        this.showToast("success", `Access "${data.name || data.access_id}" verified and loaded`);
+        this.showToast("success", `Access "${this.loginAccessName.trim() || data.name || data.access_id}" verified and loaded`);
+        this.closeAddAccessModal();
       } catch (e) {
         this.loginAccessError = e.message;
       } finally {
@@ -666,7 +689,18 @@ function boiauto() {
       this.newAccessPrice = 0;
       this.addAccessError = "";
       this.addingAccess = false;
+      this.accessLoginMode = false;
+      this.loginAccessToken = "";
+      this.loginAccessName = "";
+      this.loginAccessError = "";
+      this.showLoginAccessToken = false;
       this.showAddAccessModal = true;
+    },
+
+    toggleAccessLoginMode() {
+      this.accessLoginMode = !this.accessLoginMode;
+      this.loginAccessError = "";
+      this.addAccessError = "";
     },
 
     closeAddAccessModal() { this.showAddAccessModal = false; },

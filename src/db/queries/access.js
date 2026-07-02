@@ -1,5 +1,6 @@
 // /src/db/queries/access.js
 import db from "../index.js";
+import { updateFields } from "./helpers.js";
 
 export const accessQueries = {
   list: () => db.query(`
@@ -11,9 +12,11 @@ export const accessQueries = {
   `).all(),
   getByAccessId: (accessId) => db.query("SELECT * FROM access_tokens WHERE access_id = ?").get(accessId),
   getByToken: (token) => db.query("SELECT * FROM access_tokens WHERE token = ?").get(token),
+  getById: (id) => db.query("SELECT * FROM access_tokens WHERE id = ?").get(id),
   insert: (accessId, token, botId, name, type, pricePerDay) =>
     db.prepare("INSERT INTO access_tokens (access_id, token, bot_id, name, type, price_per_day) VALUES (?, ?, ?, ?, ?, ?)")
       .run(accessId, token, botId, name || null, type || "Private", pricePerDay || 0),
+  update: (id, fields) => updateFields("access_tokens", id, fields, ["name"]),
   remove: (id) => db.prepare("DELETE FROM access_tokens WHERE id = ?").run(id),
   countByBot: (botId) =>
     db.query("SELECT COUNT(*) as c FROM access_tokens WHERE bot_id = ?").get(botId).c,

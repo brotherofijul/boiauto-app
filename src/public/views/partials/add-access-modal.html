@@ -19,14 +19,15 @@
        x-transition:leave-end="opacity-0 scale-95 translate-y-3">
     <div class="h-1 bg-warn"></div>
 
+    <!-- Header: title changes based on mode -->
     <div class="flex items-center justify-between px-5 py-4 border-b border-base-800/60 flex-shrink-0">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center">
           <svg class="w-4 h-4 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <div>
-          <h3 class="text-sm font-bold text-base-100 tracking-tight">Add Access Token</h3>
-          <p class="text-[10px] text-base-500 font-mono tracking-wider uppercase">Grant bot access to a user</p>
+          <h3 class="text-sm font-bold text-base-100 tracking-tight" x-text="accessLoginMode ? 'Login Access' : 'Add Access Token'"></h3>
+          <p class="text-[10px] text-base-500 font-mono tracking-wider uppercase" x-text="accessLoginMode ? 'Verify an existing access token' : 'Grant bot access to a user'"></p>
         </div>
       </div>
       <button @click="closeAddAccessModal()" type="button" class="w-8 h-8 rounded-lg flex items-center justify-center text-base-500 hover:text-danger hover:bg-danger/10 transition-all active:scale-90">
@@ -35,91 +36,156 @@
     </div>
 
     <div class="overflow-y-auto log-scroll px-5 py-5 space-y-4 flex-1">
-      <div class="relative" x-data="{ open: false }" @click.outside="open=false">
-        <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Bot
-          <span x-show="bots.length === 0" x-cloak class="text-base-300 ml-1 normal-case tracking-normal text-[9px]">(no bots available)</span>
-        </label>
-        <button @click="open=!open" :disabled="bots.length === 0" type="button"
-          class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
-          <span x-show="bots.length > 0" x-text="bots.find(b=>b.id===Number(newAccessBotId))?.name + ' · ' + (bots.find(b=>b.id===Number(newAccessBotId))?.botId || '') || 'Select bot...'"></span>
-          <span x-show="bots.length === 0" x-cloak class="text-base-600">No bots available</span>
-          <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden max-h-60 overflow-y-auto log-scroll">
-          <template x-for="b in bots" :key="'selacc-'+b.id">
-            <button @click="newAccessBotId=b.id; open=false" type="button"
-              class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between gap-2"
-              :class="Number(newAccessBotId)===b.id ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
-              <div class="min-w-0">
-                <p class="truncate" x-text="b.name"></p>
-                <p class="text-[9px] text-base-500 truncate" x-text="b.botId"></p>
-              </div>
-              <span class="text-[9px] px-1.5 py-0.5 rounded-full border flex-shrink-0" :class="typeClass(b.type)" x-text="b.type"></span>
-            </button>
-          </template>
+      <!-- LOGIN MODE: token + name only -->
+      <template x-if="accessLoginMode">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Access Token</label>
+            <div class="relative">
+              <input x-model="loginAccessToken" @keydown.enter="loginWithAccessToken()" :type="showLoginAccessToken ? 'text' : 'password'" placeholder="Paste access token (acc_...)..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 pr-10 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
+              <button @click="showLoginAccessToken=!showLoginAccessToken" type="button" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-500 hover:text-base-200 transition-colors p-0.5">
+                <svg x-show="!showLoginAccessToken" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg x-show="showLoginAccessToken" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Label <span class="text-base-600 normal-case tracking-normal text-[9px] ml-1">(optional, custom name)</span></label>
+            <input x-model="loginAccessName" @keydown.enter="loginWithAccessToken()" placeholder="e.g. John, Client-A..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
+          </div>
+
+          <div class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Type is auto-detected from the token. If the token exists, the access will be loaded into your list.</span>
+          </div>
+
+          <div x-show="loginAccessError" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span x-text="loginAccessError"></span>
+          </div>
         </div>
-      </div>
+      </template>
 
-      <div>
-        <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Name <span class="text-base-600 normal-case tracking-normal text-[9px] ml-1">(optional, e.g. recipient name)</span>
-        </label>
-        <input x-model="newAccessName" @keydown.enter="confirmAddAccess()" placeholder="e.g. John, Client-A..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
-      </div>
-
-      <div class="relative" x-data="{ open: false, opts: ['Private','Shared','Business'] }" @click.outside="open=false">
-        <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Type
-        </label>
-        <button @click="open=!open" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left">
-          <span class="inline-flex items-center gap-1.5">
-          <span x-text="newAccessType"></span>
-          </span>
-          <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden">
-          <template x-for="o in opts" :key="'acctype-'+o">
-            <button @click="newAccessType=o; open=false" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="newAccessType===o ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
-              <span x-text="o"></span>
-              <span x-show="newAccessType===o" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
+      <!-- REGISTER MODE (original) -->
+      <template x-if="!accessLoginMode">
+        <div>
+          <div class="relative" x-data="{ open: false }" @click.outside="open=false">
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Bot
+              <span x-show="bots.length === 0" x-cloak class="text-base-300 ml-1 normal-case tracking-normal text-[9px]">(no bots available)</span>
+            </label>
+            <button @click="open=!open" :disabled="bots.length === 0" type="button"
+              class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left disabled:cursor-not-allowed disabled:opacity-60">
+              <span x-show="bots.length > 0" x-text="bots.find(b=>b.id===Number(newAccessBotId))?.name + ' · ' + (bots.find(b=>b.id===Number(newAccessBotId))?.botId || '') || 'Select bot...'"></span>
+              <span x-show="bots.length === 0" x-cloak class="text-base-600">No bots available</span>
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-          </template>
+            <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden max-h-60 overflow-y-auto log-scroll">
+              <template x-for="b in bots" :key="'selacc-'+b.id">
+                <button @click="newAccessBotId=b.id; open=false" type="button"
+                  class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between gap-2"
+                  :class="Number(newAccessBotId)===b.id ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
+                  <div class="min-w-0">
+                    <p class="truncate" x-text="b.name"></p>
+                    <p class="text-[9px] text-base-500 truncate" x-text="b.botId"></p>
+                  </div>
+                  <span class="text-[9px] px-1.5 py-0.5 rounded-full border flex-shrink-0" :class="typeClass(b.type)" x-text="b.type"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Name <span class="text-base-600 normal-case tracking-normal text-[9px] ml-1">(optional, e.g. recipient name)</span>
+            </label>
+            <input x-model="newAccessName" @keydown.enter="confirmAddAccess()" placeholder="e.g. John, Client-A..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
+          </div>
+
+          <div class="relative mt-4" x-data="{ open: false, opts: ['Private','Shared','Business'] }" @click.outside="open=false">
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Type
+            </label>
+            <button @click="open=!open" type="button" class="relative w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm pl-3 pr-8 py-2.5 font-mono text-base-100 transition-all cursor-pointer hover:border-base-600/50 text-left">
+              <span class="inline-flex items-center gap-1.5">
+              <span x-text="newAccessType"></span>
+              </span>
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-base-500 transition-transform pointer-events-none" :class="open?'rotate-180':''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div x-show="open" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1" class="absolute z-40 mt-1 left-0 right-0 rounded-lg bg-base-800 border border-base-700/40 shadow-lg shadow-black/40 overflow-hidden">
+              <template x-for="o in opts" :key="'acctype-'+o">
+                <button @click="newAccessType=o; open=false" type="button" class="w-full px-3 py-2 text-left text-xs font-mono transition-colors flex items-center justify-between" :class="newAccessType===o ? 'bg-base-800/40 text-base-300' : 'text-base-200 hover:bg-base-700/50'">
+                  <span x-text="o"></span>
+                  <span x-show="newAccessType===o" class="w-1.5 h-1.5 rounded-full bg-base-300"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div x-show="newAccessType === 'Business'" x-cloak x-transition.opacity.duration.200ms class="mt-4">
+            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Price per Day ($) <span class="text-base-300 normal-case tracking-normal text-[9px] ml-1">(game currency)</span>
+            </label>
+            <input x-model.number="newAccessPrice" @keydown.enter="confirmAddAccess()" type="number" min="0" step="0.01" placeholder="e.g. 5.00" class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
+          </div>
+
+          <!-- Private description -->
+          <div x-show="newAccessType === 'Private'" x-cloak class="mt-4 rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span><span class="font-bold">Private</span> — single-use access. Max <span class="font-bold">1 automate</span> per token.</span>
+          </div>
+
+          <!-- Shared description -->
+          <div x-show="newAccessType === 'Shared'" x-cloak class="mt-4 rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span><span class="font-bold">Shared</span> — unlimited automates can use this token.</span>
+          </div>
+
+          <!-- Business description -->
+          <div x-show="newAccessType === 'Business'" x-cloak class="mt-4 rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span><span class="font-bold">Business</span> — single-use access + <span class="font-bold">price/day</span> rate. Max <span class="font-bold">1 automate</span>.</span>
+          </div>
+
+          <div x-show="addAccessError" x-transition.opacity.duration.200ms class="mt-4 rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span x-text="addAccessError"></span>
+          </div>
         </div>
-      </div>
-
-      <div x-show="newAccessType === 'Business'" x-cloak x-transition.opacity.duration.200ms>
-        <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider flex items-center gap-1.5">          Price per Day ($) <span class="text-base-300 normal-case tracking-normal text-[9px] ml-1">(game currency)</span>
-        </label>
-        <input x-model.number="newAccessPrice" @keydown.enter="confirmAddAccess()" type="number" min="0" step="0.01" placeholder="e.g. 5.00" class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
-      </div>
-
-      <!-- Private description -->
-      <div x-show="newAccessType === 'Private'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
-        <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span><span class="font-bold">Private</span> — single-use access. Max <span class="font-bold">1 automate</span> per token.</span>
-      </div>
-
-      <!-- Shared description -->
-      <div x-show="newAccessType === 'Shared'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
-        <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span><span class="font-bold">Shared</span> — unlimited automates can use this token.</span>
-      </div>
-
-      <!-- Business description -->
-      <div x-show="newAccessType === 'Business'" x-cloak class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
-        <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <span><span class="font-bold">Business</span> — single-use access + <span class="font-bold">price/day</span> rate. Max <span class="font-bold">1 automate</span>.</span>
-      </div>
-
-      <div x-show="addAccessError" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">
-        <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span x-text="addAccessError"></span>
-      </div>
+      </template>
     </div>
 
+    <!-- Toggle: Have an access token? / Register new access -->
+    <div class="px-5 py-2.5 border-t border-base-800/60 flex-shrink-0">
+      <button @click="toggleAccessLoginMode()" type="button" class="w-full text-[10px] font-mono uppercase tracking-wider text-base-500 hover:text-warn transition-colors flex items-center justify-center gap-1.5 py-1">
+        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span x-text="accessLoginMode ? 'Register a new access instead' : 'Have an access token? Login instead'"></span>
+      </button>
+    </div>
+
+    <!-- Footer: action button changes based on mode -->
     <div class="px-5 py-4 border-t border-base-800/60 flex gap-2 justify-end flex-shrink-0">
       <button @click="closeAddAccessModal()" type="button" class="rounded-lg font-semibold text-xs px-4 py-2.5 border border-danger/30 bg-danger/5 text-danger hover:bg-danger/10 transition-all active:scale-[.97]">
         Cancel
       </button>
-      <button @click="confirmAddAccess()" :disabled="addingAccess || !newAccessBotId || (newAccessType === 'Business' && !newAccessPrice)" type="button"
+
+      <!-- Login mode button -->
+      <button x-show="accessLoginMode" @click="loginWithAccessToken()" :disabled="loggingInAccess || !loginAccessToken.trim()" type="button"
+        class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center"
+        :class="loggingInAccess || !loginAccessToken.trim() ? 'border border-base-700/40 bg-base-800/40 text-base-500 cursor-not-allowed' : 'border border-warn/30 bg-warn/5 text-warn hover:bg-warn/10 hover:border-warn/50'">
+        <template x-if="!loggingInAccess">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span>Verify & Login</span>
+          </div>
+        </template>
+        <template x-if="loggingInAccess">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            <span>Verifying...</span>
+          </div>
+        </template>
+      </button>
+
+      <!-- Register mode button -->
+      <button x-show="!accessLoginMode" @click="confirmAddAccess()" :disabled="addingAccess || !newAccessBotId || (newAccessType === 'Business' && !newAccessPrice)" type="button"
         class="rounded-lg font-semibold text-xs px-5 py-2.5 flex items-center gap-1.5 transition-all active:scale-[.97] min-w-[140px] justify-center"
         :class="addingAccess || !newAccessBotId || (newAccessType === 'Business' && !newAccessPrice) ? 'border border-base-700/40 bg-base-800/40 text-base-500 cursor-not-allowed' : 'border border-warn/30 bg-warn/5 text-warn hover:bg-warn/10 hover:border-warn/50'">
         <template x-if="!addingAccess">

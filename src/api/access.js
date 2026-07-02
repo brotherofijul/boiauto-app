@@ -53,6 +53,18 @@ export async function accessRouter(req, url, idStr, log) {
     return json(access, 201);
   }
 
+  if (req.method === "PATCH" && idStr) {
+    const id = Number(idStr);
+    const body = await readJson(req);
+    const fields = {};
+    if (body.name != null) fields.name = body.name;
+    accessQueries.update(id, fields);
+    const updated = accessQueries.getById(id);
+    if (!updated) return error("Access not found", 404);
+    log.info({ id, fields: Object.keys(fields) }, "access updated");
+    return json(updated);
+  }
+
   if (req.method === "DELETE" && idStr) {
     const id = Number(idStr);
     accessQueries.remove(id);
