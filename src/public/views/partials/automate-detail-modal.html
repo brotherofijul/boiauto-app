@@ -100,27 +100,42 @@
             </div>
           </div>
 
-          <!-- Automation toggles: Skill, Training, Work in one row -->
+          <!-- Automation toggles: Skill, Training, Work in one row (switch style) -->
           <div class="border-t border-base-800/60 pt-4">
             <p class="text-[10px] text-base-500 uppercase tracking-wider font-mono font-bold mb-2">Automation</p>
             <div class="grid grid-cols-3 gap-2">
               <!-- Skill toggle -->
               <button @click="toggleFeature(selectedIndex, 'skillUp')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
-                <span>Skill</span>
-                <span :class="selectedAutomate.skillUpRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.skillUpRunning ? 'ON' : 'OFF'"></span>
+                class="flex items-center justify-between gap-1.5 text-[10px] font-mono font-bold px-3 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="selectedAutomate.skillUpRunning ? 'border-val-green/30 bg-val-green/5' : 'border-base-700/60 bg-base-800/40'">
+                <span class="text-base-300">Skill</span>
+                <span class="relative inline-flex items-center w-7 h-3.5 rounded-full transition-colors"
+                  :class="selectedAutomate.skillUpRunning ? 'bg-val-green/80' : 'bg-base-700'">
+                  <span class="absolute w-3 h-3 rounded-full bg-base-100 transition-transform duration-200"
+                    :class="selectedAutomate.skillUpRunning ? 'translate-x-3.5' : 'translate-x-0.5'"></span>
+                </span>
               </button>
               <!-- Training toggle -->
               <button @click="toggleFeature(selectedIndex, 'autoWar')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
-                <span>Training</span>
-                <span :class="selectedAutomate.autoWarRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.autoWarRunning ? 'ON' : 'OFF'"></span>
+                class="flex items-center justify-between gap-1.5 text-[10px] font-mono font-bold px-3 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="selectedAutomate.autoWarRunning ? 'border-val-green/30 bg-val-green/5' : 'border-base-700/60 bg-base-800/40'">
+                <span class="text-base-300">Training</span>
+                <span class="relative inline-flex items-center w-7 h-3.5 rounded-full transition-colors"
+                  :class="selectedAutomate.autoWarRunning ? 'bg-val-green/80' : 'bg-base-700'">
+                  <span class="absolute w-3 h-3 rounded-full bg-base-100 transition-transform duration-200"
+                    :class="selectedAutomate.autoWarRunning ? 'translate-x-3.5' : 'translate-x-0.5'"></span>
+                </span>
               </button>
               <!-- Work toggle -->
               <button @click="toggleFeature(selectedIndex, 'autoWork')" :disabled="!selectedAutomate.bearer.trim() || !selectedAutomate.accessId" type="button"
-                class="inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold px-2 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-base-700/40 bg-base-800/40">
-                <span>Work</span>
-                <span :class="selectedAutomate.autoWorkRunning ? 'text-val-green' : 'text-danger'" x-text="selectedAutomate.autoWorkRunning ? 'ON' : 'OFF'"></span>
+                class="flex items-center justify-between gap-1.5 text-[10px] font-mono font-bold px-3 py-2 rounded-lg border transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="selectedAutomate.autoWorkRunning ? 'border-val-green/30 bg-val-green/5' : 'border-base-700/60 bg-base-800/40'">
+                <span class="text-base-300">Work</span>
+                <span class="relative inline-flex items-center w-7 h-3.5 rounded-full transition-colors"
+                  :class="selectedAutomate.autoWorkRunning ? 'bg-val-green/80' : 'bg-base-700'">
+                  <span class="absolute w-3 h-3 rounded-full bg-base-100 transition-transform duration-200"
+                    :class="selectedAutomate.autoWorkRunning ? 'translate-x-3.5' : 'translate-x-0.5'"></span>
+                </span>
               </button>
             </div>
           </div>
