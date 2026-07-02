@@ -50,14 +50,9 @@
             </div>
           </div>
 
-          <div>
-            <label class="block text-[10px] text-base-500 mb-1.5 font-mono uppercase tracking-wider">Label <span class="text-base-600 normal-case tracking-normal text-[9px] ml-1">(optional, custom name)</span></label>
-            <input x-model="loginBotName" @keydown.enter="loginWithBotToken()" placeholder="e.g. MyMainBot..." class="w-full rounded-lg bg-base-800/70 border border-base-700/70 text-sm px-3 py-2.5 font-mono placeholder:text-base-600 transition-all focus:bg-base-800 focus:border-base-600/50" />
-          </div>
-
           <div class="rounded-lg bg-base-800/40 border border-base-700/30 px-3 py-2.5 text-[10px] text-base-400 font-mono leading-relaxed flex items-start gap-2">
             <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span>Type is auto-detected from the token. If the token exists, the bot will be loaded into your list.</span>
+            <span>Type and name are auto-detected from the token. If the token exists, the bot will be loaded into your list.</span>
           </div>
 
           <div x-show="loginBotError" x-transition.opacity.duration.200ms class="rounded-lg bg-danger/10 border border-danger/20 px-3 py-2 text-[11px] text-danger font-mono leading-snug flex items-center gap-2">

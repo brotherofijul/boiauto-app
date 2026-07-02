@@ -645,12 +645,8 @@ function boiauto() {
       this.loginBotError = "";
       try {
         const data = await this.apiPost("/bots/verify-token", { token: this.loginBotToken.trim() });
-        // If user provided a custom label, update the bot name
-        if (this.loginBotName.trim()) {
-          await this.apiPatch(`/bots/${data.id}`, { name: this.loginBotName.trim() });
-        }
         await this.loadBots();
-        this.showToast("success", `Bot "${this.loginBotName.trim() || data.name}" verified and loaded`);
+        this.showToast("success", `Bot "${data.name}" verified and loaded`);
         this.closeAddBotModal();
       } catch (e) {
         this.loginBotError = e.message;

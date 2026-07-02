@@ -3,20 +3,20 @@ export function genBotId() {
   return "bot_" + randomHex(7);
 }
 
-export function genToken() {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
+// Generate a long secure token (48 hex chars = 192 bits entropy)
+function genSecureHash() {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(24));
   const timestamp = Date.now();
-  const data = `${Array.from(randomBytes).join("")}${timestamp}`;
-  const hash = Bun.hash(data).toString(16).padStart(16, "0");
-  return `bot_${hash}`;
+  const data = `${Array.from(randomBytes).join("")}${timestamp}${Math.random()}`;
+  return Bun.hash(data).toString(16).padStart(16, "0") + Bun.hash(data + "salt").toString(16).padStart(16, "0") + Bun.hash(data + "pepper").toString(16).padStart(16, "0");
+}
+
+export function genToken() {
+  return `bot_${genSecureHash()}`;
 }
 
 export function genAccessToken() {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
-  const timestamp = Date.now();
-  const data = `${Array.from(randomBytes).join("")}${timestamp}`;
-  const hash = Bun.hash(data).toString(16).padStart(16, "0");
-  return `acc_${hash}`;
+  return `acc_${genSecureHash()}`;
 }
 
 export function genAccessId() {

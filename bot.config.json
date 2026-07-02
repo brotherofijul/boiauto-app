@@ -1,7 +1,25 @@
 {
-  "bot_id": "bot_root_primary",
-  "name": "PrimaryBot",
-  "token": "bot_8a7c3e9f4d2b1a6c5e8f3d2b9a7c4e1f6d8b3a2c9e7f4d1b6a8c3e5d2f9b7a4c",
-  "type": "Dual",
-  "rate_per_day": 0
+  "bots": [
+    {
+      "bot_id": "bot_root_primary",
+      "name": "BOI Primary Bot",
+      "token": "bot_8a7c3e9f4d2b1a6c5e8f3d2b9a7c4e1f6d8b3a2c9e7f4d1b6a8c3e5d2f9b7a4c",
+      "type": "Dual",
+      "rate_per_day": 0
+    },
+    {
+      "bot_id": "bot_dab25801282759",
+      "name": "BOI Shared Bot",
+      "token": "bot_f4d2b1a6c5e8f3d2b9a7c4e1f6d8b3a2c9e7f4d1b6a8c3e5d2f9b7a4c5e8f3d2b9a7c",
+      "type": "Shared",
+      "rate_per_day": 0
+    },
+    {
+      "bot_id": "bot_dfeeaef5bebc77",
+      "name": "BOI Business Bot",
+      "token": "bot_b9a7c4e1f6d8b3a2c9e7f4d1b6a8c3e5d2f9b7a4c5e8f3d2b9a7c4e1f6d8b3a2c9e7",
+      "type": "Shared",
+      "rate_per_day": 0
+    }
+  ]
 }

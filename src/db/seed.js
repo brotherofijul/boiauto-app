@@ -14,23 +14,29 @@ export async function seedFromConfig() {
     return;
   }
 
-  if (!cfg.token) {
-    logger.warn("bot.config.json missing 'token' — skipping seed");
-    return;
+  // Support both "bots" array and single-bot format (for backward compat)
+  const bots = Array.isArray(cfg.bots) ? cfg.bots : [cfg];
+
+  for (const botCfg of bots) {
+    if (!botCfg.token) {
+      logger.warn("bot config entry missing 'token' — skipping");
+      continue;
+    }
+
+    const existing = db.query("SELECT * FROM bots WHERE token = ?").get(botCfg.token);
+    if (existing) {
+      logger.info({ botId: existing.bot_id, name: existing.name }, "config bot already seeded");
+      continue;
+    }
+
+    const botId = botCfg.bot_id || genBotId();
+    const name = botCfg.name || botId;
+    const type = botCfg.type === "Shared" ? "Shared" : "Dual";
+    const ratePerDay = Number(botCfg.rate_per_day) || 0;
+
+    db.prepare("INSERT INTO bots (bot_id, name, token, type, rate_per_day, status) VALUES (?, ?, ?, ?, ?, ?)")
+      .run(botId, name, botCfg.token, type, ratePerDay, "connecting");
+
+    logger.info({ botId, name, type }, "bot seeded from bot.config.json");
   }
-
-  const existing = db.query("SELECT * FROM bots WHERE token = ?").get(cfg.token);
-  if (existing) {
-    logger.info({ botId: existing.bot_id, name: existing.name }, "config bot already seeded");
-    return;
-  }
-
-  const botId = cfg.bot_id || genBotId();
-  const name = cfg.name || botId;
-  const type = cfg.type === "Shared" ? "Shared" : "Dual";
-
-  db.prepare("INSERT INTO bots (bot_id, name, token, type, rate_per_day, status) VALUES (?, ?, ?, ?, 0, ?)")
-    .run(botId, name, cfg.token, type, "connecting");
-
-  logger.info({ botId, name, type }, "bot seeded from bot.config.json");
 }
