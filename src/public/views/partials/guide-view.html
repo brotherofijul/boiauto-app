@@ -1,7 +1,7 @@
 <!-- src/public/parts/guide-view.html -->
 <div>
   <div class="flex items-center gap-3 mb-6">
-    <div class="w-1 h-8 rounded-full bg-base-700"></div>
+    <div class="w-1 h-8 rounded-full bg-val-blue"></div>
     <div>
       <h2 class="text-sm font-bold tracking-tight text-base-100 uppercase font-mono leading-tight">Guide</h2>
       <p class="text-[10px] text-base-500 font-mono tracking-wider mt-0.5">How to use BOIAuto</p>
@@ -9,66 +9,78 @@
   </div>
 
   <div class="space-y-4">
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 1: Add a Bot (blue accent) -->
+    <div class="rounded-2xl border border-val-blue/20 bg-val-blue/[0.03] overflow-hidden">
+      <div class="h-1 bg-val-blue"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">1</div>
+          <div class="w-9 h-9 rounded-xl bg-val-blue/10 border border-val-blue/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-val-blue">1</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Add a Bot</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Go to the <span class="text-base-300">Bot</span> page from the sidebar and click <span class="text-base-300">+ Add</span>. Enter an optional name, pick a Type, then click <span class="text-base-300">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+              Add a Bot
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed mb-2">Go to the <span class="font-semibold text-val-blue">Bot</span> page from the sidebar and click <span class="font-semibold text-val-blue">+ Add</span>. Enter an optional name, pick a Type, then click <span class="font-semibold text-val-blue">Generate Token</span>. A secret token will appear below with copy + connect instructions.</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-300 bg-base-800/40 border-base-600/50 flex-shrink-0 mt-0.5">Dual</span>
-                <span>Allows a maximum of <span class="text-base-300 font-bold">2 access tokens</span> per bot.</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-val-green bg-val-green/10 border-val-green/30 flex-shrink-0 mt-0.5 font-bold">Dual</span>
+                <span>Allows a maximum of <span class="font-semibold text-val-green">2 access tokens</span> per bot.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-300 bg-base-800/40 border-base-600/50 flex-shrink-0 mt-0.5">Shared</span>
-                <span>Unlimited access tokens. Best for multi-user setups.</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-val-blue bg-val-blue/10 border-val-blue/30 flex-shrink-0 mt-0.5 font-bold">Shared</span>
+                <span><span class="font-semibold text-val-blue">Unlimited access tokens</span>. Best for multi-user setups.</span>
               </div>
             </div>
-            <p class="text-[10px] text-base-500 font-mono mt-2">After creating the bot, the button changes to <span class="text-base-300">Waiting Later</span> with a spinner. When your bot client connects, it becomes <span class="text-base-300">Finished</span>.</p>
+            <p class="text-[10px] text-base-500 font-mono mt-2">After creating the bot, the button changes to <span class="text-val-blue">Waiting Later</span> with a spinner. When your bot client connects, it becomes <span class="text-val-green">Finished</span>.</p>
           </div>
         </div>
       </div>
     </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 2: Connect a Bot Client (blue accent) -->
+    <div class="rounded-2xl border border-val-blue/20 bg-val-blue/[0.03] overflow-hidden">
+      <div class="h-1 bg-val-blue"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">2</div>
+          <div class="w-9 h-9 rounded-xl bg-val-blue/10 border border-val-blue/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-val-blue">2</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Connect a Bot Client</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">Copy the bot token from the Add Bot modal. Set <code class="text-base-300 bg-base-900/60 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-base-300 bg-base-900/60 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-base-300 bg-base-900/60 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-base-300">Connecting</span> to <span class="text-base-300">Connected</span> once the client is online.</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              Connect a Bot Client
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed">Copy the bot token from the Add Bot modal. Set <code class="text-val-blue bg-val-blue/10 px-1 py-0.5 rounded">BOT_TOKEN</code> in your bot client env, or store it in <code class="text-val-blue bg-val-blue/10 px-1 py-0.5 rounded">bot.config.json</code>. Run <code class="text-val-blue bg-val-blue/10 px-1 py-0.5 rounded">bun run bot:start</code>. The bot's status will switch from <span class="text-warn">Connecting</span> to <span class="text-val-green">Connected</span> once the client is online.</p>
           </div>
         </div>
       </div>
     </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 3: Generate Access Tokens (orange accent) -->
+    <div class="rounded-2xl border border-warn/20 bg-warn/[0.03] overflow-hidden">
+      <div class="h-1 bg-warn"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">3</div>
+          <div class="w-9 h-9 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-warn">3</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Generate Access Tokens</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">On the <span class="text-base-300">Access</span> page, click <span class="text-base-300">+ Add</span> to create an access token tied to a specific bot. Pick a Type:</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Generate Access Tokens
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed mb-2">On the <span class="font-semibold text-warn">Access</span> page, click <span class="font-semibold text-warn">+ Add</span> to create an access token tied to a specific bot. Pick a Type:</p>
             <div class="space-y-1.5 mt-2">
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-300 bg-base-800/40 border-base-600/50 flex-shrink-0 mt-0.5">Private</span>
-                <span>Single-use access. Max <span class="text-base-300 font-bold">1 automate</span> per token.</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-val-green bg-val-green/10 border-val-green/30 flex-shrink-0 mt-0.5 font-bold">Private</span>
+                <span>Single-use access. Max <span class="font-semibold text-val-green">1 automate</span> per token.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-300 bg-base-800/40 border-base-600/50 flex-shrink-0 mt-0.5">Shared</span>
-                <span>Unlimited automates.</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-val-blue bg-val-blue/10 border-val-blue/30 flex-shrink-0 mt-0.5 font-bold">Shared</span>
+                <span><span class="font-semibold text-val-blue">Unlimited automates</span>.</span>
               </div>
               <div class="flex items-start gap-2 text-xs font-mono text-base-300">
-                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-base-300 bg-base-800/40 border-base-600/50 flex-shrink-0 mt-0.5">Business</span>
-                <span>Single-use access + <span class="text-base-300">price/day</span> (game currency).</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full border text-warn bg-warn/10 border-warn/30 flex-shrink-0 mt-0.5 font-bold">Business</span>
+                <span>Single-use access + <span class="font-semibold text-val-green">price/day</span> (game currency).</span>
               </div>
             </div>
             <p class="text-[10px] text-base-500 font-mono mt-2">Share the access token with the recipient. They can use it to run automates linked to that bot.</p>
@@ -77,41 +89,49 @@
       </div>
     </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 4: Add an Automate (green accent) -->
+    <div class="rounded-2xl border border-val-green/20 bg-val-green/[0.03] overflow-hidden">
+      <div class="h-1 bg-val-green"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">4</div>
+          <div class="w-9 h-9 rounded-xl bg-val-green/10 border border-val-green/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-val-green">4</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Add an Automate</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">On the <span class="text-base-300">Automate</span> page, click <span class="text-base-300">+ Add</span>. Enter your Bearer token, then <span class="text-base-300">select an access token</span> from the dropdown. Each access item shows its usage (<span class="text-base-300">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Add an Automate
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed">On the <span class="font-semibold text-val-green">Automate</span> page, click <span class="font-semibold text-val-green">+ Add</span>. Enter your Bearer token, then <span class="font-semibold text-warn">select an access token</span> from the dropdown. Each access item shows its usage (<span class="text-base-300">0/1</span> for Private/Business, single number for Shared) and type badge. The access type is inherited by the automate.</p>
           </div>
         </div>
       </div>
     </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 5: Toggle Automation Features (green accent) -->
+    <div class="rounded-2xl border border-val-green/20 bg-val-green/[0.03] overflow-hidden">
+      <div class="h-1 bg-val-green"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">5</div>
+          <div class="w-9 h-9 rounded-xl bg-val-green/10 border border-val-green/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-val-green">5</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Toggle Automation Features</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed mb-2">Each automate card has 3 toggles:</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-val-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M5 10l7-4 7 4"/><path d="M5 10v10h14V10"/></svg>
+              Toggle Automation Features
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed mb-2">Each automate card has 3 toggles:</p>
             <div class="space-y-1.5">
               <div class="flex items-center gap-2 text-xs font-mono text-base-300">
-                <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-                <span><span class="text-base-300 font-bold">Skill</span> — auto-upgrade skill levels</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-val-green flex-shrink-0"></span>
+                <span><span class="font-semibold text-val-green">Skill</span> — auto-upgrade skill levels</span>
               </div>
               <div class="flex items-center gap-2 text-xs font-mono text-base-300">
-                <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-                <span><span class="text-base-300 font-bold">Training</span> — auto-train units</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-val-blue flex-shrink-0"></span>
+                <span><span class="font-semibold text-val-blue">Training</span> — auto-train units</span>
               </div>
               <div class="flex items-center gap-2 text-xs font-mono text-base-300">
-                <span class="w-1.5 h-1.5 rounded-full bg-base-400 flex-shrink-0"></span>
-                <span><span class="text-base-300 font-bold">Work</span> — auto-perform work tasks</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-warn flex-shrink-0"></span>
+                <span><span class="font-semibold text-warn">Work</span> — auto-perform work tasks</span>
               </div>
             </div>
             <p class="text-[10px] text-base-500 font-mono mt-2">When any feature is ON, the card border glows and 3 small dots light up next to the automate label.</p>
@@ -120,26 +140,31 @@
       </div>
     </div>
 
-    
-    <div class="rounded-2xl border border-base-700/40 bg-base-900/45 overflow-hidden">
-      <div class="h-1 bg-base-700"></div>
+
+    <!-- Step 6: Dashboard Overview (blue accent) -->
+    <div class="rounded-2xl border border-val-blue/20 bg-val-blue/[0.03] overflow-hidden">
+      <div class="h-1 bg-val-blue"></div>
       <div class="p-4 sm:p-5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-base-800/40 border border-base-700/40 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-base-300">6</div>
+          <div class="w-9 h-9 rounded-xl bg-val-blue/10 border border-val-blue/20 flex items-center justify-center flex-shrink-0 font-mono font-bold text-sm text-val-blue">6</div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-bold text-base-300 leading-tight mb-1">Dashboard Overview</h3>
-            <p class="text-xs text-base-400 font-mono leading-relaxed">The <span class="text-base-300">Dashboard</span> page shows real-time stats: total automates, total bots, total access tokens, connected bots, automation status (Skill/Training/Work counts), and total balance + diamond. Below the stats are quick-action cards and a list of the latest 5 bots with their connection status.</p>
+            <h3 class="text-sm font-bold text-base-100 leading-tight mb-1 flex items-center gap-2">
+              <svg class="w-4 h-4 text-val-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+              Dashboard Overview
+            </h3>
+            <p class="text-xs text-base-300 font-mono leading-relaxed">The <span class="font-semibold text-val-blue">Dashboard</span> page shows real-time stats: total <span class="text-val-green">automates</span>, total <span class="text-val-blue">bots</span>, total <span class="text-warn">access tokens</span>, connected bots, automation status (Skill/Training/Work counts), and total balance + diamond. Below the stats are quick-action cards and a list of the latest 5 bots with their connection status.</p>
           </div>
         </div>
       </div>
     </div>
 
-    
+
+    <!-- Tip box -->
     <div class="rounded-xl bg-base-800/30 border border-base-700/40 px-4 py-3 flex items-start gap-2.5">
-      <svg class="w-4 h-4 text-base-300 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+      <svg class="w-4 h-4 text-val-blue flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       <div>
-        <p class="text-[11px] text-base-300 font-mono font-bold mb-0.5">Tip</p>
-        <p class="text-[11px] text-base-300 font-mono leading-relaxed">Bot status: <span class="text-base-300">Connecting</span> (spinner, just added) → <span class="text-base-300">Connected</span> (green pulse, client online) → <span class="text-danger">Disconnected</span> (red, client offline).</p>
+        <p class="text-[11px] text-base-100 font-mono font-bold mb-0.5">Tip</p>
+        <p class="text-[11px] text-base-400 font-mono leading-relaxed">Bot status: <span class="text-warn">Connecting</span> (spinner, just added) → <span class="text-val-green">Connected</span> (green pulse, client online) → <span class="text-danger">Disconnected</span> (red, client offline).</p>
       </div>
     </div>
   </div>
